@@ -4,6 +4,9 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "server-dependencies": "npm install",
+    "client-dependencies": "npm install --prefix client",
+    "install-all-deps": "concurrently \"npm run server-dependencies\" \"npm run client-dependencies\"",
     "server": "node server/index.js",
     "client": "npm start --prefix client",
     "dev": "concurrently \"npm run server\" \"npm run client\"",
