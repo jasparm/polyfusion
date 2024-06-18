@@ -8,7 +8,7 @@
 Once the repository has been cloned we need to setup the node environment.
 ```shell
 cd polyfusion
-npm install-all-deps
+npm run install-all-deps
 ```
 A local instance can now be run.
 ```shell
