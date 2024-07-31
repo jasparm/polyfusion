@@ -1,4 +1,5 @@
 import * as THREE from 'three'
+import { OrbitControls } from 'three/examples/jsm/Addons.js';
 
 export default class SceneInit {
     constructor(canvasId) {
@@ -13,11 +14,17 @@ export default class SceneInit {
         this.farPlane = 1000;
         this.canvasId = canvasId;
 
-        this.line = undefined
+        this.controls = undefined;
+
+        this.ambientLight = undefined;
+        this.spotLight = undefined;
+
+        this.mesh = undefined
 
     }
 
     init() {
+
         this.scene = new THREE.Scene();
         this.camera = new THREE.PerspectiveCamera(
             this.fov, 
@@ -32,6 +39,8 @@ export default class SceneInit {
             canvas,
             antialias: true,
         });
+        this.renderer.shadowMap.enabled = true;
+        this.controls = new OrbitControls(this.camera, this.renderer.domElement);
         this.renderer.setSize(window.innerWidth, window.innerHeight);
         document.body.appendChild(this.renderer.domElement);
     
@@ -43,10 +52,6 @@ export default class SceneInit {
     }
 
     render() {
-        if (this.line) {
-            this.line.rotation.x += 0.01;
-            this.line.rotation.y += 0.01;
-        }
         this.renderer.render(this.scene, this.camera);
     }    
 }
