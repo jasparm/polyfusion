@@ -1,5 +1,6 @@
 import * as THREE from 'three'
 import { OrbitControls } from 'three/examples/jsm/Addons.js';
+import Stats from 'three/examples/jsm/libs/stats.module.js';
 
 export default class SceneInit {
     constructor(canvasId) {
@@ -15,6 +16,7 @@ export default class SceneInit {
         this.canvasId = canvasId;
 
         this.controls = undefined;
+        this.stats = undefined; // for tracking FPS and performance
 
         this.ambientLight = undefined;
         this.spotLight = undefined;
@@ -24,6 +26,8 @@ export default class SceneInit {
     }
 
     init() {
+
+        
 
         this.scene = new THREE.Scene();
         this.camera = new THREE.PerspectiveCamera(
@@ -43,6 +47,10 @@ export default class SceneInit {
         this.controls = new OrbitControls(this.camera, this.renderer.domElement);
         this.renderer.setSize(window.innerWidth, window.innerHeight);
         document.body.appendChild(this.renderer.domElement);
+
+        // Comment out to enable/disable performance tracker
+        this.stats = Stats();
+        document.body.appendChild(this.stats.dom);
         
         window.addEventListener('resize', () => this.onWindowResize(), false);
     }
@@ -51,6 +59,7 @@ export default class SceneInit {
         window.requestAnimationFrame(this.animate.bind(this));
         this.render();
         this.controls.update();
+        this.stats.update();
     }
 
     render() {
