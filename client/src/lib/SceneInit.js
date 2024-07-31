@@ -43,15 +43,23 @@ export default class SceneInit {
         this.controls = new OrbitControls(this.camera, this.renderer.domElement);
         this.renderer.setSize(window.innerWidth, window.innerHeight);
         document.body.appendChild(this.renderer.domElement);
-    
+        
+        window.addEventListener('resize', () => this.onWindowResize(), false);
     }
 
     animate() {
         window.requestAnimationFrame(this.animate.bind(this));
         this.render();
+        this.controls.update();
     }
 
     render() {
         this.renderer.render(this.scene, this.camera);
     }    
+
+    onWindowResize() {
+        this.camera.aspect = window.innerWidth / window.innerHeight;
+        this.camera.updateProjectionMatrix();
+        this.renderer.setSize(window.innerWidth, window.innerHeight);
+    }
 }
