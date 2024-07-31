@@ -4,7 +4,7 @@ import * as THREE from 'three';
 import { GUI } from 'dat.gui';
 
 import SceneInit from './lib/SceneInit';
-
+import CustomGui from "./lib/Gui";
 
 function App() {
   const [data, setData] = React.useState(null);
@@ -15,49 +15,45 @@ function App() {
     test.init();
     test.animate();
 
+    // add settings GUI
+    const gui = new CustomGui();
+
+    test.scene.background = new THREE.Color(0x2e3359);
+
+    // set up ground
+    const groundGeometry = new THREE.BoxGeometry(8, 0.5, 8);
+    const groundMaterial = new THREE.MeshPhongMaterial({ color: 0xfafafa });
+
+    // phone material
+    const groundMesh = new THREE.Mesh(groundGeometry, groundMaterial);
+    groundMesh.receiveShadow = true;
+    groundMesh.position.y = -2;
+
+    test.scene.add(groundMesh);
+
+    const boxTexture = new THREE.TextureLoader().load('./assets/texture01.png'); // creates texture and loads them in
+
     const box = new THREE.BoxGeometry(2, 2, 2)
-    const mat= new THREE.MeshBasicMaterial({color: 0xfcba03})
+    const mat= new THREE.MeshStandardMaterial({map: boxTexture}) // instead of choosing colour, we can choose a texture to map
     const mesh = new THREE.Mesh(box, mat)
+    mesh.castShadow = true;
 
     test.scene.add(mesh);
     test.mesh = mesh;
 
-    const gui = new GUI();
-
-    const geometryFolder = gui.addFolder('Mesh Geometry');
-    geometryFolder.open();
-
-    const rotationFolder = geometryFolder.addFolder('Rotation');
-    rotationFolder.add(mesh.rotation, 'x', 0, Math.PI).name('Rotate X Axis');
-    rotationFolder.add(mesh.rotation, 'y', 0, Math.PI).name('Rotate Y Axis');
-    rotationFolder.add(mesh.rotation, 'z', 0, Math.PI).name('Rotate Z Axis');
-    
-    const scaleFolder = geometryFolder.addFolder('Scale');
-    scaleFolder.add(mesh.scale, 'x', 0, 2).name("Scale X Axis")
-    scaleFolder.add(mesh.scale, 'y', 0, 2).name("Scale Y Axis")
-    scaleFolder.add(mesh.scale, 'z', 0, 2).name("Scale Z Axis")
-
-    const materialFolder = gui.addFolder('Mesh Material')
-    const materialParams = {
-      meshColor:  mesh.material.color.getHex(),
-    };
-    materialFolder.add(mesh.material, 'wireframe');
-
-    materialFolder.addColor(materialParams, 'meshColor').onChange((value) => mesh.material.color.set(value));
-
-    const lightingGui = new GUI();
-    const ambient_light_folder = lightingGui.addFolder("Ambient Light");
-    ambient_light_folder.open();
+    gui.init_mesh(test.mesh);
 
     const al = new THREE.AmbientLight(0xffffff, 0.5); // ambient light
-    ambient_light_folder.add(al, 'visible')
-    ambient_light_folder.add(al, 'intensity', 0, 1, 0.1)
+
+    test.scene.add(al)
 
     const dl = new THREE.DirectionalLight(0xff0000, 0.5)// directional light
-    dl.position.set(0, 2, 0);
+    dl.position.set(0, 2, 2);
+    dl.castShadow = true;
 
-   test.scene.add(al)
-  
+    test.scene.add(dl);
+    gui.init_light(dl,al);
+
 
     fetch("/api")
       .then((res) => res.json())
@@ -65,7 +61,6 @@ function App() {
 
     return () => {
       gui.destroy();
-      lightingGui.destroy();
     };
       
   }, []);
