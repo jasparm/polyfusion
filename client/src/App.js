@@ -3,7 +3,7 @@ import React from "react";
 import * as THREE from 'three';
 import { GUI } from 'dat.gui';
 
-import SceneInit from './lib/SceneInit';
+import SceneInit from './lib/scene/SceneInit';
 import CustomGui from "./lib/Gui";
 
 function App() {
@@ -13,7 +13,6 @@ function App() {
 
     const test = new SceneInit("threeJsCanvas");
     test.init();
-    test.animate();
 
     // add settings GUI
     const gui = new CustomGui();
@@ -31,17 +30,33 @@ function App() {
 
     test.scene.add(groundMesh);
 
+    // Box
     const boxTexture = new THREE.TextureLoader().load('./assets/texture01.png'); // creates texture and loads them in
 
-    const box = new THREE.BoxGeometry(2, 2, 2)
-    const mat= new THREE.MeshStandardMaterial({map: boxTexture}) // instead of choosing colour, we can choose a texture to map
-    const mesh = new THREE.Mesh(box, mat)
+    const box = new THREE.BoxGeometry(2, 2, 2);
+    const mat= new THREE.MeshStandardMaterial({
+      map: boxTexture,
+      side: THREE.DoubleSide
+    }); // instead of choosing colour, we can choose a texture to map
+    const mesh = new THREE.Mesh(box, mat);
     mesh.castShadow = true;
 
     test.scene.add(mesh);
+    test.box = mesh;
     test.mesh = mesh;
 
+    const ball = new THREE.SphereGeometry(0.5);
+    const ball_mat = new THREE.MeshStandardMaterial({color: 0x00ff00})
+    const ball_mesh = new THREE.Mesh(ball, ball_mat);
+    ball_mesh.position.x = 3
+    ball_mesh.castShadow = true;
+
+    test.sphere = ball_mesh;
+
+    test.scene.add(ball_mesh)
+
     gui.init_mesh(test.mesh);
+    gui.init_ball(ball_mesh);
 
     const al = new THREE.AmbientLight(0xffffff, 0.5); // ambient light
 
@@ -54,10 +69,12 @@ function App() {
     test.scene.add(dl);
     gui.init_light(dl,al);
 
+    test.animate();
 
-    fetch("/api")
-      .then((res) => res.json())
-      .then((data) => setData(data.message))
+
+    // fetch("/api")
+    //   .then((res) => res.json())
+    //   .then((data) => setData(data.message))
 
     return () => {
       gui.destroy();
