@@ -46,6 +46,10 @@ export default class CustomGui {
 
     }
 
+    init_ball(ball) {
+        this.gui.add(ball.position, 'x', -3, 3)
+    }
+
     init_light(directional, ambient) {
         const dlSettings = {
             visible: true,
