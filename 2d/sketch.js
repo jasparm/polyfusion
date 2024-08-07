@@ -45,10 +45,6 @@ function mousePressed() {
     // Left click adds a point to the canvas for the moment
     if (mouseButton === LEFT) {
         // If on canvas and we are creating a shape, add point
-        if (mouseInCanvas() && createShapeMode) {
-            points.push(createVector(mouseX, mouseY));
-        }
-
         // Laptop right click smh
         if (keyIsPressed && keyCode === 17) {
             // Checking if we clicked on any shape
@@ -60,10 +56,24 @@ function mousePressed() {
                 }
             }
         }
+        // Otherwise we add a point where the mouse was pressed
+        else if (mouseInCanvas() && createShapeMode) {
+            let newPoint = createVector(mouseX, mouseY);
+            // Need to now ensure that each point results in a convex shape
+            if (points.length > 2) {
+                // If convex, we add
+                if (checkConvex(points, newPoint)) {
+                    points.push(newPoint);
+                }
+            } else {
+                points.push(newPoint);
+            }
+        }
     // Right click to move a shape for now
     } else if (mouseButton === RIGHT) {
         // Checking if we clicked on any shape
         for (let i = 0; i < shapes.length; i++) {
+            // Using our ray casting to detect if a point is in our shape
             if (rayCast(mouseX, mouseY, shapes[i])) {
                 moveShapeIndex = i;
                 moveOffset = createVector(mouseX, mouseY);
@@ -100,15 +110,49 @@ function mouseInCanvas() {
     return mouseX >= 0 && mouseX <= width && mouseY >= 0 && mouseY <= height
 }
 
-// Checks if the user's mouse is within one of the shapes
-function mouseInShape(shape) {
-    // Simple bounding box check for simplicity
-    // Will need to do ray-casting for much more accurate detection.
-    let minX = min(shape.map(p => p.x));
-    let maxX = max(shape.map(p => p.x));
-    let minY = min(shape.map(p => p.y));
-    let maxY = max(shape.map(p => p.y));
-    return mouseX >= minX && mouseX <= maxX && mouseY >= minY && mouseY <= maxY;
+// Function that checks if the new point creates a convex shape
+// Does this by using the cross product to ensure every internal angle is less than 180 degrees.
+function checkConvex(points, newPoint) {
+    angleMode(DEGREES);
+    // subtract two vectors
+    // get angle between
+    // subtract last with first
+    // angle between
+
+    // Firstly creating a vector to each of the 4 points
+    let n = points.length;
+    let prevPoint = points[n - 1];
+    let prevPrevPoint = points[n - 2];
+
+    // Now we need to subtract to create the vector
+    let vec1 = createVector(prevPoint.x - prevPrevPoint.x, prevPoint.y - prevPrevPoint.y);
+    let vec2 = createVector(newPoint.x - prevPoint.x, newPoint.y - prevPoint.y);
+
+    // If this is negative, we create an internal angle greater than 180
+    let crossProd = vec1.cross(vec2).z;
+    if (crossProd < 0) {
+        return false;
+    }
+    // And now we do the same with the vector between the new point and the first point.
+    // We need to ensure that the internal angle is less than 180 degrees.
+    let firstPoint = points[0];
+    let vec3 = createVector(firstPoint.x - newPoint.x, firstPoint.y - newPoint.y);
+
+    // Same for this one.
+    let crossProd2 = vec2.cross(vec3).z;
+    if (crossProd2 < 0) {
+        return false
+    }
+
+    // And finally with the first point and second point.
+    let secondPoint = points[1];
+    let vec4 = createVector(secondPoint.x - firstPoint.x, secondPoint.y - firstPoint.y);
+    let crossProd3 = vec3.cross(vec4).z;
+    if (crossProd3 < 0) {
+        return false
+    }
+
+    return true;
 }
 
 // Ray-casting method to check if a point is within a shape
@@ -126,11 +170,8 @@ function rayCast(x, y, shape) {
         // Basically depends on the height we are at so we get the proportion and multiply by horizontal distance.
         let horizontalIntersection = (x < (x2 - x1) * (y - y1) / (y2 - y1) + x1);
 
-        // If both cases pass, we have an intersection
-        let intersection = verticalPosition && horizontalIntersection;
-
         // Count number of times we intersect
-        if (intersection) {
+        if (verticalPosition && horizontalIntersection) {
             counter++;
         }
     }
