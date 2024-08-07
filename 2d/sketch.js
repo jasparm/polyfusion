@@ -7,20 +7,31 @@ let createShapeMode = false;
 let shapes = [];
 let points = [];
 
+// Default -1 index for not moving
+let moveShapeIndex = -1;
+let moveOffset;
+
 function setup() {
     canvas = createCanvas(windowWidth, windowHeight);
     canvas.parent('canvas-container');
+
+    // Disabling default context menu as we want right-clicking capability
+    canvas.elt.oncontextmenu = (e) => {
+        e.preventDefault();
+    }
 
     // Adding event listeners for our buttons
     const createShapeButton = select('#create-shape-btn');
     const completeButton = select('#complete-btn');
 
+    // Triggers shape creation
     createShapeButton.mousePressed(() => {
         createShapeMode = true;
         createShapeButton.hide();
         completeButton.show();
     });
 
+    // Completes the shape and saves it
     completeButton.mousePressed(() => {
         createShapeMode = false;
         completeShape();
@@ -31,15 +42,100 @@ function setup() {
 
 
 function mousePressed() {
-    // Ensures mouse is within the canvas bounds
-    if (mouseInCanvas() && createShapeMode) {
-        points.push(createVector(mouseX, mouseY));
+    // Left click adds a point to the canvas for the moment
+    if (mouseButton === LEFT) {
+        // If on canvas and we are creating a shape, add point
+        if (mouseInCanvas() && createShapeMode) {
+            points.push(createVector(mouseX, mouseY));
+        }
+
+        // Laptop right click smh
+        if (keyIsPressed && keyCode === 17) {
+            // Checking if we clicked on any shape
+            for (let i = 0; i < shapes.length; i++) {
+                if (rayCast(mouseX, mouseY, shapes[i])) {
+                    moveShapeIndex = i;
+                    moveOffset = createVector(mouseX, mouseY);
+                    return;
+                }
+            }
+        }
+    // Right click to move a shape for now
+    } else if (mouseButton === RIGHT) {
+        // Checking if we clicked on any shape
+        for (let i = 0; i < shapes.length; i++) {
+            if (rayCast(mouseX, mouseY, shapes[i])) {
+                moveShapeIndex = i;
+                moveOffset = createVector(mouseX, mouseY);
+                return;
+            }
+        }
+    }
+}
+
+// Resets move shape index
+function mouseReleased() {
+    moveShapeIndex = -1;
+}
+
+// Override method for implementation when the mouse is being dragged
+function mouseDragged() {
+    if (moveShapeIndex !== -1) {
+        // Getting the shape we are moving
+        let shape = shapes[moveShapeIndex];
+        let moveX = mouseX - moveOffset.x;
+        let moveY = mouseY - moveOffset.y;
+        // Updating each point by the offset
+        for (let p of shape) {
+            p.x += moveX;
+            p.y += moveY;
+        }
+        // Updating offset
+        moveOffset.set(mouseX, mouseY);
     }
 }
 
 // Checks if the user's mouse is within our canvas
 function mouseInCanvas() {
     return mouseX >= 0 && mouseX <= width && mouseY >= 0 && mouseY <= height
+}
+
+// Checks if the user's mouse is within one of the shapes
+function mouseInShape(shape) {
+    // Simple bounding box check for simplicity
+    // Will need to do ray-casting for much more accurate detection.
+    let minX = min(shape.map(p => p.x));
+    let maxX = max(shape.map(p => p.x));
+    let minY = min(shape.map(p => p.y));
+    let maxY = max(shape.map(p => p.y));
+    return mouseX >= minX && mouseX <= maxX && mouseY >= minY && mouseY <= maxY;
+}
+
+// Ray-casting method to check if a point is within a shape
+function rayCast(x, y, shape) {
+    let counter = 0;
+    // Iterating through each edge of the given shape
+    for (let i = 0, j = shape.length - 1; i < shape.length; j = i++) {
+        // Getting coordinates of current and previous vertices (representing an edge)
+        let x1 = shape[i].x, y1 = shape[i].y;
+        let x2 = shape[j].x, y2 = shape[j].y;
+
+        // Checking if vertical position of our given point is within the bounds
+        let verticalPosition = ((y1 > y) != (y2 > y));
+        // Getting the greatest value of x such that if x < x0 (0) it crosses our edge
+        // Basically depends on the height we are at so we get the proportion and multiply by horizontal distance.
+        let horizontalIntersection = (x < (x2 - x1) * (y - y1) / (y2 - y1) + x1);
+
+        // If both cases pass, we have an intersection
+        let intersection = verticalPosition && horizontalIntersection;
+
+        // Count number of times we intersect
+        if (intersection) {
+            counter++;
+        }
+    }
+    // Odd = true, even = false
+    return counter % 2 == 1;
 }
 
 function completeShape() {
@@ -49,6 +145,8 @@ function completeShape() {
         points = [];
     }
 }
+
+
 
 function drawShape(shape) {
     // Drawing the shapes
