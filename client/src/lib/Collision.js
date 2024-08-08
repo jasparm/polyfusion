@@ -20,6 +20,7 @@ export function collidesWith(position, direction, scene, min = 0, max = Number.P
 
 /**
  * Checks if one object is inside of another object.
+ * Returns true if 50% or more of the object is inside.
  * 
  * @param {THREE.THREE.Vector3} object1 - Inside object.
  * @param {THREE.Mesh} object2 - Outside object.
@@ -27,7 +28,7 @@ export function collidesWith(position, direction, scene, min = 0, max = Number.P
  */
 export function isPartiallyInside(object1, object2, scene) {
     const id = object2.uuid;
-
+    // Check for collisions in all directions
     const directions = new Array(
         new THREE.Vector3(1, 0, 0),
         new THREE.Vector3(-1, 0, 0),
@@ -37,19 +38,20 @@ export function isPartiallyInside(object1, object2, scene) {
         new THREE.Vector3(0, 0, -1)
     )
 
-    const collisions = new Array();
+    const validCollisions = new Array();
 
     for (var i = 0; i < directions.length; i ++){
-        const collision = collidesWith(object1, directions[i], scene);
-        if (collision.length == 1) {
-            collisions.push(collision[0]);
+        const collisions = collidesWith(object1, directions[i], scene);
+
+        // Filters out all collisions that do not have the correct uuid
+        const filtered = collisions.filter(collision => collision.object.uuid === id);
+
+        // add only the collisions where this occurs once
+        if (filtered.length == 1) {
+            validCollisions.push(filtered[0]);
         }
         
     }
-    // Removes all that does not have the correct uuid
-    const validCollisions = collisions.filter(
-        intersect => intersect.object.uuid === id
-    );
 
     if (validCollisions.length > 1){
         return true;
