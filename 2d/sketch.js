@@ -1,7 +1,6 @@
 /*
 File containing the code for our 2d canvas.
 */
-
 let canvas;
 let createShapeMode = false;
 let shapes = [];
@@ -12,6 +11,7 @@ let moveShapeIndex = -1;
 let moveOffset;
 
 function setup() {
+    // Boring setup
     canvas = createCanvas(windowWidth, windowHeight);
     canvas.parent('canvas-container');
 
@@ -33,14 +33,16 @@ function setup() {
 
     // Completes the shape and saves it
     completeButton.mousePressed(() => {
-        createShapeMode = false;
-        completeShape();
-        completeButton.hide();
-        createShapeButton.show();
+        if (points.length > 2) {
+            createShapeMode = false;
+            completeShape();
+            completeButton.hide();
+            createShapeButton.show();
+        };
     });
 }
 
-
+// The final boss of mouse pressing
 function mousePressed() {
     // Left click adds a point to the canvas for the moment
     if (mouseButton === LEFT) {
@@ -49,6 +51,7 @@ function mousePressed() {
         if (keyIsPressed && keyCode === 17) {
             // Checking if we clicked on any shape
             for (let i = 0; i < shapes.length; i++) {
+                // Using ray casting to check if the user has clicked inside a shape
                 if (rayCast(mouseX, mouseY, shapes[i])) {
                     moveShapeIndex = i;
                     moveOffset = createVector(mouseX, mouseY);
@@ -65,6 +68,7 @@ function mousePressed() {
                 if (checkConvex(points, newPoint)) {
                     points.push(newPoint);
                 }
+            // Have this case for the initial 3 points
             } else {
                 points.push(newPoint);
             }
@@ -107,7 +111,7 @@ function mouseDragged() {
 
 // Checks if the user's mouse is within our canvas
 function mouseInCanvas() {
-    return mouseX >= 0 && mouseX <= width && mouseY >= 0 && mouseY <= height
+    return mouseX >= 0 && mouseX <= width && mouseY >= 0 && mouseY <= height;
 }
 
 // Function that checks if the new point creates a convex shape
@@ -141,7 +145,7 @@ function checkConvex(points, newPoint) {
     // Same for this one.
     let crossProd2 = vec2.cross(vec3).z;
     if (crossProd2 < 0) {
-        return false
+        return false;
     }
 
     // And finally with the first point and second point.
@@ -149,7 +153,7 @@ function checkConvex(points, newPoint) {
     let vec4 = createVector(secondPoint.x - firstPoint.x, secondPoint.y - firstPoint.y);
     let crossProd3 = vec3.cross(vec4).z;
     if (crossProd3 < 0) {
-        return false
+        return false;
     }
 
     return true;
@@ -179,6 +183,7 @@ function rayCast(x, y, shape) {
     return counter % 2 == 1;
 }
 
+// Called when the complete button is pressed.
 function completeShape() {
     // Adds the list of points to our shapes array
     if (points.length > 0) {
@@ -187,8 +192,7 @@ function completeShape() {
     }
 }
 
-
-
+// Function that draws our shapes.
 function drawShape(shape) {
     // Drawing the shapes
     strokeWeight(20);
@@ -210,7 +214,7 @@ function drawShape(shape) {
     }
 }
 
-// Draw method. Handles what we see on the canvas
+// Draw method. Handles what we see on the canvas.
 function draw() {
     // Light grey background colour
     background(220);
@@ -218,14 +222,9 @@ function draw() {
     for (let shape of shapes) {
         drawShape(shape);
     }
-
-    // And drawing the current shape
+    // And drawing the current shape being made on the canvas
     drawShape(points);
 }
-
-
-
-
 
 /**
  * Function that checks if the user has clicked on a given point
