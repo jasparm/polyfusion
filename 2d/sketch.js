@@ -2,16 +2,45 @@
 File containing the code for our 2d canvas.
 */
 let canvas;
-let createShapeMode = false;
+// Array of shapes which is an array of points.
+// Points array is our current shape being made.
 let shapes = [];
 let points = [];
+
+// Array to store selected shapes
+let selectedShapes = [];
 
 // Default -1 index for not moving
 let moveShapeIndex = -1;
 let moveOffset;
 
+// Flags for our modes
+let createShapeMode = false;
+let selectShapeMode = false;
+
+
+/*
+Class for our shapes
+*/
+
+class Shape {
+    constructor(points, colour=null) {
+        this._points = points;
+        this.colour = colour;
+        this.isSelected = false;
+    };
+    // Getter
+    get selected() {
+        return this.isSelected;
+    };
+    // Getter
+    get points() {
+        return this._points;
+    }
+}
+
 function setup() {
-    // Boring setup
+    // Canvas Setup
     canvas = createCanvas(windowWidth, windowHeight);
     canvas.parent('canvas-container');
 
@@ -22,25 +51,40 @@ function setup() {
 
     // Adding event listeners for our buttons
     const createShapeButton = select('#create-shape-btn');
-    const completeButton = select('#complete-btn');
 
     // Triggers shape creation
     createShapeButton.mousePressed(() => {
-        createShapeMode = true;
-        createShapeButton.hide();
-        completeButton.show();
+        // Ensuring we only save if shape has 3 points
+        if (createShapeMode && points.length > 2) {
+            completeShape();
+            createShapeMode = false;
+        // Toggling mode
+        } else if (!createShapeMode) {
+            createShapeMode = true;
+        }
+        // HTML changes to the button depending on the mode
+        createShapeButton.html(createShapeMode ? "Complete Shape" : "Create Shape");
+        createShapeButton.class(createShapeMode ? "btn btn-success" : "btn btn-primary");
     });
 
-    // Completes the shape and saves it
-    completeButton.mousePressed(() => {
-        if (points.length > 2) {
-            createShapeMode = false;
-            completeShape();
-            completeButton.hide();
-            createShapeButton.show();
-        };
-    });
+    // Event listener for select button
+    const selectShapeButton = select('#select-shape-btn');
+
+    selectShapeButton.mousePressed(() => {
+        // Toggling select shape mode
+        selectShapeMode = !selectShapeMode;
+
+        selectShapeButton.html(selectShapeMode ? "Complete Selection" : "Select Shape");
+        selectShapeButton.class(selectShapeMode ? "btn btn-success" : "btn btn-primary");
+
+        // Resetting selected shapes
+        if (!selectShapeMode) {
+            selectedShapes = [];
+        }
+    })
 }
+
+
 
 // The final boss of mouse pressing
 function mousePressed() {
@@ -52,12 +96,12 @@ function mousePressed() {
             // Checking if we clicked on any shape
             for (let i = 0; i < shapes.length; i++) {
                 // Using ray casting to check if the user has clicked inside a shape
-                if (rayCast(mouseX, mouseY, shapes[i])) {
+                if (rayCast(mouseX, mouseY, shapes[i].points)) {
                     moveShapeIndex = i;
                     moveOffset = createVector(mouseX, mouseY);
                     return;
-                }
-            }
+                };
+            };
         }
         // Otherwise we add a point where the mouse was pressed
         else if (mouseInCanvas() && createShapeMode) {
@@ -67,10 +111,20 @@ function mousePressed() {
                 // If convex, we add
                 if (checkConvex(points, newPoint)) {
                     points.push(newPoint);
-                }
+                };
             // Have this case for the initial 3 points
             } else {
                 points.push(newPoint);
+            };
+        }
+        // Now checking if select shape mode is on
+        else if (selectShapeMode) {
+            // We need to see which shape we clicked on
+            // Can just re-use ray-casting
+            for (let i = 0; i < shapes.length; i++) {
+                if (rayCast(mouseX, mouseY, shapes[i].points)) {
+                    selectedShapes.push(shapes[i]);
+                }
             }
         }
     // Right click to move a shape for now
@@ -78,14 +132,14 @@ function mousePressed() {
         // Checking if we clicked on any shape
         for (let i = 0; i < shapes.length; i++) {
             // Using our ray casting to detect if a point is in our shape
-            if (rayCast(mouseX, mouseY, shapes[i])) {
+            if (rayCast(mouseX, mouseY, shapes[i].points)) {
                 moveShapeIndex = i;
                 moveOffset = createVector(mouseX, mouseY);
                 return;
-            }
-        }
-    }
-}
+            };
+        };
+    };
+};
 
 // Resets move shape index
 function mouseReleased() {
@@ -96,7 +150,7 @@ function mouseReleased() {
 function mouseDragged() {
     if (moveShapeIndex !== -1) {
         // Getting the shape we are moving
-        let shape = shapes[moveShapeIndex];
+        let shape = shapes[moveShapeIndex].points;
         let moveX = mouseX - moveOffset.x;
         let moveY = mouseY - moveOffset.y;
         // Updating each point by the offset
@@ -155,11 +209,12 @@ function checkConvex(points, newPoint) {
     if (crossProd3 < 0) {
         return false;
     }
-
+    // If all cases pass we have a convex shape
     return true;
 }
 
-// Ray-casting method to check if a point is within a shape
+// Ray-casting algorithm to check if a point is within a shape
+// See this for info: https://www.youtube.com/watch?v=RSXM9bgqxJM
 function rayCast(x, y, shape) {
     let counter = 0;
     // Iterating through each edge of the given shape
@@ -171,7 +226,7 @@ function rayCast(x, y, shape) {
         // Checking if vertical position of our given point is within the bounds
         let verticalPosition = ((y1 > y) != (y2 > y));
         // Getting the greatest value of x such that if x < x0 (0) it crosses our edge
-        // Basically depends on the height we are at so we get the proportion and multiply by horizontal distance.
+        // Basically depends on the height we are at so we get the remaining proportion and multiply by horizontal distance.
         let horizontalIntersection = (x < (x2 - x1) * (y - y1) / (y2 - y1) + x1);
 
         // Count number of times we intersect
@@ -187,12 +242,17 @@ function rayCast(x, y, shape) {
 function completeShape() {
     // Adds the list of points to our shapes array
     if (points.length > 0) {
-        shapes.push(points);
+        // Creating a new shape class
+        const newShape = new Shape(points);
+
+        shapes.push(newShape);
+        // And resetting our current shape
         points = [];
     }
 }
 
 // Function that draws our shapes.
+// shape is a
 function drawShape(shape) {
     // Drawing the shapes
     strokeWeight(20);
@@ -220,7 +280,7 @@ function draw() {
     background(220);
     // Drawing all shapes on the canvas
     for (let shape of shapes) {
-        drawShape(shape);
+        drawShape(shape.points);
     }
     // And drawing the current shape being made on the canvas
     drawShape(points);
