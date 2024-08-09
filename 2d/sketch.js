@@ -20,7 +20,9 @@ let selectShapeMode = false;
 // TEMP MONTE CARLO
 let monteCarloMode = false;
 let montePoints = [];
-let monteInterval = setInterval(monteCarlo, 500);
+let monteInterval = setInterval(monteCarlo, 20);
+let unionPoints = [];
+let intersectPoints = [];
 
 /*
 Class for our shapes
@@ -50,6 +52,7 @@ class MontePoint {
     constructor(x, y) {
         this.x = x;
         this.y = y;
+        // Default colour is black
         this.colour = "black";
     };
 }
@@ -76,6 +79,10 @@ function setup() {
         // Toggling mode
         } else if (!createShapeMode) {
             createShapeMode = true;
+        // Should reset
+        } else {
+            points = [];
+            createShapeMode = false;
         }
         // HTML changes to the button depending on the mode
         createShapeButton.html(createShapeMode ? "Complete Shape" : "Create Shape");
@@ -112,13 +119,42 @@ function setup() {
         if (!monteCarloMode) {
             clearInterval(monteInterval);
             montePoints = [];
+            unionPoints = [];
+            intersectPoints = [];
         } else {
-            monteInterval = setInterval(monteCarlo, 500);
+            monteInterval = setInterval(monteCarlo, 20);
         };
     });
 };
 
+function deleteShape() {
+    // Going through our shapes to see which aren't selected.
+    // - we keep these ones
+    let shapesToKeep = [];
+    for (let i = 0; i < shapes.length; i++) {
+        if (!shapes[i].selected) {
+            shapesToKeep.push(shapes[i]);
+        } else {
+            shapes[i].selected = false;
+        };
+    };
+    // Resetting selected shapes and buttons now.
+    //! Make a single function as callback function for event handler in setup().
+    shapes = shapesToKeep;
+    const selectShapeButton = select('#select-shape-btn');
+    selectedShapes = [];
+    selectShapeMode = false;
+    selectShapeButton.html("Select Shape");
+    selectShapeButton.class("btn btn-primary");
+};
 
+// The final boss of key pressing
+function keyPressed() {
+    // Deleting shapes
+    if (keyCode === 8 && selectShapeMode) {
+        deleteShape();
+    };
+};
 
 // The final boss of mouse pressing
 function mousePressed() {
@@ -140,15 +176,11 @@ function mousePressed() {
         // Otherwise we add a point where the mouse was pressed
         else if (mouseInCanvas() && createShapeMode) {
             let newPoint = createVector(mouseX, mouseY);
+            points.push(newPoint);
             // Need to now ensure that each point results in a convex shape
-            if (points.length > 2) {
-                // If convex, we add
-                if (checkConvex(points, newPoint)) {
-                    points.push(newPoint);
-                };
-            // Have this case for the initial 3 points
-            } else {
-                points.push(newPoint);
+            // If convex, we add
+            if (!checkConvexNew(points)) {
+                points.pop()
             };
         }
         // Now checking if select shape mode is on
@@ -203,48 +235,43 @@ function mouseInCanvas() {
     return mouseX >= 0 && mouseX <= width && mouseY >= 0 && mouseY <= height;
 }
 
-// Function that checks if the new point creates a convex shape
-// Does this by using the cross product to ensure every internal angle is less than 180 degrees.
-function checkConvex(points, newPoint) {
-    angleMode(DEGREES);
-    // subtract two vectors
-    // get angle between
-    // subtract last with first
-    // angle between
 
-    // Firstly creating a vector to each of the 4 points
-    let n = points.length;
-    let prevPoint = points[n - 1];
-    let prevPrevPoint = points[n - 2];
+function checkConvexNew(points) {
+    let numPoints = points.length;
+    // Triangles are always convex
+    if (numPoints < 4) {
+        return true;
+    };
+    // sign variable as cross product of previous triplet needs to be same sign.
+    let sign = 0;
 
-    // Now we need to subtract to create the vector
-    let vec1 = createVector(prevPoint.x - prevPrevPoint.x, prevPoint.y - prevPrevPoint.y);
-    let vec2 = createVector(newPoint.x - prevPoint.x, newPoint.y - prevPoint.y);
+    // Going through each vertex and checking if the cross product between each triplet of vertices all have the same sign. (previous implementation only worked for clockwise creation of points.)
+    for (let i = 0; i < numPoints; i++) {
+        // First vector
+        let vecX1 = points[(i + 1) % numPoints].x - points[i].x;
+        let vecY1 = points[(i + 1) % numPoints].y - points[i].y;
+        // Second vector
+        let vecX2 = points[(i + 2) % numPoints].x - points[(i + 1) % numPoints].x;
+        let vecY2 = points[(i + 2) % numPoints].y - points[(i + 1) % numPoints].y;
 
-    // If this is negative, we create an internal angle greater than 180
-    let crossProd = vec1.cross(vec2).z;
-    if (crossProd < 0) {
-        return false;
-    }
-    // And now we do the same with the vector between the new point and the first point.
-    // We need to ensure that the internal angle is less than 180 degrees.
-    let firstPoint = points[0];
-    let vec3 = createVector(firstPoint.x - newPoint.x, firstPoint.y - newPoint.y);
+        let crossProd = vecX1 * vecY2 - vecY1 * vecX2;
 
-    // Same for this one.
-    let crossProd2 = vec2.cross(vec3).z;
-    if (crossProd2 < 0) {
-        return false;
-    }
+        // console.log(`Cross Product at index ${i}: ${crossProd}`);
 
-    // And finally with the first point and second point.
-    let secondPoint = points[1];
-    let vec4 = createVector(secondPoint.x - firstPoint.x, secondPoint.y - firstPoint.y);
-    let crossProd3 = vec3.cross(vec4).z;
-    if (crossProd3 < 0) {
-        return false;
-    }
-    // If all cases pass we have a convex shape
+        // Now we need to check if the signs match
+        if (crossProd !== 0) {
+            // If sign hasn't been set yet, set it
+            if (sign === 0) {
+                sign = Math.sign(crossProd);
+                // console.log(`Initial sign set to: ${sign}`);
+            // And if next cross prod doesn't have same sign, return false
+            } else if (Math.sign(crossProd) !== sign) {
+                // console.log(`Sign mismatch at index ${i}: ${Math.sign(crossProd)} != ${sign}`);
+                return false;
+            };
+        };
+    };
+    // And if we pass every check, we have a convex shape.
     return true;
 }
 
@@ -322,6 +349,7 @@ function draw() {
         drawShape(shape.points);
     }
     // And drawing the current shape being made on the canvas
+    stroke('black');
     drawShape(points);
 
     if (monteCarloMode) {
@@ -331,8 +359,12 @@ function draw() {
             stroke(mpoint.colour);
             point(mpoint.x, mpoint.y);
         };
+
+        // Here is our iOU
+        let iOU = intersectPoints.length / unionPoints.length * 100;
+        console.log(`${iOU}%`);
     };
-}
+};
 
 
 // This function runs our monte carlo method
@@ -357,11 +389,14 @@ function monteCarlo() {
             };
         };
         let newPoint = new MontePoint(randomX, randomY);
+        //! Make Dynamic
         if (inShapesCounter === 2) {
             // In two shapes we do blue
             newPoint.colour = colour2;
+            intersectPoints.push(newPoint);
         } else if (inShapesCounter === 1) {
             newPoint.colour = colour1;
+            unionPoints.push(newPoint);
         };
 
         montePoints.push(newPoint);
@@ -382,7 +417,7 @@ function isInPoint(userX, userY, pointX, pointY, weight) {
     let d = dist(userX, userY, pointX, pointY);
 
     return d <= radius;
-}
+};
 
 // Uncomment if we want to manually connect last two vertices
 // And put into mousePressed() method.
@@ -393,3 +428,54 @@ function isInPoint(userX, userY, pointX, pointY, weight) {
 //     // Removing that last point added
 //     points.pop();
 // }
+
+
+//! Old check convex method
+
+/*
+
+// Function that checks if the new point creates a convex shape
+// Does this by using the cross product to ensure every internal angle is less than 180 degrees.
+function checkConvex(points, newPoint) {
+    angleMode(DEGREES);
+    // subtract two vectors
+    // get angle between
+    // subtract last with first
+    // angle between
+
+    // Firstly creating a vector to each of the 4 points
+    let n = points.length;
+    let prevPoint = points[n - 1];
+    let prevPrevPoint = points[n - 2];
+
+    // Now we need to subtract to create the vector
+    let vec1 = createVector(prevPoint.x - prevPrevPoint.x, prevPoint.y - prevPrevPoint.y);
+    let vec2 = createVector(newPoint.x - prevPoint.x, newPoint.y - prevPoint.y);
+
+    // If this is negative, we create an internal angle greater than 180
+    let crossProd = vec1.cross(vec2).z;
+    if (crossProd < 0) {
+        return false;
+    }
+    // And now we do the same with the vector between the new point and the first point.
+    // We need to ensure that the internal angle is less than 180 degrees.
+    let firstPoint = points[0];
+    let vec3 = createVector(firstPoint.x - newPoint.x, firstPoint.y - newPoint.y);
+
+    // Same for this one.
+    let crossProd2 = vec2.cross(vec3).z;
+    if (crossProd2 < 0) {
+        return false;
+    }
+
+    // And finally with the first point and second point.
+    let secondPoint = points[1];
+    let vec4 = createVector(secondPoint.x - firstPoint.x, secondPoint.y - firstPoint.y);
+    let crossProd3 = vec3.cross(vec4).z;
+    if (crossProd3 < 0) {
+        return false;
+    }
+    // If all cases pass we have a convex shape
+    return true;
+}
+    */
