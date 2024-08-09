@@ -17,6 +17,11 @@ let moveOffset;
 let createShapeMode = false;
 let selectShapeMode = false;
 
+// TEMP MONTE CARLO
+let monteCarloMode = false;
+let montePoints = [];
+let monteInterval = setInterval(monteCarlo, 500);
+
 /*
 Class for our shapes
 */
@@ -34,7 +39,19 @@ class Shape {
     // Getter
     get points() {
         return this._points;
-    }
+    };
+};
+
+/*
+Class for Monte Carlo Point
+*/
+
+class MontePoint {
+    constructor(x, y) {
+        this.x = x;
+        this.y = y;
+        this.colour = "black";
+    };
 }
 
 function setup() {
@@ -79,11 +96,27 @@ function setup() {
         if (!selectShapeMode) {
             for (let shape of selectedShapes) {
                 shape.isSelected = false;
-            }
+            };
             selectedShapes = [];
-        }
-    })
-}
+        };
+    });
+
+    // Monte Carlo
+    const monteCarloButton = select('#monte-carlo-btn');
+
+    monteCarloButton.mousePressed(() => {
+        // Toggle monte carlo mode
+        monteCarloMode = !monteCarloMode;
+
+        monteCarloButton.html(monteCarloMode ? "Done" : "Monte Carlo");
+        if (!monteCarloMode) {
+            clearInterval(monteInterval);
+            montePoints = [];
+        } else {
+            monteInterval = setInterval(monteCarlo, 500);
+        };
+    });
+};
 
 
 
@@ -244,9 +277,8 @@ function rayCast(x, y, shape) {
 function completeShape() {
     // Adds the list of points to our shapes array
     if (points.length > 0) {
-        // Creating a new shape class
+        // Creating a new shape class and adding to our shapes array
         const newShape = new Shape(points);
-
         shapes.push(newShape);
         // And resetting our current shape
         points = [];
@@ -291,6 +323,49 @@ function draw() {
     }
     // And drawing the current shape being made on the canvas
     drawShape(points);
+
+    if (monteCarloMode) {
+        // Let's begin by projecting points randomly in our canvas
+        for (let mpoint of montePoints) {
+            strokeWeight(20);
+            stroke(mpoint.colour);
+            point(mpoint.x, mpoint.y);
+        };
+    };
+}
+
+
+// This function runs our monte carlo method
+function monteCarlo() {
+    if (monteCarloMode) {
+        // Let's begin by projecting points randomly in our canvas
+        let randomX = Math.floor(Math.random() * width);
+        let randomY = Math.floor(Math.random() * height);
+
+        // Now we need to check if it is in a shape
+        // Let's begin with two shapes
+        let colour1 = "red";
+        let colour2 = "blue";
+
+        let inShapesCounter = 0;
+
+        for (let i = 0; i < shapes.length; i++) {
+            if (rayCast(randomX, randomY, shapes[i].points)) {
+                // basic checking for colours
+                //! Update this to be dynamic and to work for as many shapes
+                inShapesCounter++;
+            };
+        };
+        let newPoint = new MontePoint(randomX, randomY);
+        if (inShapesCounter === 2) {
+            // In two shapes we do blue
+            newPoint.colour = colour2;
+        } else if (inShapesCounter === 1) {
+            newPoint.colour = colour1;
+        };
+
+        montePoints.push(newPoint);
+    }
 }
 
 /**
