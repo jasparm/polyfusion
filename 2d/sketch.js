@@ -7,7 +7,6 @@ let canvas;
 let shapes = [];
 let points = [];
 
-// Array to store selected shapes
 let selectedShapes = [];
 
 // Default -1 index for not moving
@@ -17,7 +16,6 @@ let moveOffset;
 // Flags for our modes
 let createShapeMode = false;
 let selectShapeMode = false;
-
 
 /*
 Class for our shapes
@@ -79,6 +77,9 @@ function setup() {
 
         // Resetting selected shapes
         if (!selectShapeMode) {
+            for (let shape of selectedShapes) {
+                shape.isSelected = false;
+            }
             selectedShapes = [];
         }
     })
@@ -123,6 +124,7 @@ function mousePressed() {
             // Can just re-use ray-casting
             for (let i = 0; i < shapes.length; i++) {
                 if (rayCast(mouseX, mouseY, shapes[i].points)) {
+                    shapes[i].isSelected = true;
                     selectedShapes.push(shapes[i]);
                 }
             }
@@ -280,6 +282,11 @@ function draw() {
     background(220);
     // Drawing all shapes on the canvas
     for (let shape of shapes) {
+        if (shape.selected) {
+            stroke('red');
+        } else {
+            stroke('black');
+        }
         drawShape(shape.points);
     }
     // And drawing the current shape being made on the canvas
