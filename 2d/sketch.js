@@ -19,6 +19,7 @@ let selectShapeMode = false;
 
 // TEMP MONTE CARLO
 let monteCarloMode = false;
+let pauseMonte = false;
 let montePoints = [];
 let monteInterval = setInterval(monteCarlo, 20);
 let unionPoints = [];
@@ -110,6 +111,8 @@ function setup() {
 
     // Monte Carlo
     const monteCarloButton = select('#monte-carlo-btn');
+    const pauseMonteButton = select('#pause-monte-btn');
+    pauseMonteButton.hide()
 
     monteCarloButton.mousePressed(() => {
         // Toggle monte carlo mode
@@ -121,9 +124,20 @@ function setup() {
             montePoints = [];
             unionPoints = [];
             intersectPoints = [];
+            pauseMonteButton.hide();
+            pauseMonte = false;
+            pauseMonteButton.html("Pause");
         } else {
             monteInterval = setInterval(monteCarlo, 20);
+            pauseMonteButton.show();
         };
+    });
+
+    pauseMonteButton.mousePressed(() => {
+        clearInterval(monteInterval);
+        pauseMonte = !pauseMonte;
+
+        pauseMonteButton.html(pauseMonte ? "Resume" : "Pause");
     });
 };
 
@@ -369,7 +383,7 @@ function draw() {
 
 // This function runs our monte carlo method
 function monteCarlo() {
-    if (monteCarloMode) {
+    if (monteCarloMode && !pauseMonte) {
         // Let's begin by projecting points randomly in our canvas
         let randomX = Math.floor(Math.random() * width);
         let randomY = Math.floor(Math.random() * height);
