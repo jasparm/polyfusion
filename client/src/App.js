@@ -1,10 +1,10 @@
 import React from "react";
 
 import * as THREE from 'three';
-import { GUI } from 'dat.gui';
 
 import SceneInit from './lib/scene/SceneInit';
 import CustomGui from "./lib/Gui";
+import { MonteCarloManager } from "./lib/algorithms/MonteCarlo";
 
 function App() {
   const [data, setData] = React.useState(null);
@@ -45,7 +45,7 @@ function App() {
     test.box = mesh;
     test.mesh = mesh;
 
-    const ball = new THREE.SphereGeometry(0.5);
+    const ball = new THREE.SphereGeometry(0.25);
     const ball_mat = new THREE.MeshStandardMaterial({color: 0x00ff00})
     const ball_mesh = new THREE.Mesh(ball, ball_mat);
     ball_mesh.position.x = 3
@@ -68,6 +68,54 @@ function App() {
 
     test.scene.add(dl);
     gui.init_light(dl,al);
+
+    // // Custom mesh
+    // const custom_geometry = new THREE.BufferGeometry();
+
+    // const vertices = new Float32Array( [
+    //   -1.0, -1.0,  -1.0, // v0
+    //    1.0, -1.0,  -1.0, // v1
+    //    1.0,  1.0,  -1.0, // v2
+    
+    //    1.0,  1.0,  -1.0, // v3
+    //   -1.0,  1.0,  -1.0, // v4
+    //   -1.0, -1.0,  -1.0  // v5
+    // ] );
+
+    // const vertices2 = new Float32Array( [
+    //   -1.0, -1.0,  1.0, // v0
+    //    1.0, -1.0,  1.0, // v1
+    //    1.0,  1.0,  1.0, // v2
+    
+    //    1.0,  1.0,  1.0, // v3
+    //   -1.0,  1.0,  1.0, // v4
+    //   -1.0, -1.0,  1.0  // v5
+    // ] );
+
+    // custom_geometry.setAttribute('position', new THREE.BufferAttribute(vertices, 3));
+    // const custom_mat = new THREE.MeshBasicMaterial( {color: 0xff0000, side: THREE.DoubleSide} );
+    // const custom_mesh = new THREE.Mesh( custom_geometry, custom_mat );
+
+    // const custom_mesh2 = new THREE.Mesh()
+
+    // custom_mesh.castShadow = true;
+
+    // test.scene.add(custom_mesh);
+
+    const octahedron = new THREE.OctahedronGeometry(2, 0);
+    const octahedron_mat = new THREE.MeshStandardMaterial({color: 0xff00ff, wireframe: true, side: THREE.DoubleSide});
+    const octahedron_mesh = new THREE.Mesh(octahedron, octahedron_mat);
+
+    octahedron_mesh.castShadow = true;
+    test.octahedron = octahedron_mesh;
+
+    test.scene.add(octahedron_mesh);
+
+    const MonteCarlo = new MonteCarloManager([mesh, octahedron_mesh], test.scene);
+    MonteCarlo.radius = 0.25;
+
+    gui.init_monte(MonteCarlo);
+  
 
     test.animate();
 

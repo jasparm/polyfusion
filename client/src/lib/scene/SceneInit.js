@@ -31,6 +31,7 @@ export default class SceneInit {
         this.box = undefined;
         this.mesh = undefined;
         this.sphere = undefined;
+        this.octahedron = undefined;
 
     }
 
@@ -80,7 +81,7 @@ export default class SceneInit {
         this.renderer.render(this.scene, this.camera);
 
         
-        const inside = isInsideObjects(getCentrePoint(this.sphere), Array(this.box), this.scene);
+        const inside = isInsideObjects(getCentrePoint(this.sphere), [this.octahedron], this.scene);
         if (inside) {
             this.sphere.material = new THREE.MeshStandardMaterial({color: 0x00ff00})
         }

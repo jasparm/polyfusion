@@ -50,6 +50,29 @@ export default class CustomGui {
         this.gui.add(ball.position, 'x', -3, 3)
     }
 
+    init_monte(MonteCarloManager) {
+        const monteFolder = this.gui.addFolder("Monte Carlo");
+        
+        const controls = {
+            isToggled: false,
+            reset: function() {
+                MonteCarloManager.reset();
+            }
+        };
+
+        monteFolder.add(controls, 'isToggled').name('Enabled').onChange(function(value){
+            if (value) {
+                MonteCarloManager.start(100, {min:-2, max:2}, {min:-1, max:1}, {min:-2, max:2});
+            } else {
+                MonteCarloManager.stop();
+            }
+        })
+
+        monteFolder.add(controls, 'reset').name('Reset');
+
+        monteFolder.open();
+    }
+
     init_light(directional, ambient) {
         const dlSettings = {
             visible: true,
