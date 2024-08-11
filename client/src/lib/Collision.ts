@@ -1,5 +1,20 @@
 import * as THREE from 'three';
 
+
+// Check for collisions in all directions
+const directions = [
+    new THREE.Vector3(1, 0, 0),
+    new THREE.Vector3(-1, 0, 0),
+    new THREE.Vector3(0, 1, 0),
+    new THREE.Vector3(0, -1, 0),
+    new THREE.Vector3(0, 0, 1),
+    new THREE.Vector3(0, 0, -1),
+    new THREE.Vector3(1, 1, 1),
+    new THREE.Vector3(1,-1, 1),
+    new THREE.Vector3(-1, 1, 1),
+    new THREE.Vector3(-1, 1, -1)
+]
+
 /**
  * Returns all objects which are found from a point in a certain direction.
  * 
@@ -14,12 +29,14 @@ export function collidesWith(position: THREE.Vector3, direction: THREE.Vector3, 
     const raycaster = new THREE.Raycaster(position, vector, min, max);
 
     const intersects = raycaster.intersectObjects(scene.children);
+
     return intersects;
 }
 
 /**
  * Checks if one object is inside of another object.
  * Returns true if 50% or more of the object is inside.
+ * NOTE: For this to work, the target object needs to be double-sided otherwise there will be no collision detection from the inside.
  * 
  * @param point - Point in global coordinates
  * @param object - THREE.Mesh of outside object
@@ -27,16 +44,7 @@ export function collidesWith(position: THREE.Vector3, direction: THREE.Vector3, 
  * @returns Returns true if the point is partially inside the object
  */
 export function isPartiallyInside(point: THREE.Vector3, object: THREE.Mesh, scene: THREE.Scene): boolean {
-    const id = object.uuid;
-    // Check for collisions in all directions
-    const directions = [
-        new THREE.Vector3(1, 0, 0),
-        new THREE.Vector3(-1, 0, 0),
-        new THREE.Vector3(0, 1, 0),
-        new THREE.Vector3(0, -1, 0),
-        new THREE.Vector3(0, 0, 1),
-        new THREE.Vector3(0, 0, -1)
-    ]
+    const id = object.uuid;    
 
     const validCollisions: object[] = [];
 
