@@ -21,5 +21,8 @@
     "dat.gui": "^0.7.9",
     "express": "^4.19.2",
     "three": "^0.165.0"
+  },
+  "devDependencies": {
+    "typescript": "^5.5.4"
   }
 }
