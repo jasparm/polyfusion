@@ -17,7 +17,7 @@ let moveOffset;
 let createShapeMode = false;
 let selectShapeMode = false;
 
-// TEMP MONTE CARLO
+// MONTE CARLO
 let monteCarloMode = false;
 let pauseMonte = false;
 let montePoints = [];
