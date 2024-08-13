@@ -1,8 +1,8 @@
 import * as THREE from 'three'
 import { OrbitControls, ThreeMFLoader } from 'three/examples/jsm/Addons.js';
 import Stats from 'three/examples/jsm/libs/stats.module.js';
-import { collidesWith, isPartiallyInside } from '../Collision.js';
-import { getCentrePoint } from '../MeshHelper.js';
+import { collidesWith, isPartiallyInside, isInsideObjects } from '../Collision.ts';
+import { getCentrePoint } from '../MeshHelper.ts';
 
 
 // This is scuffed unless defined like this.
@@ -31,6 +31,7 @@ export default class SceneInit {
         this.box = undefined;
         this.mesh = undefined;
         this.sphere = undefined;
+        this.octahedron = undefined;
 
     }
 
@@ -80,7 +81,7 @@ export default class SceneInit {
         this.renderer.render(this.scene, this.camera);
 
         
-        const inside = isPartiallyInside(getCentrePoint(this.sphere), this.box, this.scene);
+        const inside = isInsideObjects(getCentrePoint(this.sphere), [this.octahedron], this.scene);
         if (inside) {
             this.sphere.material = new THREE.MeshStandardMaterial({color: 0x00ff00})
         }
