@@ -27,6 +27,7 @@ let intersectPoints = [];
 
 //! Temporary variables for testing
 let intersectLines = [];
+let enclosedLines = [];
 
 /*
 Class for our shapes
@@ -484,17 +485,22 @@ function draw() {
         console.log(`${iOU}%`);
     };
 
-    //! Just testing sutherland
-    
-    for (let _line of intersectLines) {
-        let [line1, line2] = _line;
+    //! Highlighting intersection lines in blue for testing
+    for (let lines of intersectLines) {
+        let [line1, line2] = lines;
         let [p1, p2] = line1;
         let [p3, p4] = line2;
 
         stroke("blue");
         line(p1.x, p1.y, p2.x, p2.y);
         line(p3.x, p3.y, p4.x, p4.y);
-    }
+    };
+
+    for (let _line of enclosedLines) {
+        let [p1, p2] = _line;
+        stroke("blue");
+        line(p1.x, p1.y, p2.x, p2.y);
+    };
 };
 
 
@@ -537,33 +543,60 @@ function monteCarlo() {
 // Responsible for our sutherland hodgman algorithm
 function sutherlandHodgman(shape1, shape2) {
     // Starting with one shape, let's see which lines intersect
-    let lines1 = shape1.lines();
-    console.log(lines1);
-    let lines2 = shape2.lines();
-    console.log(lines2);
-
     // Getting the intersections between both shapes
-    let intersections = getIntersections(lines1, lines2);
-
-    intersectLines = intersections;
+    [intersectLines, enclosedLines] = getIntersections(shape1, shape2);
 };
 
-function getIntersections(lines1, lines2) {
+function getIntersections(shape1, shape2) {
     let intersections = [];
+    let enclosed = [];
     // Choosing first set of lines as our base shape
-    for (let line1 of lines1) {
+    for (let line1 of shape1.lines()) {
         // Go through each other line for each line in first shape
-        for (let line2 of lines2) {
+        for (let line2 of shape2.lines()) {
             // If they intersect, add to a tuple, and return
             if (doesIntersect(line1, line2)) {
                 console.log("INTERSECTION!");
                 intersections.push([line1, line2])
-            };
+            } else {
+                // Checking if a line is completely enclosed in a shape, as this doesn't intersect
+                // But we still want it
+                enclosed.push.apply(enclosed, (lineInPolygon(line1, line2, shape1, shape2)));
+                console.log(enclosed);
+            }
         };
     };
 
-    return intersections;
+    return [intersections, enclosed];
+};
+
+function lineInPolygon(line1, line2, shape1, shape2) {
+    let lines = [];
+    if (isInsidePolygon(line1, shape1)) {
+        lines.push(line1);
+    } else if (isInsidePolygon(line2, shape1)) {
+        lines.push(line2);
+    } else if (isInsidePolygon(line1, shape2)) {
+        lines.push(line1);
+    } else if (isInsidePolygon(line2, shape2)) {
+        lines.push(line2);
+    };
+    return lines;
 }
+
+// Helper function that checks if both endpoints of a line are enclosed in our polygon
+function isInsidePolygon(line, shape) {
+    // Testing each point
+    for (let point of line) {
+        // Only need to test one point as previous function
+        // Will have picked up the intersection.
+        // So if one point is in then both must be
+        if (rayCast(point.x, point.y, shape.points)) {
+            return true;
+        };
+    };
+    return false;
+};
 
 // Helper function that determines if two lines intersect
 function doesIntersect(line1, line2) {
@@ -583,11 +616,11 @@ function doesIntersect(line1, line2) {
         // If they are parallel, they don't intersect unless they are collinear
         if (c1 !== c2) {
             return false;
-        }
+        };
         // Checking for collinear overlap
         return ((Math.min(x1, x2) <= Math.max(x3, x4) && Math.max(x1, x2) >= Math.min(x3, x4)) &&
                 (Math.min(y1, y2) <= Math.max(y3, y4) && Math.max(y1, y2) >= Math.min(y3, y4)));
-    }
+    };
 
     // Calculating the intersection point
     let xA, yA;
@@ -601,9 +634,9 @@ function doesIntersect(line1, line2) {
         (yA >= Math.min(y1, y2) && yA <= Math.max(y1, y2)) &&
         (yA >= Math.min(y3, y4) && yA <= Math.max(y3, y4))) {
         return true;
-    }
+    };
 
-    // Otherwise they don't intersect
+    // If all else fails, they don't intersect
     return false;
 };
 
