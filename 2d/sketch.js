@@ -531,6 +531,7 @@ function monteCarlo() {
             // In two shapes we do blue
             newPoint.colour = blue;
             intersectPoints.push(newPoint);
+            unionPoints.push(newPoint)
         } else if (inShapesCounter === 1) {
             newPoint.colour = red;
             unionPoints.push(newPoint);
