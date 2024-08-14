@@ -562,7 +562,7 @@ function getIntersections(shape1, shape2) {
                 // Checking if a line is completely enclosed in a shape, as this doesn't intersect
                 // But we still want it
                 enclosed.push.apply(enclosed, (lineInPolygon(line1, line2, shape1, shape2)));
-                console.log(enclosed);
+                console.log("ENCLOSED!");
             }
         };
     };
@@ -570,16 +570,13 @@ function getIntersections(shape1, shape2) {
     return [intersections, enclosed];
 };
 
+//! This function and the one below might be broken
 function lineInPolygon(line1, line2, shape1, shape2) {
     let lines = [];
-    if (isInsidePolygon(line1, shape1)) {
-        lines.push(line1);
-    } else if (isInsidePolygon(line2, shape1)) {
+    if (isInsidePolygon(line2, shape1)) {
         lines.push(line2);
     } else if (isInsidePolygon(line1, shape2)) {
         lines.push(line1);
-    } else if (isInsidePolygon(line2, shape2)) {
-        lines.push(line2);
     };
     return lines;
 }
