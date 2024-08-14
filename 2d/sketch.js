@@ -25,6 +25,9 @@ let monteInterval = setInterval(monteCarlo, 20);
 let unionPoints = [];
 let intersectPoints = [];
 
+//! Temporary variables for testing
+let intersectLines = [];
+
 /*
 Class for our shapes
 */
@@ -480,6 +483,18 @@ function draw() {
         let iOU = intersectPoints.length / unionPoints.length * 100;
         console.log(`${iOU}%`);
     };
+
+    //! Just testing sutherland
+    
+    for (let _line of intersectLines) {
+        let [line1, line2] = _line;
+        let [p1, p2] = line1;
+        let [p3, p4] = line2;
+
+        stroke("blue");
+        line(p1.x, p1.y, p2.x, p2.y);
+        line(p3.x, p3.y, p4.x, p4.y);
+    }
 };
 
 
@@ -521,27 +536,37 @@ function monteCarlo() {
 
 // Responsible for our sutherland hodgman algorithm
 function sutherlandHodgman(shape1, shape2) {
-    // Doing nothing at the moment
-
     // Starting with one shape, let's see which lines intersect
     let lines1 = shape1.lines();
     console.log(lines1);
     let lines2 = shape2.lines();
     console.log(lines2);
 
+    // Getting the intersections between both shapes
+    let intersections = getIntersections(lines1, lines2);
+
+    intersectLines = intersections;
+};
+
+function getIntersections(lines1, lines2) {
+    let intersections = [];
+    // Choosing first set of lines as our base shape
     for (let line1 of lines1) {
-        console.log(line1);
+        // Go through each other line for each line in first shape
         for (let line2 of lines2) {
-            console.log(line2);
-            if (lineIntersect(line1, line2)) {
+            // If they intersect, add to a tuple, and return
+            if (doesIntersect(line1, line2)) {
                 console.log("INTERSECTION!");
+                intersections.push([line1, line2])
             };
         };
     };
-};
+
+    return intersections;
+}
 
 // Helper function that determines if two lines intersect
-function lineIntersect(line1, line2) {
+function doesIntersect(line1, line2) {
     // Extracting coordinates from the lines
     let [p1, p2] = line1;
     let x1 = p1.x, y1 = p1.y, x2 = p2.x, y2 = p2.y;
@@ -578,6 +603,7 @@ function lineIntersect(line1, line2) {
         return true;
     }
 
+    // Otherwise they don't intersect
     return false;
 };
 
