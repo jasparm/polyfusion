@@ -106,13 +106,14 @@ function setup() {
                 shape.isSelected = false;
             };
             selectedShapes = [];
+            sutherlandButton.hide();
         };
     });
 
     // Monte Carlo
     const monteCarloButton = select('#monte-carlo-btn');
     const pauseMonteButton = select('#pause-monte-btn');
-    pauseMonteButton.hide()
+    pauseMonteButton.hide();
 
     monteCarloButton.mousePressed(() => {
         // Toggle monte carlo mode
@@ -120,6 +121,8 @@ function setup() {
 
         monteCarloButton.html(monteCarloMode ? "Done" : "Monte Carlo");
         if (!monteCarloMode) {
+            //! Turn this into a function that gets called
+            //! Like a cleanup() function
             clearInterval(monteInterval);
             montePoints = [];
             unionPoints = [];
@@ -133,11 +136,30 @@ function setup() {
         };
     });
 
+    // Pausing the monte carlo method
     pauseMonteButton.mousePressed(() => {
         clearInterval(monteInterval);
         pauseMonte = !pauseMonte;
 
         pauseMonteButton.html(pauseMonte ? "Resume" : "Pause");
+    });
+
+
+    // Sutherland-Hodgman
+    const sutherlandButton = select('#sutherland-btn');
+    // Initially hiding the button
+    sutherlandButton.hide();
+
+    // Now we do an event listener
+    sutherlandButton.mousePressed(() => {
+        // We should (if I have coded correctly) have two selected shapes
+        // Let's send them to old mate sutherland
+        let [shape1, shape2] = selectedShapes;
+
+        // If button is pressed, we run sutherland now
+        sutherlandHodgman(shape1, shape2);
+
+        //! Leave here for now
     });
 };
 
@@ -162,6 +184,49 @@ function deleteShape() {
     selectShapeButton.class("btn btn-primary");
 };
 
+// Function that handles the selection of shapes
+function selectShape() {
+    // We need to see which shape we clicked on
+    // Can just re-use ray-casting
+    //! SELECTING SHAPES
+    for (let i = 0; i < shapes.length; i++) {
+        if (rayCast(mouseX, mouseY, shapes[i].points)) {
+            // If shape is already selected, de-select it
+            if (shapes[i].selected) {
+                deSelect(shapes[i]);
+            } else {
+                shapes[i].isSelected = true;
+                selectedShapes.push(shapes[i]);
+            };
+        };
+    };
+    // When we select two shapes, we have the option of using the sutherland-hodgman alg
+    const sutherlandButton = select('#sutherland-btn');
+    if (selectedShapes.length == 2) {
+        sutherlandButton.show();
+    } else {
+        sutherlandButton.hide();
+    };
+};
+
+// De-Selects our shape
+function deSelect(shape) {
+    // Not selected anymore
+    shape.isSelected = false;
+    // Index to remove shape
+    const index = selectedShapes.indexOf(shape);
+    // Removing shape from selected shapes
+    selectedShapes.splice(index, 1);
+
+    // Now checking if we have no selected shapes anymore
+    if (selectedShapes.length == 0) {
+        const selectShapeButton = select('#select-shape-btn');
+        selectShapeButton.html("Select Shape");
+        selectShapeButton.class("btn btn-primary");
+        selectShapeMode = false;
+    }
+}
+
 // The final boss of key pressing
 function keyPressed() {
     // Deleting shapes
@@ -171,6 +236,7 @@ function keyPressed() {
 };
 
 // The final boss of mouse pressing
+//! Turn the code under each mouse pressed into functions so we know what's going on
 function mousePressed() {
     // Left click adds a point to the canvas for the moment
     if (mouseButton === LEFT) {
@@ -199,14 +265,7 @@ function mousePressed() {
         }
         // Now checking if select shape mode is on
         else if (selectShapeMode) {
-            // We need to see which shape we clicked on
-            // Can just re-use ray-casting
-            for (let i = 0; i < shapes.length; i++) {
-                if (rayCast(mouseX, mouseY, shapes[i].points)) {
-                    shapes[i].isSelected = true;
-                    selectedShapes.push(shapes[i]);
-                }
-            }
+            selectShape();
         }
     // Right click to move a shape for now
     } else if (mouseButton === RIGHT) {
@@ -333,20 +392,39 @@ function drawShape(shape) {
     strokeWeight(20);
     for (let p of shape) {
         point(p.x, p.y);
-        }
+    };
+
     // Drawing the lines
     strokeWeight(7);
     for (let i = 0; i < shape.length - 1; i++) {
         let p1 = shape[i];
         let p2 = shape[i + 1];
         line(p1.x, p1.y, p2.x, p2.y);
-    }
+    };
     // Connecting last point with the first point
     if (shape.length > 2) {
         let p1 = shape[0];
         let pLast = shape[shape.length - 1];
         line(pLast.x, pLast.y, p1.x, p1.y);
-    }
+    };
+
+    /*
+    USE THIS CODE FOR AREA CAPABILITY
+    beginShape();
+    // fill("red");
+    strokeWeight(20);
+    for (let p of shape) {
+        point(p.x, p.y);
+    };
+
+    strokeWeight(7);
+    for (let p of shape) {
+        vertex(p.x, p.y);
+    };
+
+    endShape(CLOSE);
+    /*
+    */
 }
 
 // Draw method. Handles what we see on the canvas.
@@ -366,6 +444,7 @@ function draw() {
     stroke('black');
     drawShape(points);
 
+    //! Add to seperate function
     if (monteCarloMode) {
         // Let's begin by projecting points randomly in our canvas
         for (let mpoint of montePoints) {
@@ -390,8 +469,8 @@ function monteCarlo() {
 
         // Now we need to check if it is in a shape
         // Let's begin with two shapes
-        let colour1 = "red";
-        let colour2 = "blue";
+        let red = "red";
+        let blue = "blue";
 
         let inShapesCounter = 0;
 
@@ -406,15 +485,22 @@ function monteCarlo() {
         //! Make Dynamic
         if (inShapesCounter === 2) {
             // In two shapes we do blue
-            newPoint.colour = colour2;
+            newPoint.colour = blue;
             intersectPoints.push(newPoint);
         } else if (inShapesCounter === 1) {
-            newPoint.colour = colour1;
+            newPoint.colour = red;
             unionPoints.push(newPoint);
         };
 
         montePoints.push(newPoint);
-    }
+    };
+};
+
+// Responsible for our sutherland hodgman algorithm
+function sutherlandHodgman(shape1, shape2) {
+    // Doing nothing at the moment
+    console.log(`Received shape 1: ${shape1}`);
+    console.log(`Received shape 2: ${shape2}`);
 }
 
 /**
