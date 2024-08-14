@@ -35,13 +35,36 @@ class Shape {
         this.colour = colour;
         this.isSelected = false;
     };
-    // Getter
+    // is shape selected or not
     get selected() {
         return this.isSelected;
     };
-    // Getter
+    // all of the points of the shape
     get points() {
         return this._points;
+    };
+    // Number of vertices
+    get numVertices() {
+        return this._points.length;
+    };
+    // Same as num of vertices but here for comprehension
+    get numEdges() {
+        return this._points.length;
+    };
+    // Returns a list of tuples of points
+    // [(p1, p2), etc] where each tuple represents a line between the two points
+    lines() {
+        let lines = [];
+        for (let i = 0; i < this.numVertices; i++) {
+            // We've hit end of the list
+            if (i == this.numVertices - 1) {
+                // Adding the line from the last point to the first
+                lines.push([this.points[i], this.points[0]]);
+            } else {
+                lines.push([this.points[i], this.points[i + 1]]);
+            };
+        };
+        return lines;
     };
 };
 
@@ -229,7 +252,7 @@ function deSelect(shape) {
 
 // The final boss of key pressing
 function keyPressed() {
-    // Deleting shapes
+    // Deleting shapes - keycode is 8 for delete
     if (keyCode === 8 && selectShapeMode) {
         deleteShape();
     };
@@ -499,8 +522,87 @@ function monteCarlo() {
 // Responsible for our sutherland hodgman algorithm
 function sutherlandHodgman(shape1, shape2) {
     // Doing nothing at the moment
-    console.log(`Received shape 1: ${shape1}`);
-    console.log(`Received shape 2: ${shape2}`);
+
+    // Starting with one shape, let's see which lines intersect
+    let lines1 = shape1.lines();
+    console.log(lines1);
+    let lines2 = shape2.lines();
+    console.log(lines2);
+
+    for (let line1 of lines1) {
+        console.log(line1);
+        for (let line2 of lines2) {
+            console.log(line2);
+            if (lineIntersect(line1, line2)) {
+                console.log("INTERSECTION!");
+            };
+        };
+    };
+};
+
+// Helper function that determines if two lines intersect
+function lineIntersect(line1, line2) {
+    // Extracting coordinates from the lines
+    let [p1, p2] = line1;
+    let x1 = p1.x, y1 = p1.y, x2 = p2.x, y2 = p2.y;
+
+    let [p3, p4] = line2;
+    let x3 = p3.x, y3 = p3.y, x4 = p4.x, y4 = p4.y;
+
+    // Calculatign the line equations
+    let [m1, c1] = lineEquation(line1);
+    let [m2, c2] = lineEquation(line2);
+
+    // Checking if segments are parallel
+    if (m1 === m2) {
+        // If they are parallel, they don't intersect unless they are collinear
+        if (c1 !== c2) {
+            return false;
+        }
+        // Checking for collinear overlap
+        return ((Math.min(x1, x2) <= Math.max(x3, x4) && Math.max(x1, x2) >= Math.min(x3, x4)) &&
+                (Math.min(y1, y2) <= Math.max(y3, y4) && Math.max(y1, y2) >= Math.min(y3, y4)));
+    }
+
+    // Calculating the intersection point
+    let xA, yA;
+    xA = (c2 - c1) / (m1 - m2);
+    yA = m1 * xA + c1;
+
+    // Checking if the intersection point is within the bounds of both line segments
+    // And if so, we have an intersection
+    if ((xA >= Math.min(x1, x2) && xA <= Math.max(x1, x2)) &&
+        (xA >= Math.min(x3, x4) && xA <= Math.max(x3, x4)) &&
+        (yA >= Math.min(y1, y2) && yA <= Math.max(y1, y2)) &&
+        (yA >= Math.min(y3, y4) && yA <= Math.max(y3, y4))) {
+        return true;
+    }
+
+    return false;
+};
+
+// Returns the gradient and y-intercept
+function lineEquation(line) {
+    // Extracting points from our line segment
+    let [p1, p2] = line;
+
+    // Extracting x and y coordinates
+    let x1 = p1.x;
+    let y1 = p1.y;
+    let x2 = p2.x;
+    let y2 = p2.y;
+
+    // Slope equation
+    // Ensuring we don't divide by 0
+    let gradient = 0;
+    if (x2 - x1 !== 0) {
+        gradient = (y2 - y1) / (x2 - x1);
+    };
+
+    // Substituting (x2, y2) into equation to find y-intercept
+    let yIntercept = y2 - (gradient * x2);
+
+    return [gradient, yIntercept];
 }
 
 /**
