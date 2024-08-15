@@ -4,11 +4,17 @@ import { getCentrePoint } from "../MeshHelper.ts";
 import {
   checkForVerticesWithSameDistance,
   computeNormal,
-  findClosestTwoVertices,
+  findClosestThreeVertices,
+  findGroupOfThreeIndices,
   generateCombinations,
 } from "./ShapeHelpers.ts";
 import { collidesWith } from "../Collision.ts";
 
+/**
+ * This class handles all aspects of CustomShape creation.
+ * Also makes extensive use of the ShapeHelper.ts file.
+ * Actual object which should be added to the scene is the *group* attribute.
+ */
 export class CustomShape {
   scene: THREE.Scene;
   vertices: THREE.Vector3[]; // List of points in 3D space which will be the vertices
@@ -22,18 +28,22 @@ export class CustomShape {
   wireframe: boolean; // If the shape should be drawn as a wire frame.
   drawBalls: boolean; // If shape should have spheres on each vertex.
 
+  colour: THREE.Color; // Colour of all faces in the custom shape.
+
   constructor(
     scene: THREE.Scene,
     vertices: number[] = [],
     connections: number[][] = [],
     wireframe: boolean = false,
-    drawBalls: boolean = true
+    drawBalls: boolean = true,
+    colour: THREE.Color = new THREE.Color(0xff00ff)
   ) {
     this.connections = connections;
     this.scene = scene;
     this.group = new THREE.Group();
     this.wireframe = wireframe;
     this.drawBalls = drawBalls;
+    this.colour = colour;
 
     this.vertices = this.mapVerticesToVector3(vertices);
     this.init();
@@ -43,9 +53,8 @@ export class CustomShape {
 
   /**
    * Initialises/Resets the current shape.
-   * @returns
    */
-  private init() {
+  init() {
     var temp: number[] = [];
     for (let i = 0; i < this.connections.length; i++) {
       for (let j = 0; j < this.connections[i].length; j++) {
@@ -66,19 +75,19 @@ export class CustomShape {
     this.geometry = geometry;
 
     this.material = new THREE.MeshStandardMaterial({
-      color: 0xff00ff,
+      color: this.colour,
       side: THREE.DoubleSide,
     });
     // @ts-ignore Typescript does not like material being passed here even though it works.
     this.mesh = new THREE.Mesh(this.geometry, this.material);
     this.mesh.castShadow = true;
 
-    if (this.wireframe) {
+    if (!this.wireframe) {
       this.group.add(this.mesh);
     }
     // Add additional details to the shape.
     if (this.drawBalls) {
-      this.addSpheresToVertices();
+      this.addSpheresToVertices(0.05);
     }
 
     this.addLinesToEdges();
@@ -199,7 +208,7 @@ export class CustomShape {
    */
   addVertex(point: THREE.Vector3) {
     // Find the two closest vertices to the point being added
-    const closest = findClosestTwoVertices(this.vertices, point);
+    const closest = findClosestThreeVertices(this.vertices, point);
 
     // Check if there are any other vertices with the same distance from the point being added.
     // This way we can connect more than 1 edge at a time.
@@ -216,8 +225,6 @@ export class CustomShape {
     const newConnections = this.convertConnections(this.connections);
     const newIndex = vertices.length; // Index for the new vertex to take.
 
-    vertices.push(point);
-
     // Determine which vertices wil be used to form connections.
     var connections: number[];
     var combinations: any;
@@ -231,10 +238,12 @@ export class CustomShape {
       }
     } else {
       connections = closest; //Otherwise just use the two closest vertices.
-      combinations = closest;
-      newConnections.push(combinations[0], combinations[1], newIndex);
+      combinations = generateCombinations(closest, 2);
+      for (let i = 0; i < combinations.length; i++) {
+        newConnections.push(combinations[i][0], combinations[i][1], newIndex);
+      }
     }
-    console.log(connections);
+
     // Validate that the connections are valid. Return if they are not.
     if (connections[0] === -Infinity || connections[1] === -Infinity) {
       console.error("No valid vertices to add to");
@@ -258,6 +267,10 @@ export class CustomShape {
       return;
     }
 
+    vertices.push(point); // add point to the list of vertices
+
+    this.removeCoveredEdge(connections); // remove connecting edges from vertices we have just covered.
+
     this.vertices = vertices;
     this.connections = [];
     // Convert connections array to be right form factor.
@@ -270,7 +283,7 @@ export class CustomShape {
     }
     // Remove all objects from the group
     this.group.remove(...this.group.children);
-    this.group.matrixAutoUpdate = true;
+    this.group.matrixAutoUpdate = true; // no idea what this does but three.js docs says its a good thing.
 
     // Add the mesh to the group and reinitialise the shape.
     this.init();
@@ -285,6 +298,7 @@ export class CustomShape {
   addLinesToEdges(colour: THREE.Color = new THREE.Color(0x000000)) {
     const points: THREE.Vector3[] = [];
 
+    // Go over all connections and push the vertices associated with them into the points array.
     for (let i = 0; i < this.connections.length; i++) {
       points.push(
         this.vertices[this.connections[i][0]],
@@ -299,6 +313,20 @@ export class CustomShape {
     const line = new THREE.Line(lineGeometry, material);
 
     this.group.add(line);
+  }
+
+  /**
+   * Removes the covered edges from the given vertices.
+   * This optimising the shape as covered edges are not drawn.
+   *
+   * @param vertices - The vertices to remove covered edges from.
+   */
+  private removeCoveredEdge(vertices) {
+    const covered = findGroupOfThreeIndices(this.connections, vertices);
+
+    covered.forEach((index) => {
+      this.connections.splice(index, 1);
+    });
   }
 
   updateMesh() {}

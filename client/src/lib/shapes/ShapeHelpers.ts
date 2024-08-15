@@ -72,6 +72,39 @@ export function findClosestTwoVertices(
   return [closestVertexIndex.index, secondClosestVertexIndex.index];
 }
 
+export function findClosestThreeVertices(
+  vertices: THREE.Vector3[],
+  position: THREE.Vector3
+): [number, number, number] {
+  // Find the two closest vertices
+  const [closestIndex, secondClosestIndex] = findClosestTwoVertices(vertices, position);
+
+  if (closestIndex === -Infinity || secondClosestIndex === -Infinity) {
+    return [-Infinity, -Infinity, -Infinity]; // If no valid closest vertices are found
+  }
+
+  // Temporarily move the first two closest vertices far away
+  const originalClosest = vertices[closestIndex];
+  const originalSecondClosest = vertices[secondClosestIndex];
+
+  vertices[closestIndex] = new THREE.Vector3(Infinity, Infinity, Infinity);
+  vertices[secondClosestIndex] = new THREE.Vector3(Infinity, Infinity, Infinity);
+
+  // Find the third closest vertex
+  const [thirdClosestIndex] = findClosestTwoVertices(vertices, position);
+
+  // Restore the original vertices
+  vertices[closestIndex] = originalClosest;
+  vertices[secondClosestIndex] = originalSecondClosest;
+
+  if (thirdClosestIndex === -Infinity) {
+    return [closestIndex, secondClosestIndex, -Infinity];
+  }
+
+  return [closestIndex, secondClosestIndex, thirdClosestIndex];
+}
+
+
 /**
  * Returns an array of vertices which have the same distance to the vertex at the current position.
  *
@@ -182,4 +215,38 @@ export function generateCombinations(
 
   combine([], 0, combinationSize);
   return results;
+}
+
+/**
+ * Searches a list of number arrays for any combination of 3 numbers from the target array in any order.
+ * 
+ * @param list - The list of number arrays to search.
+ * @param target - The group of vertices to search for (can be more than 3).
+ * @returns A list of indices where any combination of 3 numbers from the target group is found, or an empty array if none are found.
+ */
+export function findGroupOfThreeIndices(list: number[][], target: number[]): number[] {
+  const foundIndices: number[] = [];
+
+  // Generate all combinations of 3 numbers from the target array
+  const combinations = generateCombinations(target, 3);
+
+  for (let i = 0; i < list.length; i++) {
+    // Sort the current group in the list for comparison
+    const sortedGroup = list[i].slice().sort((a, b) => a - b);
+
+    // Check if any of the 3-number combinations from the target array matches the current group
+    for (const combination of combinations) {
+      const sortedCombination = combination.slice().sort((a, b) => a - b);
+      if (
+        sortedGroup[0] === sortedCombination[0] &&
+        sortedGroup[1] === sortedCombination[1] &&
+        sortedGroup[2] === sortedCombination[2]
+      ) {
+        foundIndices.push(i); // Add the index to the list if a match is found
+        break; // Break once a match is found to avoid duplicate entries for the same index
+      }
+    }
+  }
+
+  return foundIndices; // Return the list of indices (or an empty array if no matches are found)
 }
