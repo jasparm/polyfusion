@@ -15,38 +15,49 @@ export class CustomShape {
   connections: number[][]; // List of connections between vertices i, j, and k.
   // e.g., number[0] = [1, 0, 3] means there should be plane drawn connecting vertex 1, 0 and 3.
 
-  geometry: THREE.PolyhedronGeometry; // Stores the geometry of the shape
+  geometry: THREE.BufferGeometry; // Stores the geometry of the shape
   material: THREE.Material; // Stores the material used on the shape
   mesh: THREE.Mesh; // Stores the combined mesh which can be added to the scene.
   group: THREE.Group; // Stores all other shapes that are part of the mesh.
-  userVertices: number[]; // Stores user defined vertex information.
-  radius: number;
 
   constructor(
     scene: THREE.Scene,
     vertices: number[] = [],
-    connections: number[][] = [],
-    radius: number = 1
+    connections: number[][] = []
   ) {
     this.connections = connections;
     this.scene = scene;
-    this.radius = radius;
     this.group = new THREE.Group();
-    this.userVertices = vertices;
 
+    this.vertices = this.mapVerticesToVector3(vertices);
     this.init();
 
-    // this.group.add(this.mesh);
+    this.group.add(this.mesh);
   }
 
+  /**
+   * Initialises/Resets the current shape.
+   * @returns 
+   */
   private init() {
-    this.geometry = new THREE.PolyhedronGeometry(
-      this.userVertices,
-      this.convertConnections(this.connections),
-      this.radius,
-      0
-    );
-    this.vertices = this.mapVerticesToVector3();
+    var temp: number[] = [];
+    for (let i = 0; i < this.connections.length; i++) {
+      for (let j = 0; j < this.connections[i].length; j++) {
+        temp.push(this.vertices[this.connections[i][j]].x);
+        temp.push(this.vertices[this.connections[i][j]].y);
+        temp.push(this.vertices[this.connections[i][j]].z);
+      }
+    }
+
+    const vertices = new Float32Array(this.connections.length * 9); // Buffer geometry wants a typed array so we convert
+    for (let k = 0; k < temp.length; k++) {
+      vertices[k] = temp[k];
+    }
+
+    const geometry = new THREE.BufferGeometry();
+    geometry.setAttribute("position", new THREE.BufferAttribute(vertices, 3));
+
+    this.geometry = geometry;
 
     this.material = new THREE.MeshStandardMaterial({
       color: 0xff00ff,
@@ -54,7 +65,11 @@ export class CustomShape {
     });
     // @ts-ignore Typescript does not like material being passed here even though it works.
     this.mesh = new THREE.Mesh(this.geometry, this.material);
+    this.mesh.castShadow = true;
 
+    this.group.add(this.mesh);
+
+    // Add additional details to the shape.
     this.addSpheresToVertices();
 
     return;
@@ -76,13 +91,7 @@ export class CustomShape {
 
       const normal = computeNormal(vertex1, vertex2, vertex3);
 
-      const collisions = collidesWith(
-        point,
-        normal,
-        this.scene,
-        0,
-        this.radius * 2
-      );
+      const collisions = collidesWith(point, normal, this.scene, 0);
       // Check if we collide with more than 1 face. If this is convex, it should only collide with 1 face.
       if (collisions.length > 1) {
         return false;
@@ -116,9 +125,9 @@ export class CustomShape {
    *
    * @returns New array containing Vector3 elements that represent each vertex.
    */
-  mapVerticesToVector3(): THREE.Vector3[] {
+  mapVerticesToVector3(vertices): THREE.Vector3[] {
     var vertexes: THREE.Vector3[] = [];
-    const vertices = this.geometry.attributes.position.array;
+    // const vertices = this.geometry.attributes.position.array;
 
     for (let i = 0; i < vertices.length; i += 3) {
       vertexes.push(
@@ -158,84 +167,70 @@ export class CustomShape {
     colour: THREE.Color = new THREE.Color(0x000000)
   ) {
     const ball = new THREE.SphereGeometry(radius);
-    const ball_material = new THREE.MeshBasicMaterial({ color: colour });
+    const ball_material = new THREE.MeshStandardMaterial({ color: colour });
+    // @ts-ignore TypeScript has a whine about the material type when it does not matter.
     const ball_mesh = new THREE.Mesh(ball, ball_material);
 
+    // Create a new ball and place it at the position of each vertex.
     this.vertices.forEach((vertex) => {
       const newBall = ball_mesh.clone();
-      this.group.add(newBall);
-      // @ts-ignore Typescript keeps thinking that meshes do not have a position attribute when they simply just do.
       newBall.position.x = vertex.x;
-      // @ts-ignore Typescript keeps thinking that meshes do not have a position attribute when they simply just do.
       newBall.position.y = vertex.y;
-      // @ts-ignore Typescript keeps thinking that meshes do not have a position attribute when they simply just do.
       newBall.position.z = vertex.z;
+      this.group.add(newBall);
     });
   }
 
-
   /**
    * Adds a vertex to the CustomShape.
-   * 
+   *
    * @param point - The THREE.Vector3 representing the coordinates of the vertex to be added.
    */
   addVertex(point: THREE.Vector3) {
     // Find the two closest vertices to the point being added
     const closest = findClosestTwoVertices(this.vertices, point);
 
-    // Convert user-defined vertex coordinates to THREE.Vector3 objects.
-    const userVerticesVector3: THREE.Vector3[] = [];
-    for (let i = 0; i < this.userVertices.length; i += 3) {
-      const newVector = new THREE.Vector3(
-        this.userVertices[i],
-        this.userVertices[i + 1],
-        this.userVertices[i + 2]
-      );
-      userVerticesVector3.push(newVector);
-    }
     // Check if there are any other vertices with the same distance from the point being added.
     // This way we can connect more than 1 edge at a time.
     const validVertices = checkForVerticesWithSameDistance(
-      userVerticesVector3,
+      this.vertices,
       point
     );
-    // Determine which vertices wil be used to form connections.
-    var connections: number[];
-    if (validVertices.length > 2) { // Use multiple edges if we can
-      connections = validVertices;
-    } else {
-      connections = closest; //Otherwise just use the two closest vertices.
-    }
 
     const oldGeometry = this.geometry; // if we need to revert back to the old geometry.
 
-    const vertices = [...this.userVertices]; // Add the new vertex to the list of vertices
-    vertices.push(point.x, point.y, point.z);
+    const vertices = [...this.vertices]; // Add the new vertex to the list of vertices
+
+    // Convert connections to a flat array
+    const newConnections = this.convertConnections(this.connections);
+    const newIndex = vertices.length; // Index for the new vertex to take.
+
+    vertices.push(point);
+
+    // Determine which vertices wil be used to form connections.
+    var connections: number[];
+    var combinations: any;
+    if (validVertices.length > 2) {
+      // Use multiple edges if we can
+      connections = validVertices;
+      combinations = generateCombinations(validVertices, 2); // Generate all possible combinations of two valid vertices.
+
+      for (let i = 0; i < combinations.length; i++) {
+        newConnections.push(combinations[i][0], combinations[i][1], newIndex);
+      }
+    } else {
+      connections = closest; //Otherwise just use the two closest vertices.
+      combinations = closest;
+      newConnections.push(combinations[0], combinations[1], newIndex);
+    }
 
     // Validate that the connections are valid. Return if they are not.
     if (connections[0] === -Infinity || connections[1] === -Infinity) {
       console.error("No valid vertices to add to");
       return;
     }
-    
-    // Convert connections to a flat array
-    const newConnections = this.convertConnections(this.connections);
-
-    const newIndex = vertices.length / 3 - 1; // Index for the new vertex to take.
-
-    const combinations = generateCombinations(validVertices, 2); // Generate all possible combinations of two valid vertices.
-
-    for (let i = 0; i < combinations.length; i++) {
-      newConnections.push(combinations[i][0], combinations[i][1], newIndex);
-    }
 
     // Check connections and vertexes to make sure they are valid numbers.
-    vertices.forEach((vertex) => {
-      if (isNaN(vertex)) {
-        console.error("Invalid vertex:", vertex);
-        return;
-      }
-    });
     newConnections.forEach((connection) => {
       if (isNaN(connection)) {
         console.error("Invalid connection:", connection);
@@ -243,29 +238,16 @@ export class CustomShape {
       }
     });
 
-    // Create the new geometry with updated vertices and connections.
-    const newGeometry = new THREE.PolyhedronGeometry(
-      vertices,
-      newConnections,
-      this.radius,
-      0
-    );
-
-
-    // @ts-ignore Typescript does not like material being passed here even though it works.
-    this.mesh = new THREE.Mesh(newGeometry, this.material);
-
     // If the new shape is not convex, revert back to the old geometry.
     if (!this.isConvex()) {
       // If the newly created shape is not convex, do not change the shape.
+      console.log("Not convex");
       // @ts-ignore Typescript does not like material being passed here even though it works.
       this.mesh = new THREE.Mesh(oldGeometry, this.material);
       return;
     }
 
-    // @ts-ignore Typescript does not like material being passed here even though it works.
-    this.geometry = newGeometry;
-    this.userVertices = vertices;
+    this.vertices = vertices;
     this.connections = [];
     // Convert connections array to be right form factor.
     for (let j = 0; j < newConnections.length; j += 3) {
@@ -275,10 +257,12 @@ export class CustomShape {
         newConnections[j + 2],
       ]);
     }
+    // Remove all objects from the group
+    this.group.remove(...this.group.children);
+    this.group.matrixAutoUpdate = true;
 
     // Add the mesh to the group and reinitialise the shape.
     this.init();
-    this.group.add(this.mesh);
   }
 
   updateMesh() {}
