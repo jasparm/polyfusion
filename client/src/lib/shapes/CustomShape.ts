@@ -19,15 +19,21 @@ export class CustomShape {
   material: THREE.Material; // Stores the material used on the shape
   mesh: THREE.Mesh; // Stores the combined mesh which can be added to the scene.
   group: THREE.Group; // Stores all other shapes that are part of the mesh.
+  wireframe: boolean; // If the shape should be drawn as a wire frame.
+  drawBalls: boolean; // If shape should have spheres on each vertex.
 
   constructor(
     scene: THREE.Scene,
     vertices: number[] = [],
-    connections: number[][] = []
+    connections: number[][] = [],
+    wireframe: boolean = false,
+    drawBalls: boolean = true
   ) {
     this.connections = connections;
     this.scene = scene;
     this.group = new THREE.Group();
+    this.wireframe = wireframe;
+    this.drawBalls = drawBalls;
 
     this.vertices = this.mapVerticesToVector3(vertices);
     this.init();
@@ -37,7 +43,7 @@ export class CustomShape {
 
   /**
    * Initialises/Resets the current shape.
-   * @returns 
+   * @returns
    */
   private init() {
     var temp: number[] = [];
@@ -67,10 +73,15 @@ export class CustomShape {
     this.mesh = new THREE.Mesh(this.geometry, this.material);
     this.mesh.castShadow = true;
 
-    this.group.add(this.mesh);
-
+    if (this.wireframe) {
+      this.group.add(this.mesh);
+    }
     // Add additional details to the shape.
-    this.addSpheresToVertices();
+    if (this.drawBalls) {
+      this.addSpheresToVertices();
+    }
+
+    this.addLinesToEdges();
 
     return;
   }
@@ -223,7 +234,7 @@ export class CustomShape {
       combinations = closest;
       newConnections.push(combinations[0], combinations[1], newIndex);
     }
-
+    console.log(connections);
     // Validate that the connections are valid. Return if they are not.
     if (connections[0] === -Infinity || connections[1] === -Infinity) {
       console.error("No valid vertices to add to");
@@ -263,6 +274,31 @@ export class CustomShape {
 
     // Add the mesh to the group and reinitialise the shape.
     this.init();
+  }
+
+  /**
+   * Adds line to the edges of the shape.
+   * Can also be used to display a shape in wife frame.
+   *
+   * @param colour Colour of the line. Defaults to pure black.
+   */
+  addLinesToEdges(colour: THREE.Color = new THREE.Color(0x000000)) {
+    const points: THREE.Vector3[] = [];
+
+    for (let i = 0; i < this.connections.length; i++) {
+      points.push(
+        this.vertices[this.connections[i][0]],
+        this.vertices[this.connections[i][1]],
+        this.vertices[this.connections[i][2]]
+      );
+    }
+
+    const material = new THREE.LineBasicMaterial({ color: colour });
+    const lineGeometry = new THREE.BufferGeometry().setFromPoints(points);
+
+    const line = new THREE.Line(lineGeometry, material);
+
+    this.group.add(line);
   }
 
   updateMesh() {}
