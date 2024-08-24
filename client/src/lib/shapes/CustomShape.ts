@@ -29,6 +29,8 @@ export class CustomShape {
   drawBalls: boolean; // If shape should have spheres on each vertex.
 
   colour: THREE.Color; // Colour of all faces in the custom shape.
+  scale: number; // Scale of the shape
+  lineColour: THREE.Color // colour of the line
 
   constructor(
     scene: THREE.Scene,
@@ -36,7 +38,9 @@ export class CustomShape {
     connections: number[][] = [],
     wireframe: boolean = false,
     drawBalls: boolean = true,
-    colour: THREE.Color = new THREE.Color(0xff00ff)
+    colour: THREE.Color = new THREE.Color(0xff00ff),
+    scale: number = 1,
+    lineColour: THREE.Color = new THREE.Color(0x000000)
   ) {
     this.connections = connections;
     this.scene = scene;
@@ -44,6 +48,8 @@ export class CustomShape {
     this.wireframe = wireframe;
     this.drawBalls = drawBalls;
     this.colour = colour;
+    this.scale = scale;
+    this.lineColour = lineColour;
 
     this.vertices = this.mapVerticesToVector3(vertices);
     this.init();
@@ -151,7 +157,7 @@ export class CustomShape {
 
     for (let i = 0; i < vertices.length; i += 3) {
       vertexes.push(
-        new THREE.Vector3(vertices[i], vertices[i + 1], vertices[i + 2])
+        new THREE.Vector3(vertices[i] * this.scale, vertices[i + 1] * this.scale, vertices[i + 2] * this.scale)
       );
     }
 
@@ -295,7 +301,7 @@ export class CustomShape {
    *
    * @param colour Colour of the line. Defaults to pure black.
    */
-  addLinesToEdges(colour: THREE.Color = new THREE.Color(0x000000)) {
+  addLinesToEdges(colour: THREE.Color = this.lineColour) {
     const points: THREE.Vector3[] = [];
 
     // Go over all connections and push the vertices associated with them into the points array.

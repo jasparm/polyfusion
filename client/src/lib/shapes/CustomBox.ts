@@ -1,3 +1,4 @@
+import * as THREE from 'three';
 import { CustomShape } from "./CustomShape.ts";
 
 /**
@@ -9,11 +10,13 @@ export class CustomBox extends CustomShape {
   width: number;
   height: number;
 
-  constructor(scene, length=1, width=1, height=1) {
+  constructor(scene, length=1, width=1, height=1, colour: THREE.Color = new THREE.Color(0xff00ff)) {
     super(scene);
     this.length = length;
     this.width = width;
     this.height = height;
+    this.colour = colour
+    this.wireframe = true
 
     // Get vertices and connections for a box.
     this.vertices = this.mapVerticesToVector3(this.createVertices());
