@@ -7,6 +7,7 @@ export class Shape {
         this._points = points;
         this.colour = colour;
         this.isSelected = false;
+        this.name;
     };
     // is shape selected or not
     get selected() {
@@ -27,7 +28,7 @@ export class Shape {
     // Setter for selected
     set selected(select) {
         this.isSelected = select;
-    }
+    };
     // Returns a list of tuples of points
     // [(p1, p2), etc] where each tuple represents a line between the two points
     lines() {

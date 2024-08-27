@@ -38,10 +38,13 @@ export function selectShape() {
     // When we select more than one, we can save
     const sutherlandButton = select('#sutherland-btn');
     const saveButton = select('#save-shape-btn');
-    if (state.selectedShapes.length > 0) {
-        saveButton.show();
+    if (state.selectedShapes.length < 3) {
+        if (state.selectedShapes.length == 1) {
+            saveButton.show();
+        }
         if (state.selectedShapes.length == 2) {
             sutherlandButton.show();
+            saveButton.hide();
         };
     } else {
         sutherlandButton.hide();
@@ -62,14 +65,6 @@ export function deSelect(shape) {
     if (state.selectedShapes.length == 0) {
         resetSelectShape();
     };
-};
-
-// Saves the input shape
-export function saveShape(shape) {
-    //! To update shape class with a name attribute
-    state.savedShapes.push(shape);
-    console.log("Saved shape.");
-    console.log(state.savedShapes);
 };
 
 

@@ -1,6 +1,6 @@
 import { Shape } from "./Shape.js";
 import { monteCarlo } from "./monteCarlo.js";
-import { completeShape, saveShape } from "./shapeUtils.js";
+import { completeShape } from "./shapeUtils.js";
 import { sutherlandHodgman } from "./intersection.js";
 
 export const state = {
@@ -119,21 +119,48 @@ export let setup = () => {
         //! Leave here for now
     });
 
-
     // Saving Shapes
     const saveButton = select('#save-shape-btn');
     // Showing button if a shape is selected
     saveButton.hide();
 
-    // Event listener
-    saveButton.mousePressed(() => {
-        // Pass every selected shape to our save shape method.
-        //! Popup prompt for a name
-        // for (let shape of state.selectedShapes) {
-        //     saveShape(shape);
-        // };
+    // Now the modal button
+    const saveShapeBtn = select('#save-shape');
 
-        // resetSelectShape();
+    // saveShapeBtn.mousePressed(() => {
+    //     // Need to catch submit
+
+    //     // Pass every selected shape to our save shape method.
+    //     for (let shape of state.selectedShapes) {
+    //         saveShape(shape);
+    //     };
+
+    //     resetSelectShape();
+    // })
+
+    // // Event listener
+    // saveButton.mousePressed(() => {
+
+    // });
+
+    // Getting our form
+    const saveShapeForm = document.getElementById("saveShapeForm");
+
+    // And now saving the shape
+    saveShapeForm.addEventListener("submit", (event) => {
+        console.log("Pressed submit");
+        event.preventDefault();
+        // Getting shape name
+        const shapeName = saveShapeForm.elements['shape-name'].value;
+
+        // Now getting shape selected
+        let selectedShape = state.selectedShapes[0];
+        // Updating shape name
+        selectedShape.name = shapeName;
+        state.savedShapes.push(selectedShape);
+        console.log(`Pushed shape: ${selectedShape.name}`);
+
+        saveShapeForm.elements['shape-name'].value = '';
     });
 };
 
