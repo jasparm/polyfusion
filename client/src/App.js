@@ -11,6 +11,8 @@ function App() {
 
   React.useEffect(() => {
 
+    const expressLayouts = require('express-ejs-layouts')
+
     const test = new SceneInit("threeJsCanvas");
     test.init();
 
