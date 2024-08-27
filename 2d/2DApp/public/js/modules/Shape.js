@@ -24,6 +24,10 @@ export class Shape {
     get numEdges() {
         return this._points.length;
     };
+    // Setter for selected
+    set selected(select) {
+        this.isSelected = select;
+    }
     // Returns a list of tuples of points
     // [(p1, p2), etc] where each tuple represents a line between the two points
     lines() {

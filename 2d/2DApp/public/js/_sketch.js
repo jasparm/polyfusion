@@ -1,5 +1,7 @@
 /*
 File containing the code for our 2d canvas.
+
+OLD SKETCH.JS FILE. HERE FOR IF WORST COMES TO WORST AND SOMETHING CATASTROPHIC HAPPENS.
 */
 let canvas;
 // Array of shapes which is an array of points.

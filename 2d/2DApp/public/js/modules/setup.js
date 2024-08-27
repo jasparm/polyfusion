@@ -1,6 +1,6 @@
 import { Shape } from "./Shape.js";
 import { monteCarlo } from "./monteCarlo.js";
-import { completeShape } from "./shapeUtils.js";
+import { completeShape, saveShape } from "./shapeUtils.js";
 import { sutherlandHodgman } from "./intersection.js";
 
 export const state = {
@@ -19,7 +19,8 @@ export const state = {
     unionPoints: [],
     intersectPoints: [],
     intersectLines: [],
-    enclosedLines: []
+    enclosedLines: [],
+    savedShapes: []
 };
 
 export let setup = () => {
@@ -59,19 +60,11 @@ export let setup = () => {
 
     selectShapeButton.mousePressed(() => {
         // Toggling select shape mode
-        state.selectShapeMode = !state.selectShapeMode;
+        // state.selectShapeMode = !state.selectShapeMode;
 
         selectShapeButton.html(state.selectShapeMode ? "Complete Selection" : "Select Shape");
         selectShapeButton.class(state.selectShapeMode ? "btn btn-success" : "btn btn-primary");
-
-        // Resetting selected shapes
-        if (!state.selectShapeMode) {
-            for (let shape of state.selectedShapes) {
-                shape.isSelected = false;
-            };
-            state.selectedShapes = [];
-            sutherlandButton.hide();
-        };
+        resetSelectShape();
     });
 
     // Monte Carlo
@@ -125,4 +118,52 @@ export let setup = () => {
 
         //! Leave here for now
     });
+
+
+    // Saving Shapes
+    const saveButton = select('#save-shape-btn');
+    // Showing button if a shape is selected
+    saveButton.hide();
+
+    // Event listener
+    saveButton.mousePressed(() => {
+        // Pass every selected shape to our save shape method.
+        //! Popup prompt for a name
+        // for (let shape of state.selectedShapes) {
+        //     saveShape(shape);
+        // };
+
+        // resetSelectShape();
+    });
 };
+
+
+// Making a function to handle resetting our selected shape mode
+export function resetSelectShape() {
+    // Getting our html element
+    let selectButton = select("#select-shape-btn");
+    let sutherlandButton = select("#sutherland-btn");
+    let saveButton = select("#save-shape-btn");
+
+    // If toggled on we reset
+    if (state.selectShapeMode) {
+        // Reset selected shapes
+        for (let shape of state.selectedShapes) {
+            shape.isSelected = false;
+        };
+        // Hiding buttons
+        state.selectedShapes = [];
+        sutherlandButton.hide();
+        saveButton.hide();
+
+        // Updating html canvas elements
+        selectButton.html("Select Shape");
+        selectButton.class("btn btn-primary");
+        state.selectShapeMode = false;
+    } else {
+        // Updating html canvas elements
+        selectButton.html("Complete Selection");
+        selectButton.class("btn btn-success");
+        state.selectShapeMode = true
+    }
+}

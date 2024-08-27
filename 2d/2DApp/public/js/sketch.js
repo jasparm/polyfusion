@@ -19,7 +19,7 @@ window.draw = () => {
             stroke('black');
         }
         drawShape(shape.points);
-    }
+    };
     // And drawing the current shape being made on the canvas
     stroke('black');
     drawShape(state.points);

@@ -7,6 +7,7 @@ let moveShapeIndex = -1
 export let keyPressed = () => {
     // Deleting shapes - keycode is 8 for delete
     if (keyCode === 8 && state.selectShapeMode) {
+        console.log("Delete pressed.")
         deleteShape();
     };
 };

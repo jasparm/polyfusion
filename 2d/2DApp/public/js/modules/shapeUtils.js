@@ -1,4 +1,4 @@
-import { state } from "./setup.js";
+import { state, resetSelectShape } from "./setup.js";
 import { Shape } from "./Shape.js";
 
 export function deleteShape() {
@@ -15,11 +15,7 @@ export function deleteShape() {
     // Resetting selected shapes and buttons now.
     //! Make a single function as callback function for event handler in setup().
     state.shapes = shapesToKeep;
-    const selectShapeButton = select('#select-shape-btn');
-    state.selectedShapes = [];
-    state.selectShapeMode = false;
-    selectShapeButton.html("Select Shape");
-    selectShapeButton.class("btn btn-primary");
+    resetSelectShape();
 };
 
 // Function that handles the selection of shapes
@@ -39,11 +35,17 @@ export function selectShape() {
         };
     };
     // When we select two shapes, we have the option of using the sutherland-hodgman alg
+    // When we select more than one, we can save
     const sutherlandButton = select('#sutherland-btn');
-    if (state.selectedShapes.length == 2) {
-        sutherlandButton.show();
+    const saveButton = select('#save-shape-btn');
+    if (state.selectedShapes.length > 0) {
+        saveButton.show();
+        if (state.selectedShapes.length == 2) {
+            sutherlandButton.show();
+        };
     } else {
         sutherlandButton.hide();
+        saveButton.hide();
     };
 };
 
@@ -58,11 +60,16 @@ export function deSelect(shape) {
 
     // Now checking if we have no selected shapes anymore
     if (state.selectedShapes.length == 0) {
-        const selectShapeButton = select('#select-shape-btn');
-        selectShapeButton.html("Select Shape");
-        selectShapeButton.class("btn btn-primary");
-        state.selectShapeMode = false;
+        resetSelectShape();
     };
+};
+
+// Saves the input shape
+export function saveShape(shape) {
+    //! To update shape class with a name attribute
+    state.savedShapes.push(shape);
+    console.log("Saved shape.");
+    console.log(state.savedShapes);
 };
 
 
