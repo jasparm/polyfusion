@@ -7,7 +7,7 @@ export function deleteShape() {
     let shapesToKeep = [];
     for (let i = 0; i < state.shapes.length; i++) {
         if (!state.shapes[i].selected) {
-            shapesToKeep.push(shapes[i]);
+            shapesToKeep.push(state.shapes[i]);
         } else {
             state.shapes[i].selected = false;
         };

@@ -142,7 +142,7 @@ export let setup = () => {
         const newShape = {
             points: extractPoints(selectedShape),
             colour: selectedShape.colour,
-            selected: false,
+            isSelected: false,
             name: selectedShape.name
         };
 
@@ -244,15 +244,13 @@ function updateSavedShapes() {
 function handleShapeSelection(shape) {
     // Need to convert points back to a p5 context
     // Let's do that first
-    let selectedShape = shape;
 
     let newPoints = [];
-    for (let p of selectedShape.points) {
+    for (let p of shape.points) {
         newPoints.push(createVector(p[0], p[1]));
     };
-    selectedShape.points = newPoints;
 
-    console.log(selectedShape.points);
+    let selectedShape = new Shape(newPoints);
 
     state.shapes.push(selectedShape);
 };
