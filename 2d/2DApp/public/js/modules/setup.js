@@ -206,8 +206,10 @@ function extractPoints(shape) {
     let allPoints = [];
     // Adding all points
     for (let p of shape.points) {
+        console.log(p)
         allPoints.push([p.x, p.y]);
     };
+    console.log(allPoints);
     return allPoints;
 };
 
@@ -220,17 +222,39 @@ function updateSavedShapes() {
             const shapeDropDown = document.getElementById("shapesDropdown");
             // Clearing the menu
             shapeDropDown.innerHTML = '';
+            // Now adding a dropdown element for each shape
             shapes.forEach(shape => {
                 const listItem = document.createElement('li');
                 const link = document.createElement('a');
                 link.className = 'dropdown-item';
                 link.textContent = shape.name;
+                // And this allows us to place a shape
+                link.addEventListener('click', () => {
+                    handleShapeSelection(shape);
+                });
                 listItem.appendChild(link);
                 shapesDropdown.appendChild(listItem);
             });
         }).catch(error => {
             console.error('Error fetching shapes:', error);
           });
+};
+
+// Will handle what happens when we select a saved shape
+function handleShapeSelection(shape) {
+    // Need to convert points back to a p5 context
+    // Let's do that first
+    let selectedShape = shape;
+
+    let newPoints = [];
+    for (let p of selectedShape.points) {
+        newPoints.push(createVector(p[0], p[1]));
+    };
+    selectedShape.points = newPoints;
+
+    console.log(selectedShape.points);
+
+    state.shapes.push(selectedShape);
 };
 
 // Initial load of shapes when the page loads
