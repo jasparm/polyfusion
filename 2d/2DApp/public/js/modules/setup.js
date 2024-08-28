@@ -124,25 +124,6 @@ export let setup = () => {
     // Showing button if a shape is selected
     saveButton.hide();
 
-    // Now the modal button
-    const saveShapeBtn = select('#save-shape');
-
-    // saveShapeBtn.mousePressed(() => {
-    //     // Need to catch submit
-
-    //     // Pass every selected shape to our save shape method.
-    //     for (let shape of state.selectedShapes) {
-    //         saveShape(shape);
-    //     };
-
-    //     resetSelectShape();
-    // })
-
-    // // Event listener
-    // saveButton.mousePressed(() => {
-
-    // });
-
     // Getting our form
     const saveShapeForm = document.getElementById("saveShapeForm");
 
@@ -157,6 +138,31 @@ export let setup = () => {
         let selectedShape = state.selectedShapes[0];
         // Updating shape name
         selectedShape.name = shapeName;
+
+        const newShape = {
+            points: extractPoints(selectedShape),
+            colour: selectedShape.colour,
+            selected: false,
+            name: selectedShape.name
+        };
+
+        // Now we send it to the app
+        fetch("/", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ shape: newShape }),
+        }).then(response => response.json()).then(data => {
+            if (data.success) {
+                updateSavedShapes();
+                console.log("Saved Shape Successfully.");
+            } else {
+                console.log("Error: Failed to save shape.")
+            };
+        }).catch(error => { console.log(error) });
+
+
         state.savedShapes.push(selectedShape);
         console.log(`Pushed shape: ${selectedShape.name}`);
 
@@ -192,5 +198,40 @@ export function resetSelectShape() {
         selectButton.html("Complete Selection");
         selectButton.class("btn btn-success");
         state.selectShapeMode = true
-    }
-}
+    };
+};
+
+// Helper function to extract points from p5 context
+function extractPoints(shape) {
+    let allPoints = [];
+    // Adding all points
+    for (let p of shape.points) {
+        allPoints.push([p.x, p.y]);
+    };
+    return allPoints;
+};
+
+// And a function to update our dropdown list of saved shapes
+function updateSavedShapes() {
+    fetch("/shapes")
+        .then(response => response.json())
+        .then(shapes => {
+            // Getting our dropdown menu
+            const shapeDropDown = document.getElementById("shapesDropdown");
+            // Clearing the menu
+            shapeDropDown.innerHTML = '';
+            shapes.forEach(shape => {
+                const listItem = document.createElement('li');
+                const link = document.createElement('a');
+                link.className = 'dropdown-item';
+                link.textContent = shape.name;
+                listItem.appendChild(link);
+                shapesDropdown.appendChild(listItem);
+            });
+        }).catch(error => {
+            console.error('Error fetching shapes:', error);
+          });
+};
+
+// Initial load of shapes when the page loads
+document.addEventListener('DOMContentLoaded', updateSavedShapes);

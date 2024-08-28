@@ -37,7 +37,28 @@ app.listen(PORT_NUM, () => {
     console.log(`App listening on port number: ${PORT_NUM}.`);
 });
 
+// Saved shapes
+let savedShapes = [];
+
+app.get('/shapes', (req, res) => {
+    res.json(savedShapes);
+});
+
 // Only serving home page for now.
 app.get("/", (req, res) => {
-    res.render("index", { title: "Polyfusion" });
+    res.render("index", { title: "Polyfusion", savedShapes: savedShapes });
+});
+
+// Using a post request to save shapes for now
+app.post("/", (req, res) => {
+    // Getting the shape posted
+    const newShape = req.body.shape;
+    if (newShape) {
+        savedShapes.push(newShape);
+        console.log(savedShapes)
+        res.json( {success: true} );
+    } else {
+        res.status(400).json({ success: false, message: "Invalid shape data" });
+    };
+    console.log("received post");
 });
