@@ -13,11 +13,11 @@ window.draw = () => {
     background(220);
     // Drawing all shapes on the canvas
     for (let shape of state.shapes) {
-        if (shape.selected) {
-            stroke('red');
-        } else {
-            stroke('black');
-        }
+        // if (shape.selected) {
+        //     stroke('red');
+        // } else {
+        //     stroke('black');
+        // }
         drawShape(shape.points);
     };
     // And drawing the current shape being made on the canvas
@@ -38,26 +38,25 @@ window.draw = () => {
         console.log(`${iOU}%`);
     };
 
-    //! Highlighting intersection lines in blue for testing
-    for (let lines of state.intersectLines) {
-        let [line1, line2] = lines;
-        let [p1, p2] = line1;
-        let [p3, p4] = line2;
+    // //! Highlighting intersection lines in blue for testing
+    // for (let lines of state.intersectLines) {
+    //     let [line1, line2] = lines;
+    //     let [p1, p2] = line1;
+    //     let [p3, p4] = line2;
 
-        stroke("blue");
-        line(p1.x, p1.y, p2.x, p2.y);
-        line(p3.x, p3.y, p4.x, p4.y);
-    };
+    //     stroke("blue");
+    //     line(p1.x, p1.y, p2.x, p2.y);
+    //     line(p3.x, p3.y, p4.x, p4.y);
+    // };
 
-    for (let _line of state.enclosedLines) {
-        let [p1, p2] = _line;
-        stroke("blue");
-        line(p1.x, p1.y, p2.x, p2.y);
-    };
+    // for (let _line of state.enclosedLines) {
+    //     let [p1, p2] = _line;
+    //     stroke("blue");
+    //     line(p1.x, p1.y, p2.x, p2.y);
+    // };
 
     //! And now points of intersection
-    // stroke("yellow");
-    // drawShape(state.pointsOfIntersection)
+    highlightArea(state.pointsOfIntersection)
     // for (let _point of state.pointsOfIntersection) {
     //     stroke("yellow");
     // };
@@ -85,11 +84,11 @@ function drawShape(shape) {
         let pLast = shape[shape.length - 1];
         line(pLast.x, pLast.y, p1.x, p1.y);
     };
+};
 
-    /*
-    USE THIS CODE FOR AREA CAPABILITY
+function highlightArea(shape) {
     beginShape();
-    // fill("red");
+    fill(`rgba(39, 189, 245, 0.45)`);
     strokeWeight(20);
     for (let p of shape) {
         point(p.x, p.y);
@@ -101,6 +100,4 @@ function drawShape(shape) {
     };
 
     endShape(CLOSE);
-    /*
-    */
-};
+}
