@@ -1,11 +1,18 @@
+/*
+File responsible for the Sutherland-Hodgman Algorithm for our IoU.
+*/
+
 import { state } from "./setup.js";
 import { rayCast } from "./shapeUtils.js";
+
+let addedPoints = new Set();
 
 // Responsible for our sutherland hodgman algorithm
 export function sutherlandHodgman(shape1, shape2) {
     // Starting with one shape, let's see which lines intersect
     // Getting the intersections between both shapes
     [state.intersectLines, state.enclosedLines] = getIntersections(shape1, shape2);
+    console.log(sortPoints(state.pointsOfIntersection));
 };
 
 function getIntersections(shape1, shape2) {
@@ -13,12 +20,17 @@ function getIntersections(shape1, shape2) {
     let enclosed = [];
     // Choosing first set of lines as our base shape
     for (let line1 of shape1.lines()) {
-        // Go through each other line for each line in first shape
+        // Going through each other line for each line in first shape
         for (let line2 of shape2.lines()) {
             // If they intersect, add to a tuple, and return
             if (doesIntersect(line1, line2)) {
                 console.log("INTERSECTION!");
                 intersections.push([line1, line2])
+
+                // Now getting the exact point of intersection
+                let [px, py] = getPointOfIntersection(line1, line2);
+                // state.pointsOfIntersection.push([px, py]);
+                state.pointsOfIntersection.push(createVector(px, py))
             } else {
                 // Checking if a line is completely enclosed in a shape, as this doesn't intersect
                 // But we still want it
@@ -31,9 +43,10 @@ function getIntersections(shape1, shape2) {
     return [intersections, enclosed];
 };
 
-//! This function and the one below might be broken
+// Checks if the line is entirely inside a polygon.
 function lineInPolygon(line1, line2, shape1, shape2) {
     let lines = [];
+    // Got to test for both shapes.
     if (isInsidePolygon(line2, shape1)) {
         lines.push(line2);
     } else if (isInsidePolygon(line1, shape2)) {
@@ -50,7 +63,14 @@ function isInsidePolygon(line, shape) {
         // Will have picked up the intersection.
         // So if one point is in then both must be
         if (rayCast(point.x, point.y, shape.points)) {
-            return true;
+            // Adding the point to enclosed points array for now
+            const pointKey = `${point.x},${point.y}`;
+            if (!addedPoints.has(pointKey)) {
+                // state.pointsOfIntersection.push([point.x, point.y])
+                state.pointsOfIntersection.push(createVector(point.x, point.y))
+                addedPoints.add(pointKey);
+                return true;
+            };
         };
     };
     return false;
@@ -121,3 +141,48 @@ function lineEquation(line) {
 
     return [gradient, yIntercept];
 };
+
+// Function that returns the point of intersection between two lines
+// Note that this function will only be called if there is an intersection between the two.
+
+function getPointOfIntersection(line1, line2) {
+    // Firstly getting the line equations of both lines
+    // [gradient, y-intercept]
+    let [m1, c1] = lineEquation(line1);
+    let [m2, c2] = lineEquation(line2);
+
+    // Now calculating the x coordinate of the intersection point
+    const x = (c2 - c1) / (m1 - m2);
+
+    // Using the first line equation to calculate the y-value
+    const y = m1 * x + c1;
+
+    return [Math.round(x), Math.round(y)];
+};
+
+// Because we have a random order of intersection points, we just need to sort them
+function sortPoints(points) {
+    // Center points of our polygon
+    let center = {
+        x: 0,
+        y: 0
+    };
+    // Going through each point and getting average x and y value for center
+    points.forEach(point => {
+        center.x += point.x;
+        center.y += point.y;
+    });
+    center.x /= points.length;
+    center.y /= points.length;
+
+    // And now sorting them based on the angle they make with that center point
+    // This allows us to draw them and connect the correct points to one another.
+    // Using JS sort() function with the angle as our comparison function.
+    points.sort((a, b) => {
+        const angleA = Math.atan2(a.y - center.y, a.x - center.x);
+        const angleB = Math.atan2(b.y - center.y, b.x - center.x);
+        return angleA - angleB;
+    });
+
+    return points;
+}

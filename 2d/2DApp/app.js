@@ -54,6 +54,8 @@ app.post("/", (req, res) => {
     // Getting the shape posted
     const newShape = req.body.shape;
     if (newShape) {
+        // Pushing to the list
+        //! Change this to db.insertOne() when we use Mongo
         savedShapes.push(newShape);
         console.log(savedShapes)
         res.json( {success: true} );

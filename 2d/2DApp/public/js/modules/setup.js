@@ -8,6 +8,7 @@ export const state = {
     shapes: [],
     points: [],
     selectedShapes: [],
+    savedShapes: [],
     moveShapeIndex: -1,
     moveOffset: null,
     createShapeMode: false,
@@ -20,7 +21,7 @@ export const state = {
     intersectPoints: [],
     intersectLines: [],
     enclosedLines: [],
-    savedShapes: []
+    pointsOfIntersection: []
 };
 
 export let setup = () => {

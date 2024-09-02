@@ -54,6 +54,13 @@ window.draw = () => {
         stroke("blue");
         line(p1.x, p1.y, p2.x, p2.y);
     };
+
+    //! And now points of intersection
+    // stroke("yellow");
+    // drawShape(state.pointsOfIntersection)
+    // for (let _point of state.pointsOfIntersection) {
+    //     stroke("yellow");
+    // };
 };
 
 // Function that draws our shapes.
