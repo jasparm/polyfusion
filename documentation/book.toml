@@ -1,0 +1,6 @@
+[book]
+authors = ["Shannon Johnson"]
+language = "en"
+multilingual = false
+src = "src"
+title = "PolyFusion Documentation"
