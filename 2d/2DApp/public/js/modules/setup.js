@@ -26,6 +26,8 @@ export const state = {
 
 export let setup = () => {
     // Canvas Setup
+    // const canvas = select("#canvas-container");
+    // state.canvas = createCanvas(canvas.width, canvas.height);
     state.canvas = createCanvas(windowWidth, windowHeight);
     state.canvas.parent('canvas-container');
 

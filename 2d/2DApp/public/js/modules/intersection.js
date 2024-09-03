@@ -12,7 +12,9 @@ export function sutherlandHodgman(shape1, shape2) {
     // Starting with one shape, let's see which lines intersect
     // Getting the intersections between both shapes
     [state.intersectLines, state.enclosedLines] = getIntersections(shape1, shape2);
-    console.log(sortPoints(state.pointsOfIntersection));
+    let intersectionShape = sortPoints(state.pointsOfIntersection);
+    console.log(intersectionShape);
+    areaPolygon(intersectionShape);
 };
 
 function getIntersections(shape1, shape2) {
@@ -185,4 +187,18 @@ function sortPoints(points) {
     });
 
     return points;
+};
+
+function areaPolygon(points) {
+    // This calculates the area of the polygon by using the determinant
+
+    // Reverse through points and add last point to it
+    let newPoints = [points[points.length - 1]];
+    for (let p of points) {
+        newPoints.push(p);
+    };
+
+    // Now we need to calculate the determinant by reversing through
+    
+
 }
