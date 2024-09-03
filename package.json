@@ -1,8 +1,30 @@
 {
+  "name": "mockup",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "server-dependencies": "npm install",
+    "client-dependencies": "npm install --prefix client",
+    "install-all-deps": "concurrently \"npm run server-dependencies\" \"npm run client-dependencies\"",
+    "server": "node server/index.js",
+    "client": "npm start --prefix client",
+    "dev": "concurrently \"npm run server\" \"npm run client\"",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
   "dependencies": {
+    "concurrently": "^8.2.2",
+    "cross-env": "^7.0.3",
+    "dat.gui": "^0.7.9",
+    "express": "^4.19.2",
+    "mockup": "file:",
+    "mongodb": "^6.8.0",
     "three": "^0.165.0"
   },
   "devDependencies": {
-    "vite": "^5.2.13"
+    "typescript": "^5.5.4"
   }
 }
