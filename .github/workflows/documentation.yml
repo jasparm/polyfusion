@@ -1,9 +1,11 @@
-name: Deploy mdBook site to Pages
+name: Deploy documentation mdBook site to Pages
 
 on:
   # Runs on pushes targeting the default branch and only when files in the documentation folder are changed
   push:
-    branches: ["main"]
+    branches:
+      - "main"
+      - "documentation"
     paths:
       - 'documentation/**'
 
