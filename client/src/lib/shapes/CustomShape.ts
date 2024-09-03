@@ -98,6 +98,13 @@ export class CustomShape {
 
     this.addLinesToEdges();
 
+    this.mesh.layers.set(0);
+    this.group.children.forEach((child) => {
+      if (child instanceof THREE.Line) {
+        child.layers.set(1);
+      }
+    })
+
     return;
   }
 
@@ -203,6 +210,7 @@ export class CustomShape {
       newBall.position.x = vertex.x;
       newBall.position.y = vertex.y;
       newBall.position.z = vertex.z;
+      newBall.layers.set(2)
       this.group.add(newBall);
     });
   }
