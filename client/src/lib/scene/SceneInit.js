@@ -1,13 +1,14 @@
 import * as THREE from 'three'
-import { OrbitControls, ThreeMFLoader } from 'three/examples/jsm/Addons.js';
+import { OrbitControls} from 'three/examples/jsm/Addons.js';
 import Stats from 'three/examples/jsm/libs/stats.module.js';
-import { collidesWith, isPartiallyInside, isInsideObjects } from '../Collision.ts';
+import { isInsideObjects } from '../Collision.ts';
 import { getCentrePoint } from '../MeshHelper.ts';
+import { Controller } from '../controls/Controller.ts';
+import { onMouseDown, onMouseWheelEvent } from '../controls/MouseActions.ts';
 
 
 // This is scuffed unless defined like this.
 const pointer = new THREE.Vector2(-2, -1);
-const raycaster = new THREE.Raycaster();
 
 export default class SceneInit {
     constructor(canvasId) {
@@ -45,6 +46,9 @@ export default class SceneInit {
             1, 
             500);
         this.camera.position.set(0,0,10)
+        this.camera.layers.enable(0); // default layer for meshes
+        this.camera.layers.enable(1); // this is the layer for lines on meshes
+        this.camera.layers.enable(2); // this is the layer for balls on vertices
         
         // Specify a canvas which is already in the HTML
         const canvas = document.getElementById(this.canvasId);
@@ -58,21 +62,26 @@ export default class SceneInit {
         document.body.appendChild(this.renderer.domElement);
 
         // Add controls
-        this.controls = new OrbitControls(this.camera, this.renderer.domElement);
+        // this.controls = new OrbitControls(this.camera, this.renderer.domElement);
 
         // Comment out to enable/disable performance tracker
         this.stats = Stats();
         document.body.appendChild(this.stats.dom);
+
+        const controller = new Controller(this.scene, this.camera, this.renderer);
         
         // Event listeners
         window.addEventListener('resize', () => this.onWindowResize(), false);
-        window.addEventListener('pointermove', this.onPointerMove);
+        this.renderer.domElement.addEventListener('pointermove', e => controller.getMousePosition(e, this.renderer));
+        this.renderer.domElement.addEventListener('mousedown', e => onMouseDown(e, controller));
+        this.renderer.domElement.addEventListener('wheel', e => onMouseWheelEvent(e, controller));
+
     }
 
     animate() {
         window.requestAnimationFrame(this.animate.bind(this));
         this.render();
-        this.controls.update();
+        // this.controls.update();
         this.stats.update();
     }
 
