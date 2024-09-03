@@ -1,4 +1,7 @@
 # 3D Canvas
+The 3D canvas is what contains all the information regarding the 3D environment. It is simply an element on the page which has all Three.JS content within it.
+
+## Setup
 A 3D scene is created using the SceneInit class.
 This class takes a canvas HTML element and initialises a scene to fit in that canvas.
 ```html
@@ -9,3 +12,6 @@ This canvas is then used to initialise a scene using the SceneInit class.
 const scene = new SceneInit("threeJsCanvas");
 scene.init();
 ```
+This will initialise a blank scene with no elements in it and will initially render just a blank scene. Don't panic if you see just this black screen now, that is correct.
+
+## Adding objects to the scene
