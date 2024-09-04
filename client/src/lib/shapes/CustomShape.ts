@@ -32,6 +32,9 @@ export class CustomShape {
   scale: number; // Scale of the shape
   lineColour: THREE.Color // colour of the line
 
+  vertexSize: number = 0.05; // radius of sphere to be added on vertices
+  id: string; // this is used to uniquely identify a given custom shape.
+
   constructor(
     scene: THREE.Scene,
     vertices: number[] = [],
@@ -55,6 +58,8 @@ export class CustomShape {
     this.init();
 
     this.group.add(this.mesh);
+
+    console.log(this.mesh.name)
   }
 
   /**
@@ -93,7 +98,7 @@ export class CustomShape {
     }
     // Add additional details to the shape.
     if (this.drawBalls) {
-      this.addSpheresToVertices(0.05);
+      this.addSpheresToVertices(this.vertexSize);
     }
 
     this.addLinesToEdges();
@@ -104,6 +109,9 @@ export class CustomShape {
         child.layers.set(1);
       }
     })
+    const id = `${Date.now()}`;
+    this.id = id
+    this.mesh.name = id;
 
     return;
   }
