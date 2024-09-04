@@ -114,7 +114,8 @@ export function findClosestThreeVertices(
  */
 export function checkForVerticesWithSameDistance(
   vertices: THREE.Vector3[],
-  position: THREE.Vector3
+  position: THREE.Vector3,
+  tolerance: number = 0.1
 ): number[] {
   const { distance: minDistance } = findClosestVertex(vertices, position);
   const sameDistance: number[] = [];
@@ -122,7 +123,7 @@ export function checkForVerticesWithSameDistance(
 
   for (let i = 0; i < vertices.length; i++) {
     const distance = calculateDistance(vertices[i], position);
-    if (distance === minDistance && !isVector3InList(vertices[i], vertexes)) {
+    if (Math.abs(distance - minDistance) <= tolerance && !isVector3InList(vertices[i], vertexes)) {
       sameDistance.push(i);
       vertexes.push(vertices[i]);
     }

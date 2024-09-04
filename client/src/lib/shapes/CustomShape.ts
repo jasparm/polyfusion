@@ -57,9 +57,13 @@ export class CustomShape {
     this.vertices = this.mapVerticesToVector3(vertices);
     this.init();
 
+    const time = `${Date.now()}`
+    this.id = time;
+    this.mesh.name = time;
+
     this.group.add(this.mesh);
 
-    console.log(this.mesh.name)
+
   }
 
   /**
@@ -88,6 +92,7 @@ export class CustomShape {
     this.material = new THREE.MeshStandardMaterial({
       color: this.colour,
       side: THREE.DoubleSide,
+      flatShading: true
     });
     // @ts-ignore Typescript does not like material being passed here even though it works.
     this.mesh = new THREE.Mesh(this.geometry, this.material);
@@ -109,9 +114,10 @@ export class CustomShape {
         child.layers.set(1);
       }
     })
-    const id = `${Date.now()}`;
-    this.id = id
-    this.mesh.name = id;
+
+    if (this.id !== undefined) {
+      this.mesh.name = this.id;
+    }
 
     return;
   }
@@ -219,6 +225,7 @@ export class CustomShape {
       newBall.position.y = vertex.y;
       newBall.position.z = vertex.z;
       newBall.layers.set(2)
+      
       this.group.add(newBall);
     });
   }
@@ -288,10 +295,10 @@ export class CustomShape {
       this.mesh = new THREE.Mesh(oldGeometry, this.material);
       return;
     }
-
     vertices.push(point); // add point to the list of vertices
 
     this.removeCoveredEdge(connections); // remove connecting edges from vertices we have just covered.
+
 
     this.vertices = vertices;
     this.connections = [];
