@@ -2,12 +2,10 @@ import React from "react";
 
 import * as THREE from "three";
 
-import SceneInit from "./lib/scene/SceneInit";
+import SceneManager from "./lib/scene/SceneManager.js";
 import CustomGui from "./lib/Gui";
 import { MonteCarloManager } from "./lib/algorithms/MonteCarlo";
 
-import { VertexNormalsHelper } from "three/addons/helpers/VertexNormalsHelper.js";
-import { computeNormal } from "./lib/shapes/ShapeHelpers.ts";
 import { CustomShape } from "./lib/shapes/CustomShape.ts";
 import { CustomBox } from "./lib/shapes/CustomBox.ts";
 
@@ -15,7 +13,7 @@ function App() {
   const [data, setData] = React.useState(null);
 
   React.useEffect(() => {
-    const test = new SceneInit("threeJsCanvas");
+    const test = new SceneManager("threeJsCanvas");
     test.init();
 
     // add settings GUI
@@ -62,11 +60,11 @@ function App() {
     gui.init_mesh(test.mesh);
     gui.init_ball(ball_mesh);
 
-    const al = new THREE.AmbientLight(0xffffff, 0.5); // ambient light
+    const al = new THREE.AmbientLight(0xffffff, 0.7); // ambient light
 
     test.scene.add(al);
 
-    const dl = new THREE.DirectionalLight(0xff0000, 0.5); // directional light
+    const dl = new THREE.DirectionalLight(0xffffff, 0.8); // directional light
     dl.position.set(0, 2, 2);
     dl.castShadow = true;
 
@@ -97,6 +95,7 @@ function App() {
       [1, 3, 0],
     ];
 
+
     const shape = new CustomShape(
       test.scene,
       verticesOfPyramid,
@@ -107,21 +106,21 @@ function App() {
       1,
       new THREE.Color(0xffffffff)
     );
-    test.scene.add(shape.group);
-    shape.addVertex(new THREE.Vector3(0, -2, 0));
+    test.add(shape);
     shape.addVertex(new THREE.Vector3(0, 2, 0));
-    shape.group.position.y = 1
+    shape.addVertex(new THREE.Vector3(0, -2, 0));
+    // shape.group.position.y = 2
     // shape.wireframe = true
     shape.lineColour = new THREE.Color(0xffffff)
     // shape.addVertex(new THREE.Vector3(1, 1, 2));
     // shape.addVertex(new THREE.Vector3(-1, 1, 2));
     // shape.addVertex(new THREE.Vector3(-3, 1, -1));
 
-    const cube = new CustomBox(test.scene, 5.5, 2, 3, new THREE.Color(0x0000ff));
-    cube.wireframe = false;;
-    cube.addVertex(new THREE.Vector3(0, 0, 5))
-    cube.group.position.z = 5
-    test.scene.add(cube.group);
+    // const cube = new CustomBox(test.scene, 5.5, 2, 3, new THREE.Color(0x0000ff));
+    // cube.wireframe = false;;
+    // cube.addVertex(new THREE.Vector3(0, 0, 5))
+    // cube.group.position.z = 5
+    // test.scene.add(cube.group);
 
     const MonteCarlo = new MonteCarloManager(
       [mesh, octahedron_mesh],
@@ -145,7 +144,7 @@ function App() {
   return (
     <div className="App">
       <canvas id="threeJsCanvas"></canvas>
-      <p>{!data ? "Loading..." : data}</p>
+      {/* <p>{!data ? "Loading..." : data}</p> */}
     </div>
   );
 }
