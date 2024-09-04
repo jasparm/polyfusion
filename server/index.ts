@@ -1,10 +1,5 @@
-/*
-const express = require('express')
-const { MongoClient, ServerApiVersion } = require('mongodb')
-*/
 import express from "express";
 import { MongoClient, ServerApiVersion } from "mongodb";
-import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import { DBApi } from "./api";
 
@@ -128,7 +123,7 @@ app.get("/shapes", async (req, res) => {
     const authHeader = req.headers["authorization"];
     const token = authHeader && authHeader.split(" ")[1];
 
-    let user, auth;
+    let auth;
     if (!token) return res.status(401).send("Token required");
 
     jwt.verify(token, secret_key, (err, username) => {
@@ -155,7 +150,7 @@ app.get("/shape:name", async (req, res) => {
     const authHeader = req.headers["authorization"];
     const token = authHeader && authHeader.split(" ")[1];
 
-    let user, auth;
+    let auth;
     if (!token) return res.status(401).send("Token required");
 
     jwt.verify(token, secret_key, (err, username) => {
