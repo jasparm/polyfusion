@@ -1,5 +1,6 @@
 import { MongoClient, ServerApiVersion, Db } from "mongodb";
 import bcrypt from "bcryptjs";
+import { Shape, Point } from "./types";
 
 require("dotenv").config();
 
@@ -37,7 +38,6 @@ export class DBApi {
             );
         } catch (err) {
             console.error(err);
-            
         }
     }
 
@@ -49,11 +49,55 @@ export class DBApi {
         if (!userAccount) {
             throw new Error("Incorrect user details");
         }
-        
+
         const match = await bcrypt.compare(password, userAccount.pass);
-        
-        return match
+
+        return match;
     }
 
-    
+    async storeShape(this: DBApi, username: string, shape: Shape) {
+        const existingShape = await this.db
+            .collection(username)
+            .findOne({ name: shape.name });
+        if (existingShape) {
+            throw new Error("A shape with this name already exists");
+        }
+        try {
+            const result = await this.db.collection(username).insertOne(shape);
+            console.log(result);
+        } catch (error) {
+            console.error(error);
+            throw error;
+        }
+    }
+
+    async getShapes(this: DBApi, username: string) {
+        try {
+            const result = await this.db.collection(username).find().toArray();
+            //console.log(result);
+            return result;
+        } catch (error) {
+            console.error(error);
+            throw error;
+        }
+    }
+
+    async getShape(this: DBApi, username: string, shapename: string) {
+        try {
+            const result = await this.db
+                .collection(username)
+
+                .findOne({ name: shapename });
+
+            if (!result) {
+                throw new Error("Item not found");
+            } else {
+                //console.log(result);
+                return result;
+            }
+        } catch (error) {
+            console.error(error);
+            throw error;
+        }
+    }
 }
