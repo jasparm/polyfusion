@@ -200,5 +200,9 @@ function areaPolygon(points) {
 
     // Now we need to calculate the determinant by reversing through
     
+    // x1 -> xn
+    // y2 -> yn, y1
+    // y1 -> yn
+    // x2 -> xn, x1
 
 }
