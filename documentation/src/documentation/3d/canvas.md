@@ -7,11 +7,11 @@ This class takes a canvas HTML element and initialises a scene to fit in that ca
 ```html
 <canvas id="threeJsCanvas"></canvas>
 ```
-This canvas is then used to initialise a scene using the SceneInit class.
+This canvas is then used to initialise a scene using the [SceneManger](scene_manager.md) class.
 ```javascript
-const scene = new SceneInit("threeJsCanvas");
+const scene = new SceneManger("threeJsCanvas");
 scene.init();
 ```
 This will initialise a blank scene with no elements in it and will initially render just a blank scene. Don't panic if you see just this black screen now, that is correct.
 
-## Adding objects to the scene
+More information about scenes can be found int he at [SceneManger](scene_manager.md).
