@@ -1,10 +1,10 @@
 import * as THREE from 'three'
-import { OrbitControls} from 'three/examples/jsm/Addons.js';
 import Stats from 'three/examples/jsm/libs/stats.module.js';
 import { isInsideObjects } from '../Collision.ts';
 import { getCentrePoint } from '../MeshHelper.ts';
 import { Controller } from '../controls/Controller.ts';
 import { onMouseDown, onMouseWheelEvent } from '../controls/MouseActions.ts';
+import { onKeyDown, onKeyUp } from '../controls/KeyboardActions.ts';
 
 
 // This is scuffed unless defined like this.
@@ -75,6 +75,26 @@ export default class SceneInit {
         this.renderer.domElement.addEventListener('pointermove', e => controller.getMousePosition(e, this.renderer));
         this.renderer.domElement.addEventListener('mousedown', e => onMouseDown(e, controller));
         this.renderer.domElement.addEventListener('wheel', e => onMouseWheelEvent(e, controller));
+
+        const keyStates = {}
+        // Keyboard related events
+        window.addEventListener('keydown', e => {
+            const key = e.key;
+            // CHeck if the key is already pressed,this ensures it will only be called once.
+            if (!keyStates[key]) {
+                keyStates[key] = true;
+                onKeyDown(e, controller);
+            }
+        });
+
+        window.addEventListener('keyup', e => {
+            const key = e.key;
+            // Check if the key was previously pressed
+            if (keyStates[key]) {
+                keyStates[key] = false;
+                onKeyUp(e, controller);
+            }
+        });
 
     }
 
