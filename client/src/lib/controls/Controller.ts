@@ -1,6 +1,8 @@
 import * as THREE from "three";
 import { OrbitControls, TransformControls } from "three/examples/jsm/Addons.js";
 import { ControllerState, MovementState } from "./ControllerStates.ts";
+import { ShapeManger } from "../shapes/CustomShapeManager.ts";
+import { CustomShape } from "../shapes/CustomShape.ts";
 
 /**
  * Controller class looks after all player controls including their interaction with other objects.
@@ -18,13 +20,20 @@ export class Controller {
 
   state: ControllerState;
   movementState: MovementState;
+  checkForShapes: Boolean; // this can be disabled if we want to temporarily disable shape checking
 
   raycaster: THREE.Raycaster;
+
+  insertingSphere: THREE.Mesh;
+  insertDistance: number = 1;
+
+  shapeManager: ShapeManger;
 
   constructor(
     scene: THREE.Scene,
     camera: THREE.Camera,
-    renderer: THREE.WebGLRenderer
+    renderer: THREE.WebGLRenderer,
+    shapeManager: ShapeManger
   ) {
     this.scene = scene;
     this.camera = camera;
@@ -33,11 +42,15 @@ export class Controller {
     this.renderer = renderer;
     this.initControls();
 
+    this.shapeManager = shapeManager;
+
     this.movementState = MovementState.Transform; // default selection state is transform
 
     this.raycaster = new THREE.Raycaster();
     this.raycaster.layers.enable(0); // this is the layer that custom shape meshes live on.
     this.raycaster.layers.enable(2); // this is the layer that vertex spheres live on
+
+    this.checkForShapes = true;
   }
 
   private initControls() {
@@ -54,6 +67,10 @@ export class Controller {
     this.scene.add(this.transformControls);
   }
 
+  /**
+   * Given the current state, return the controls which are in use.
+   * @returns 
+   */
   getControls() {
     switch (this.state) {
       case ControllerState.Normal:
@@ -62,6 +79,20 @@ export class Controller {
       default:
         break;
     }
+  }
+
+  getCustomShape() {
+    var selected = false;
+    var selectedShape;
+    this.selectedGroup.children.forEach((child) => {
+      const shape = this.shapeManager.getShapeFromID(child.name);
+
+      if (shape instanceof CustomShape && !selected) {
+        selectedShape = shape;
+        selected = true;
+      }
+    });
+    return selectedShape;
   }
 
   /**
@@ -101,17 +132,20 @@ export class Controller {
    * @param renderer
    */
   getMousePosition(event, renderer: THREE.WebGLRenderer): void {
-    const canvas = renderer.domElement;
-    const rect = canvas.getBoundingClientRect();
+    event.preventDefault();
 
     const mouse = new THREE.Vector2();
-    mouse.setX(((event.clientX - rect.left) / rect.width) * 2 - 1);
-    mouse.setY(-((event.clientY - rect.top) / rect.height) * 2 + 1);
+    mouse.setX((event.clientX / window.innerWidth) * 2 - 1);
+    mouse.setY(-(event.clientY / window.innerHeight) * 2 + 1);
 
     this.mouse = mouse;
   }
 
   checkForSelection(): void {
+    if (!this.checkForShapes) {
+      return;
+    }
+
     const intersects = this.listIntersections();
     // for some reason when nothing is selected, there are still 3 intersections
     if (intersects.length <= 3) {
@@ -148,5 +182,77 @@ export class Controller {
     const intersects = this.raycaster.intersectObjects(this.scene.children);
 
     return intersects;
+  }
+
+  /**
+   * Begins the insert vertex step.
+   * Sets the control start to insert and instantiates the sphere.
+   */
+  insertVertex() {
+    this.unselectShapes();
+    this.state = ControllerState.Insert;
+    this.orbitControls.enabled = false;
+
+    var sphere;
+    this.selectedGroup.children.forEach((child) => {
+      if (child.geometry instanceof THREE.SphereGeometry) {
+        sphere = child.clone();
+      }
+    });
+    this.scene.add(sphere);
+    sphere.castShadow = true;
+    this.insertingSphere = sphere;
+  }
+
+  /**
+   * Looks after the position of the temporary sphere when inserting vertices
+   */
+  moveInsert() {
+    if (this.state !== ControllerState.Insert) {
+      return;
+    }
+
+    this.raycaster.setFromCamera(this.mouse, this.camera);
+
+    var vector = new THREE.Vector3(this.mouse.x, this.mouse.y, 0.5);
+    vector.unproject(this.camera);
+    // @ts-ignore
+    const camera_pos: THREE.Vector3 = this.camera.position;
+
+    var dir = vector.sub(camera_pos);
+    var distance = this.insertDistance;
+    var pos = camera_pos.clone().add(dir.multiplyScalar(distance));
+
+    // @ts-ignore
+    this.insertingSphere.position.set(pos.x, pos.y, pos.z);
+  }
+
+  /**
+   * Called when the vertex to be inserted is now ready to be inserted. By default this is done when mouse0 is pressed.
+   */
+  finaliseInsertion() {
+    const position = new THREE.Vector3();
+    this.insertingSphere.getWorldPosition(position);
+
+    const shape: CustomShape | undefined = this.getCustomShape();
+    if (!shape) {
+      return;
+    }
+    const localPosition = shape.group.worldToLocal(position);
+
+    shape.addVertex(localPosition);
+
+    this.cleanupInsertion();
+    
+    return;
+  }
+
+  /**
+   * Cleans up after inserting a new vertex.
+   */
+  cleanupInsertion() {
+    this.orbitControls.enabled = true;
+    this.scene.remove(this.insertingSphere);
+    this.state = ControllerState.Normal;
   }
 }

@@ -1,6 +1,15 @@
 import { Controller } from '../controls/Controller.ts';
 import { ControllerState } from './ControllerStates.ts';
 
+
+export function onMouseMove(event, controller: Controller) {
+    controller.getMousePosition(event, controller.renderer);
+
+    if (controller.state === ControllerState.Insert) {
+        controller.moveInsert();
+    }
+}
+
 export function onMouseDown(event, controller: Controller) {
     switch (event.button) {
         case 0: // left mouse has been pressed
@@ -24,6 +33,8 @@ function onLeftMouseClick(event, controller: Controller) {
         case ControllerState.ShapeSelected:
             controller.checkForSelection();
             break;
+        case ControllerState.Insert:
+            controller.finaliseInsertion();
     }
 }
 
@@ -40,6 +51,12 @@ function onRightMouseClick(event, controller: Controller) {
 }
 
 export function onMouseWheelEvent(event, controller: Controller) {
+    if (controller.state === ControllerState.Insert) {
+        controller.insertDistance += event.deltaY * 0.001;
+        controller.moveInsert();
+    }
+
+    // Handling events for mouse wheel up and down separately (if needed eventually)
     if (event.deltaY < 0) {
         onMouseWheelUp(event, controller);
     } else {
@@ -51,10 +68,10 @@ function onMouseWheelUp(event, controller) {
     if (controller.state === ControllerState.Insert) {
         // this is where we would adjust the position of a vertex we are adding
     }
-    console.log("Wheel up!")
+    // console.log("Wheel up!")
 }
 
 
 function onMouseWheelDown(event, controller) {
-    console.log("Wheel down!")
+    // console.log("Wheel down!")
 }
