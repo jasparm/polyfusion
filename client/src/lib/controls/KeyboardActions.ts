@@ -2,6 +2,7 @@ import { Controller } from "../controls/Controller.ts";
 import { ControllerState, MovementState } from "./ControllerStates.ts";
 
 let shapeSelected = false;
+let inserting = false;
 
 export function onKeyDown(event, controller: Controller) {
   const key = event.key;
@@ -22,6 +23,15 @@ export function onKeyDown(event, controller: Controller) {
     controller.movementState = MovementState.Transform;
     controller.transformControls.setMode("translate");
   }
+
+  if (key === 'i' && controller.state === ControllerState.ShapeSelected) {
+    controller.insertVertex();
+  }
+  if (key === "Shift" && controller.state === ControllerState.Insert) {
+    controller.cleanupInsertion();
+    inserting = true;
+    controller.checkForShapes = false;
+  }
 }
 
 export function onKeyUp(event, controller) {
@@ -33,4 +43,11 @@ export function onKeyUp(event, controller) {
     controller.checkForShapes = true;
     shapeSelected = false;
   }
+  // When shift is released, go back to inserting
+  if (key === "Shift" && inserting) {
+    controller.insertVertex();
+    controller.checkForShapes = true;
+    inserting = false;
+  }
+
 }
