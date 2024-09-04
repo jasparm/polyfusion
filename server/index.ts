@@ -13,6 +13,7 @@ require("dotenv").config();
 const uri = process.env.DB_URI;
 const secret_key: string = process.env.SECRET_KEY!;
 
+
 const client = new MongoClient(uri as string, {
     serverApi: {
         version: ServerApiVersion.v1,
@@ -26,7 +27,6 @@ const port = process.env.PORT || 3000;
 let db;
 let db_api: DBApi;
 
-function signup(user: string, password: string) {}
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -54,7 +54,7 @@ app.post("/signup", async (req, res) => {
     if (info.user && info.pass) {
         try {
             await db_api.signup(info.user, info.pass);
-            res.status(201).json({ result: "User Created" });
+            res.status(201).send("User Created");
         } catch (error) {
             if (error instanceof Error) {
                 res.status(400).send(error.message);
@@ -111,7 +111,7 @@ app.post("/storeshape", async (req, res) => {
         const user = (auth as { user?: string }).user ?? "defaultUser";
         try {
             await db_api.storeShape(user, shape);
-            res.status(201).json({ result: "Shape Stored" });
+            res.status(201).send("Shape Stored");
         } catch (error) {
             if (error instanceof Error) {
                 res.status(400).send(error.message);
