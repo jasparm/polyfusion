@@ -9,6 +9,7 @@ import {
   generateCombinations,
 } from "./ShapeHelpers.ts";
 import { collidesWith } from "../Collision.ts";
+import { VertexManager } from "./VertexManager.ts";
 
 /**
  * This class handles all aspects of CustomShape creation.
@@ -17,7 +18,6 @@ import { collidesWith } from "../Collision.ts";
  */
 export class CustomShape {
   scene: THREE.Scene;
-  vertices: THREE.Vector3[]; // List of points in 3D space which will be the vertices
   connections: number[][]; // List of connections between vertices i, j, and k.
   // e.g., number[0] = [1, 0, 3] means there should be plane drawn connecting vertex 1, 0 and 3.
 
@@ -35,6 +35,8 @@ export class CustomShape {
   vertexSize: number = 0.05; // radius of sphere to be added on vertices
   id: string; // this is used to uniquely identify a given custom shape.
 
+  vertexManager: VertexManager;
+
   constructor(
     vertices: number[] = [],
     connections: number[][] = [],
@@ -44,6 +46,7 @@ export class CustomShape {
     scale: number = 1,
     lineColour: THREE.Color = new THREE.Color(0x000000)
   ) {
+    const time = `${Date.now()}`;
     this.connections = connections;
     this.group = new THREE.Group();
     this.wireframe = wireframe;
@@ -52,15 +55,15 @@ export class CustomShape {
     this.scale = scale;
     this.lineColour = lineColour;
 
-    this.vertices = this.mapVerticesToVector3(vertices);
+    this.vertexManager = new VertexManager(time)
+    this.vertexManager.init(vertices, connections)
+
     this.init();
 
-    const time = `${Date.now()}`
     this.id = time;
     this.mesh.name = time;
 
     this.group.add(this.mesh);
-
 
   }
 
@@ -68,21 +71,10 @@ export class CustomShape {
    * Initialises/Resets the current shape.
    */
   init() {
-    var temp: number[] = [];
-    for (let i = 0; i < this.connections.length; i++) {
-      for (let j = 0; j < this.connections[i].length; j++) {
-        temp.push(this.vertices[this.connections[i][j]].x);
-        temp.push(this.vertices[this.connections[i][j]].y);
-        temp.push(this.vertices[this.connections[i][j]].z);
-      }
-    }
-
-    const vertices = new Float32Array(this.connections.length * 9); // Buffer geometry wants a typed array so we convert
-    for (let k = 0; k < temp.length; k++) {
-      vertices[k] = temp[k];
-    }
-
+    const vertices = this.vertexManager.getVerticesInfo()
     const geometry = new THREE.BufferGeometry();
+    console.log(vertices)
+    // console.log(this.vertexManager.getVerticesInfo())
     geometry.setAttribute("position", new THREE.BufferAttribute(vertices, 3));
 
     this.geometry = geometry;
@@ -218,12 +210,14 @@ export class CustomShape {
     // @ts-ignore TypeScript has a whine about the material type when it does not matter.
     const ball_mesh = new THREE.Mesh(ball, ball_material);
 
+    const vertices = this.vertexManager.vertexMap;
     // Create a new ball and place it at the position of each vertex.
-    this.vertices.forEach((vertex) => {
+    vertices.forEach((vertex, id) => {
       const newBall = ball_mesh.clone();
       newBall.position.x = vertex.x;
       newBall.position.y = vertex.y;
       newBall.position.z = vertex.z;
+      newBall.name = id;
       newBall.layers.set(2)
       
       this.group.add(newBall);
@@ -237,18 +231,19 @@ export class CustomShape {
    */
   addVertex(point: THREE.Vector3) {
     // Find the two closest vertices to the point being added
-    const closest = findClosestThreeVertices(this.vertices, point);
+    const old_vertices = this.vertexManager.vertexMap;
+    const closest = findClosestThreeVertices(Array.from(old_vertices.values()), point);
 
     // Check if there are any other vertices with the same distance from the point being added.
     // This way we can connect more than 1 edge at a time.
     const validVertices = checkForVerticesWithSameDistance(
-      this.vertices,
+      Array.from(old_vertices.values()),
       point
     );
 
     const oldGeometry = this.geometry; // if we need to revert back to the old geometry.
 
-    const vertices = [...this.vertices]; // Add the new vertex to the list of vertices
+    const vertices = [...old_vertices]; // Add the new vertex to the list of vertices
 
     // Convert connections to a flat array
     const newConnections = this.convertConnections(this.connections);
@@ -295,21 +290,21 @@ export class CustomShape {
       this.mesh = new THREE.Mesh(oldGeometry, this.material);
       return;
     }
-    vertices.push(point); // add point to the list of vertices
+    // vertices.push(point); // add point to the list of vertices
+    this.vertexManager.add(point)
 
     this.removeCoveredEdge(connections); // remove connecting edges from vertices we have just covered.
 
-
-    this.vertices = vertices;
     this.connections = [];
-    // Convert connections array to be right form factor.
+
     for (let j = 0; j < newConnections.length; j += 3) {
-      this.connections.push([
+      this.vertexManager.connections.push([
         newConnections[j],
         newConnections[j + 1],
         newConnections[j + 2],
       ]);
     }
+
     // Remove all objects from the group
     this.group.remove(...this.group.children);
     this.group.matrixAutoUpdate = true; // no idea what this does but three.js docs says its a good thing.
@@ -326,13 +321,14 @@ export class CustomShape {
    */
   addLinesToEdges(colour: THREE.Color = this.lineColour) {
     const points: THREE.Vector3[] = [];
-
+    const connections = this.vertexManager.connections;
+    const vertices = this.vertexManager.vertexMap;
     // Go over all connections and push the vertices associated with them into the points array.
-    for (let i = 0; i < this.connections.length; i++) {
+    for (let i = 0; i < connections.length; i++) {
       points.push(
-        this.vertices[this.connections[i][0]],
-        this.vertices[this.connections[i][1]],
-        this.vertices[this.connections[i][2]]
+        vertices.get(connections[i][0]) || new THREE.Vector3(),
+        vertices.get(connections[i][1]) || new THREE.Vector3(),
+        vertices.get(connections[i][2]) || new THREE.Vector3()
       );
     }
 
