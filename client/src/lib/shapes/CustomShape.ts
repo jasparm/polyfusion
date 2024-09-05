@@ -73,8 +73,6 @@ export class CustomShape {
   init() {
     const vertices = this.vertexManager.getVerticesInfo()
     const geometry = new THREE.BufferGeometry();
-    console.log(vertices)
-    // console.log(this.vertexManager.getVerticesInfo())
     geometry.setAttribute("position", new THREE.BufferAttribute(vertices, 3));
 
     this.geometry = geometry;
@@ -205,22 +203,21 @@ export class CustomShape {
     radius: number = 0.1,
     colour: THREE.Color = new THREE.Color(0x000000)
   ) {
-    const ball = new THREE.SphereGeometry(radius);
-    const ball_material = new THREE.MeshStandardMaterial({ color: colour });
-    // @ts-ignore TypeScript has a whine about the material type when it does not matter.
-    const ball_mesh = new THREE.Mesh(ball, ball_material);
 
     const vertices = this.vertexManager.vertexMap;
     // Create a new ball and place it at the position of each vertex.
     vertices.forEach((vertex, id) => {
-      const newBall = ball_mesh.clone();
-      newBall.position.x = vertex.x;
-      newBall.position.y = vertex.y;
-      newBall.position.z = vertex.z;
-      newBall.name = id;
-      newBall.layers.set(2)
+      const ball = new THREE.SphereGeometry(radius);
+      const ball_material = new THREE.MeshBasicMaterial({ color: colour });
+      const ball_mesh = new THREE.Mesh(ball, ball_material);
+      // @ts-ignore
+      ball_mesh.position.x = vertex.x;// @ts-ignore
+      ball_mesh.position.y = vertex.y;// @ts-ignore
+      ball_mesh.position.z = vertex.z;
+      ball_mesh.name = id.toString();
+      ball_mesh.layers.set(2)
       
-      this.group.add(newBall);
+      this.group.add(ball_mesh);
     });
   }
 

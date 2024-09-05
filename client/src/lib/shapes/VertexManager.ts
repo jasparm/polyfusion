@@ -47,4 +47,7 @@ export class VertexManager {
     this.id ++;
   }
 
+  getVertexFromID(vertexID: number) {
+    return this.vertexMap.get(vertexID);
+  }
 }
