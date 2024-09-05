@@ -21,8 +21,6 @@ export class ShapeManager {
   insert(shape: CustomShape) {
     this.shapesMap.set(shape.id, shape);
     this.scene.add(shape.group);
-
-    console.log(this.shapesMap);
   }
 
   /**

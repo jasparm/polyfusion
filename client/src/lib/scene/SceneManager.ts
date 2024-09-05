@@ -6,7 +6,11 @@ import {
   onMouseWheelEvent,
   onMouseMove,
 } from "../controls/MouseActions.ts";
-import { onKeyDown, onKeyUp } from "../controls/KeyboardActions.ts";
+import {
+  onKeyDown,
+  onKeyUp,
+  whileKeyDown,
+} from "../controls/KeyboardActions.ts";
 import { ShapeManager } from "../shapes/CustomShapeManager.ts";
 import { CustomShape } from "../shapes/CustomShape.ts";
 import { OrbitControls } from "three/examples/jsm/Addons.js";
@@ -46,11 +50,11 @@ export default class SceneManager {
     this.camera = new THREE.PerspectiveCamera(
       this.fov,
       window.innerWidth / window.innerHeight,
-      1,
-      500
+      this.nearPlane,
+      this.farPlane
     );
     //@ts-ignore
-    this.camera.position.set(0, 0, 10);
+    this.camera.position.set(0, 10, 0);
     this.camera.layers.enable(0); // default layer for meshes
     this.camera.layers.enable(1); // this is the layer for lines on meshes
     this.camera.layers.enable(2); // this is the layer for balls on vertices
@@ -84,8 +88,8 @@ export default class SceneManager {
     this.ambientLight = al;
     this.scene.add(al);
 
-    const dl: any = new THREE.DirectionalLight(0xffffff, 0.8); // directional light
-    dl.position.set(0, 2, 2);
+    const dl: any = new THREE.DirectionalLight(0xffffff, 1); // directional light
+    dl.position.set(0, 10, 0);
     dl.castShadow = true;
     this.directionalLight = dl;
     this.scene.add(dl);
@@ -111,6 +115,7 @@ export default class SceneManager {
         keyStates[key] = true;
         onKeyDown(e, controller);
       }
+      whileKeyDown(e, controller);
     });
 
     window.addEventListener("keyup", (e) => {

@@ -36,7 +36,6 @@ export class CustomShape {
   id: string; // this is used to uniquely identify a given custom shape.
 
   constructor(
-    scene: THREE.Scene,
     vertices: number[] = [],
     connections: number[][] = [],
     wireframe: boolean = false,
@@ -46,7 +45,6 @@ export class CustomShape {
     lineColour: THREE.Color = new THREE.Color(0x000000)
   ) {
     this.connections = connections;
-    this.scene = scene;
     this.group = new THREE.Group();
     this.wireframe = wireframe;
     this.drawBalls = drawBalls;
@@ -97,6 +95,7 @@ export class CustomShape {
     // @ts-ignore Typescript does not like material being passed here even though it works.
     this.mesh = new THREE.Mesh(this.geometry, this.material);
     this.mesh.castShadow = true;
+    this.mesh.receiveShadow = true;
 
     if (!this.wireframe) {
       this.group.add(this.mesh);
@@ -129,21 +128,22 @@ export class CustomShape {
    * @returns Boolean representing of the shape is convex or not.
    */
   isConvex(): boolean {
-    const point = getCentrePoint(this.mesh);
+    // const point = getCentrePoint(this.mesh);
 
-    this.connections.forEach((connection) => {
-      const vertex1 = this.vertices[connection[0]];
-      const vertex2 = this.vertices[connection[1]];
-      const vertex3 = this.vertices[connection[2]];
+    // this.connections.forEach((connection) => {
+    //   const vertex1 = this.vertices[connection[0]];
+    //   const vertex2 = this.vertices[connection[1]];
+    //   const vertex3 = this.vertices[connection[2]];
 
-      const normal = computeNormal(vertex1, vertex2, vertex3);
+    //   const normal = computeNormal(vertex1, vertex2, vertex3);
 
-      const collisions = collidesWith(point, normal, this.scene, 0);
+      // this is pretty silly as the reference to scene should be unneeded.
+      // const collisions = collidesWith(point, normal, this.scene, 0);
       // Check if we collide with more than 1 face. If this is convex, it should only collide with 1 face.
-      if (collisions.length > 1) {
-        return false;
-      }
-    });
+    //   if (collisions.length > 1) {
+    //     return false;
+    //   }
+    // });
 
     return true;
   }

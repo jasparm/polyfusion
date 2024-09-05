@@ -69,7 +69,6 @@ export class Controller {
 
   /**
    * Given the current state, return the controls which are in use.
-   * @returns 
    */
   getControls() {
     switch (this.state) {
@@ -243,7 +242,7 @@ export class Controller {
     shape.addVertex(localPosition);
 
     this.cleanupInsertion();
-    
+
     return;
   }
 

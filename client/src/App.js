@@ -87,7 +87,6 @@ function App() {
 
 
     const shape = new CustomShape(
-      test.scene,
       verticesOfPyramid,
       indicesOfPyramid2,
       false,
@@ -106,11 +105,12 @@ function App() {
     // shape.addVertex(new THREE.Vector3(-1, 1, 2));
     // shape.addVertex(new THREE.Vector3(-3, 1, -1));
 
-    // const cube = new CustomBox(test.scene, 5.5, 2, 3, new THREE.Color(0x0000ff));
+    const cube = new CustomBox(5.5, 2, 3, new THREE.Color(0x0000ff));
     // cube.wireframe = false;;
     // cube.addVertex(new THREE.Vector3(0, 0, 5))
     // cube.group.position.z = 5
     // test.scene.add(cube.group);
+    test.add(cube)
 
     const MonteCarlo = new MonteCarloManager(
       [mesh, octahedron_mesh],
