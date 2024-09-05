@@ -1,7 +1,5 @@
 import * as THREE from "three";
 import Stats from "three/examples/jsm/libs/stats.module.js";
-import { isInsideObjects } from "../Collision.ts";
-import { getCentrePoint } from "../MeshHelper.ts";
 import { Controller } from "../controls/Controller.ts";
 import {
   onMouseDown,
@@ -9,26 +7,36 @@ import {
   onMouseMove,
 } from "../controls/MouseActions.ts";
 import { onKeyDown, onKeyUp } from "../controls/KeyboardActions.ts";
-import { ShapeManger } from "../shapes/CustomShapeManager.ts";
+import { ShapeManager } from "../shapes/CustomShapeManager.ts";
 import { CustomShape } from "../shapes/CustomShape.ts";
+import { OrbitControls } from "three/examples/jsm/Addons.js";
 
 export default class SceneManager {
-  constructor(canvasId) {
-    // NOTE: Core components to initialize Three.js app.
-    this.scene = undefined;
-    this.camera = undefined;
-    this.renderer = undefined;
+  // NOTE: Core components to initialize Three.js app.
+  private scene: THREE.Scene;
+  camera: THREE.PerspectiveCamera;
+  renderer: THREE.WebGLRenderer;
 
+  fov: number;
+  nearPlane: number;
+  farPlane: number;
+  canvasId: string;
+
+  controls: OrbitControls;
+  stats: any;
+
+  // Lights
+  ambientLight: THREE.AmbientLight;
+  directionalLight: THREE.DirectionalLight;
+
+  shapeManager: ShapeManager; // this manages shapes for this scene
+
+  constructor(canvasId: string) {
     // NOTE: Camera params;
     this.fov = 75;
     this.nearPlane = 1;
     this.farPlane = 1000;
     this.canvasId = canvasId;
-
-    this.controls = undefined;
-    this.stats = undefined; // for tracking FPS and performance
-
-    this.shapeManger = undefined; // manages shapes for us
   }
 
   init() {
@@ -41,6 +49,7 @@ export default class SceneManager {
       1,
       500
     );
+    //@ts-ignore
     this.camera.position.set(0, 0, 10);
     this.camera.layers.enable(0); // default layer for meshes
     this.camera.layers.enable(1); // this is the layer for lines on meshes
@@ -53,24 +62,33 @@ export default class SceneManager {
       canvas,
       antialias: true,
     });
+    // @ts-ignore shadow map does indeed exist of renderer as much as this think it doesn't
     this.renderer.shadowMap.enabled = true;
     this.renderer.setSize(window.innerWidth, window.innerHeight);
     document.body.appendChild(this.renderer.domElement);
-
-    // Add controls
-    // this.controls = new OrbitControls(this.camera, this.renderer.domElement);
 
     // Comment out to enable/disable performance tracker
     this.stats = Stats();
     document.body.appendChild(this.stats.dom);
 
-    this.shapeManger = new ShapeManger(this.scene);
+    this.shapeManager = new ShapeManager(this.scene);
     const controller = new Controller(
       this.scene,
       this.camera,
       this.renderer,
-      this.shapeManger
+      this.shapeManager
     );
+
+    // Lights
+    const al = new THREE.AmbientLight(0xffffff, 0.7); // ambient light
+    this.ambientLight = al;
+    this.scene.add(al);
+
+    const dl: any = new THREE.DirectionalLight(0xffffff, 0.8); // directional light
+    dl.position.set(0, 2, 2);
+    dl.castShadow = true;
+    this.directionalLight = dl;
+    this.scene.add(dl);
 
     // Event listeners
     window.addEventListener("resize", () => this.onWindowResize(), false);
@@ -114,21 +132,6 @@ export default class SceneManager {
   render() {
     this.scene.updateMatrixWorld(true);
     this.renderer.render(this.scene, this.camera);
-
-    const inside = isInsideObjects(
-      getCentrePoint(this.sphere),
-      [this.octahedron],
-      this.scene
-    );
-    if (inside) {
-      this.sphere.material = new THREE.MeshStandardMaterial({
-        color: 0x00ff00,
-      });
-    } else {
-      this.sphere.material = new THREE.MeshStandardMaterial({
-        color: 0xff0000,
-      });
-    }
   }
 
   onWindowResize() {
@@ -138,9 +141,9 @@ export default class SceneManager {
     this.renderer.setSize(window.innerWidth, window.innerHeight);
   }
 
-  add(object) {
+  add(object: THREE.Object3D) {
     if (object instanceof CustomShape) {
-      this.shapeManger.insert(object);
+      this.shapeManager.insert(object);
       return;
     }
     this.scene.add(object);

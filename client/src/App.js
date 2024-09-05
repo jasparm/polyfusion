@@ -2,7 +2,7 @@ import React from "react";
 
 import * as THREE from "three";
 
-import SceneManager from "./lib/scene/SceneManager.js";
+import SceneManager from "./lib/scene/SceneManager.ts";
 import CustomGui from "./lib/Gui";
 import { MonteCarloManager } from "./lib/algorithms/MonteCarlo";
 
@@ -60,16 +60,6 @@ function App() {
     gui.init_mesh(test.mesh);
     gui.init_ball(ball_mesh);
 
-    const al = new THREE.AmbientLight(0xffffff, 0.7); // ambient light
-
-    test.scene.add(al);
-
-    const dl = new THREE.DirectionalLight(0xffffff, 0.8); // directional light
-    dl.position.set(0, 2, 2);
-    dl.castShadow = true;
-
-    test.scene.add(dl);
-    gui.init_light(dl, al);
 
     const octahedron = new THREE.OctahedronGeometry(2, 0);
     const octahedron_mat = new THREE.MeshStandardMaterial({

@@ -5,7 +5,7 @@ import * as THREE from "three";
  * This class is very important for keeping track of custom shapes.
  * Otherwise there is no real way of getting an instance of a custom shape.
  */
-export class ShapeManger {
+export class ShapeManager {
   private shapesMap: Map<string, CustomShape>;
   private scene: THREE.Scene;
 

@@ -1,7 +1,7 @@
 import * as THREE from "three";
 import { OrbitControls, TransformControls } from "three/examples/jsm/Addons.js";
 import { ControllerState, MovementState } from "./ControllerStates.ts";
-import { ShapeManger } from "../shapes/CustomShapeManager.ts";
+import { ShapeManager } from "../shapes/CustomShapeManager.ts";
 import { CustomShape } from "../shapes/CustomShape.ts";
 
 /**
@@ -27,13 +27,13 @@ export class Controller {
   insertingSphere: THREE.Mesh;
   insertDistance: number = 1;
 
-  shapeManager: ShapeManger;
+  shapeManager: ShapeManager;
 
   constructor(
     scene: THREE.Scene,
     camera: THREE.Camera,
     renderer: THREE.WebGLRenderer,
-    shapeManager: ShapeManger
+    shapeManager: ShapeManager
   ) {
     this.scene = scene;
     this.camera = camera;
