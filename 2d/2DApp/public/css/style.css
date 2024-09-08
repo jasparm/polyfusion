@@ -1,0 +1,81 @@
+/* Navbar styling */
+.navbar {
+    background-color: #333;
+    padding: 1rem;
+    display: flex;
+    align-items: center;
+}
+
+.navbar-brand {
+    color: #fff;
+    font-size: 1.5rem;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+}
+
+.navbar-brand img {
+    margin-right: 10px;
+}
+
+button {
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    padding: 0.5rem 1rem;
+    margin: 0.5rem;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1rem;
+    transition: background-color 0.3s ease;
+}
+
+button:hover {
+    background-color: #0056b3;
+}
+
+button:focus {
+    outline: none;
+}
+
+.dropdown-toggle {
+    background-color: #6c757d;
+    color: #fff;
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1rem;
+}
+
+.dropdown-menu {
+    background-color: #fff;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    padding: 0.5rem;
+}
+
+.dropdown-menu a {
+    color: #333;
+    text-decoration: none;
+    display: block;
+    padding: 0.5rem 1rem;
+}
+
+.dropdown-menu a:hover {
+    background-color: #f8f9fa;
+}
+
+/* Canvas container styling */
+#canvas-container {
+    width: 80%;
+    height: 80vh;
+    margin: 0 auto;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+canvas {
+    display: block;
+}
