@@ -44,8 +44,13 @@ app.get('/shapes', (req, res) => {
     res.json(savedShapes);
 });
 
-// Only serving home page for now.
+// Serving the landing page
 app.get("/", (req, res) => {
+    res.render("landing", { title: "Polyfusion", savedShapes: savedShapes });
+});
+
+// Serving the 2D page
+app.get("/2d", (req, res) => {
     res.render("index", { title: "Polyfusion", savedShapes: savedShapes });
 });
 
