@@ -12,6 +12,7 @@ export class Controller {
   camera: THREE.Camera;
   mouse: THREE.Vector2;
   selectedGroup: THREE.Group;
+  selectedVertex: THREE.Mesh | null;
   renderer: THREE.WebGLRenderer;
 
   // different types of controls we have in our scene at any given time.
@@ -41,6 +42,7 @@ export class Controller {
     this.state = ControllerState.Normal;
     this.renderer = renderer;
     this.initControls();
+    this.selectedVertex = null;
 
     this.shapeManager = shapeManager;
 
@@ -152,6 +154,7 @@ export class Controller {
     }
 
     let foundGroup = false;
+    let selectedVertex = false;
     var parentGroup;
     intersects.forEach((intersect) => {
       const object: THREE.Object3D = intersect.object;
@@ -159,6 +162,19 @@ export class Controller {
       parentGroup = object.parent;
       while (parentGroup && !(parentGroup instanceof THREE.Group)) {
         parentGroup = parentGroup.parent;
+      }
+
+      if (
+        object instanceof THREE.Mesh &&
+        !selectedVertex &&
+        object.geometry instanceof THREE.SphereGeometry &&
+        parentGroup
+      ) {
+        selectedVertex = true;
+        this.selectedVertex = object;
+        this.selectedGroup = parentGroup;
+        this.selectVertex(object);
+        return;
       }
 
       // We have selected a custom shape
@@ -253,5 +269,19 @@ export class Controller {
     this.orbitControls.enabled = true;
     this.scene.remove(this.insertingSphere);
     this.state = ControllerState.Normal;
+  }
+
+  selectVertex(object: THREE.Object3D) {
+    const id = Number(object.name);
+    const shapeID = this.getCustomShape().mesh.name;
+    // with above information, we can get the information of the correct vertex.
+    const shape: CustomShape | undefined = this.shapeManager.getShapeFromID(shapeID);
+    if (!shape) { return ;}
+    const vertex = shape.vertexManager.getVertexFromID(id); // this is the vertex instance.
+
+    // @ts-ignore
+    console.log(object.material.color = new THREE.Color(100, 100, 100));
+
+    console.log(vertex);
   }
 }
