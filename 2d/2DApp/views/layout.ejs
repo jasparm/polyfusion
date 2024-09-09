@@ -31,15 +31,6 @@
       </div>
 
       <button id="pause-monte-btn" type="button" class="btn">Pause</button>
-      <button id="sutherland-btn" type="button" class="btn">Intersection</button>
-    </div>
-
-    <!-- Main content -->
-    <div class="main-content">
-      <nav class="navbar">
-        <button id="monte-carlo-btn" type="button" class="btn">Monte Carlo</button>
-        <button id="2d-btn" type="button" class="btn" onclick="location.href='/2d'">2D</button>
-      </nav>
 
       <!-- Modal for saving shapes -->
       <div class="modal fade" id="saveModal" tabindex="-1" aria-labelledby="saveModalLabel" aria-hidden="true">
@@ -64,17 +55,28 @@
           </form>
         </div>
       </div>
+    </div>
+
+    <!-- Main content -->
+    <div class="main-content">
+      <nav class="navbar">
+        <button id="monte-carlo-btn" type="button" class="btn">Monte Carlo</button>
+        <button id="sutherland-btn" type="button" class="btn">Intersection</button>
+        <button id="2d-btn" type="button" class="btn" onclick="location.href='/2d'">2D</button>
+        <button id="home-btn" type="button" class="btn" onclick="location.href='/'">Home</button>
+        <button id="theme-btn" type="button" class="btn">Theme</button>
+      </nav>
 
       <%- body %>
     </div>
 
-    <!-- Custom JS for Bootstrap dropdown -->
+    <!-- Custom JS for Theme Toggle -->
     <script>
       document.addEventListener('DOMContentLoaded', function() {
-        var dropdownElementList = [].slice.call(document.querySelectorAll('.dropdown-toggle'))
-        var dropdownList = dropdownElementList.map(function (dropdownToggleEl) {
-          return new bootstrap.Dropdown(dropdownToggleEl)
-        })
+        const themeBtn = document.getElementById('theme-btn');
+        themeBtn.addEventListener('click', () => {
+          document.documentElement.classList.toggle('dark-theme');
+        });
       });
     </script>
   </body>
