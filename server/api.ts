@@ -12,6 +12,15 @@ export class DBApi {
     }
 
     async signup(this: DBApi, username: string, password: string) {
+        /*
+        Creates a user if one does not already exist with that name
+        */
+       
+        if (username.includes("users")) { // Prevent user from overwriting users database
+            throw new Error("Invalid username")
+        }
+
+        // Check if username already exists
         const existingUser = await this.db
             .collection("users")
             .findOne({ user: username });
@@ -24,7 +33,7 @@ export class DBApi {
             bcrypt.hash(
                 password,
                 10,
-                async (err: Error | null, hash: string) => {
+                async (err: Error | null, hash: string) => { // Error handling for password hashing
                     if (err) {
                         throw err;
                     }
@@ -42,6 +51,9 @@ export class DBApi {
     }
 
     async login(this: DBApi, username: string, password: string) {
+        /*
+        Check's user login details, returning True if correct username and password
+        */
         const userAccount = await this.db
             .collection("users")
             .findOne({ user: username });
@@ -50,15 +62,20 @@ export class DBApi {
             throw new Error("Incorrect user details");
         }
 
+         // Verifies hash of input password and stored hash for user match
         const match = await bcrypt.compare(password, userAccount.pass);
 
         return match;
     }
 
     async storeShape(this: DBApi, username: string, shape: Shape) {
+        /*
+        Stores a shape associated with a user
+        */
         const existingShape = await this.db
             .collection(username)
             .findOne({ name: shape.name });
+
         if (existingShape) {
             throw new Error("A shape with this name already exists");
         }
@@ -72,6 +89,9 @@ export class DBApi {
     }
 
     async getShapes(this: DBApi, username: string) {
+        /*
+        Returns all shapes associated with a username
+        */
         try {
             const result = await this.db.collection(username).find().toArray();
             //console.log(result);
@@ -83,6 +103,9 @@ export class DBApi {
     }
 
     async getShape(this: DBApi, username: string, shapename: string) {
+        /*
+        Returns a user's shape called shapename if it exists
+        */
         try {
             const result = await this.db
                 .collection(username)
