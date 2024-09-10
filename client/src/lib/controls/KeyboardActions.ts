@@ -24,6 +24,10 @@ export function onKeyDown(event, controller: Controller) {
     controller.movementState = MovementState.Transform;
     controller.transformControls.setMode("translate");
   }
+  if (key === "KeyS" && controller.state === ControllerState.ShapeSelected) {
+    controller.movementState = MovementState.Scale;
+    controller.transformControls.setMode("scale");
+  }
 
   if (key === "KeyI" && controller.state === ControllerState.ShapeSelected) {
     controller.insertVertex();
