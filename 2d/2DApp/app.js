@@ -39,6 +39,8 @@ app.listen(PORT_NUM, () => {
 
 // Saved shapes
 let savedShapes = [];
+let userTheme = 'light'; // Default theme
+let users = []; // Array to store user login data
 
 app.get('/shapes', (req, res) => {
     res.json(savedShapes);
@@ -46,26 +48,45 @@ app.get('/shapes', (req, res) => {
 
 // Serving the landing page
 app.get("/", (req, res) => {
-    res.render("landing", { title: "Polyfusion", savedShapes: savedShapes });
+    res.render("landing", { title: "Polyfusion", savedShapes: savedShapes, theme: userTheme });
 });
 
 // Serving the 2D page
 app.get("/2d", (req, res) => {
-    res.render("index", { title: "Polyfusion", savedShapes: savedShapes });
+    res.render("index", { title: "Polyfusion", savedShapes: savedShapes, theme: userTheme });
 });
 
 // Using a post request to save shapes for now
 app.post("/", (req, res) => {
-    // Getting the shape posted
     const newShape = req.body.shape;
     if (newShape) {
-        // Pushing to the list
-        //! Change this to db.insertOne() when we use Mongo
         savedShapes.push(newShape);
-        console.log(savedShapes)
-        res.json( {success: true} );
+        console.log(savedShapes);
+        res.json({ success: true });
     } else {
         res.status(400).json({ success: false, message: "Invalid shape data" });
-    };
+    }
     console.log("received post");
+});
+
+// Route to handle theme changes
+app.post("/theme", (req, res) => {
+    const newTheme = req.body.theme;
+    if (newTheme) {
+        userTheme = newTheme;
+        res.json({ success: true });
+    } else {
+        res.status(400).json({ success: false, message: "Invalid theme data" });
+    }
+});
+
+// Route to handle login data
+app.post("/login", (req, res) => {
+    const { username, password } = req.body;
+    if (username && password) {
+        users.push({ username, password });
+        res.json({ success: true });
+    } else {
+        res.status(400).json({ success: false, message: "Invalid login data" });
+    }
 });

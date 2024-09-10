@@ -1,25 +1,36 @@
 /* Define default theme variables */
 :root {
-    --primary-color: #007bff;
-    --secondary-color: #6c757d;
-    --background-color: #fff;
-    --text-color: #fff;
-    --hover-color: #0056b3;
+    --primary-color: #f2f4ffff;
+    --secondary-color: #a9d3ffff;
+    --background-color: #96c5f7ff;
+    --hovor-color: #93acb5ff;
+    --text-color: #424b54ff;
     --dropdown-hover-color: #f8f9fa;
     --dropdown-border-color: #ccc;
     --dropdown-text-color: #333;
+
+    --charcoal: #424b54ff;
+    --cadet-gray: #93acb5ff;
+    --jordy-blue: #96c5f7ff;
+    --uranian-blue: #a9d3ffff;
+    --ghost-white: #f2f4ffff;
 }
 
-/* Define dark theme variables */
 :root.dark-theme {
-    --primary-color: #1e90ff;
-    --secondary-color: #2f4f4f;
-    --background-color: #000;
-    --text-color: #f0f0f0;
-    --hover-color: #1c86ee;
+    --primary-color: #343a40;
+    --secondary-color: #495057;
+    --background-color: #212529;
+    --hover-color: #1c1e21;
+    --text-color: #ffffff;
     --dropdown-hover-color: #2f4f4f;
     --dropdown-border-color: #444;
     --dropdown-text-color: #f0f0f0;
+
+    --onyx: #474448ff;
+    --raisin-black: #2d232eff;
+    --wenge: #534b52ff;
+    --air-superiority-blue: #7a93acff;
+    --jordy-blue: #96c5f7ff;
 }
 
 /* Navbar styling */

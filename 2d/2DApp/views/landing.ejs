@@ -1,0 +1,42 @@
+<div class="landing-page">
+  <h1>Welcome to Polyfusion</h1>
+  <p>Your gateway to advanced shape creation and manipulation.</p>
+
+  <!-- Login Options -->
+  <div class="login-options">
+    <form id="login-form" action="/login" method="POST">
+      <input type="text" name="username" placeholder="Username" required>
+      <input type="password" name="password" placeholder="Password" required>
+      <button type="submit" class="btn">Log In</button>
+    </form>
+  </div>
+</div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const loginForm = document.getElementById('login-form');
+    loginForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      fetch('/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          username: loginForm.username.value,
+          password: loginForm.password.value
+        })
+      })
+      .then(response => response.json())
+      .then(data => {
+        if (data.success) {
+          alert('Login successful');
+        } else {
+          alert('Login failed: ' + data.message);
+        }
+      });
+    });
+  });
+</script>
+
+

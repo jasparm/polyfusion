@@ -74,9 +74,33 @@
     <script>
       document.addEventListener('DOMContentLoaded', function() {
         const themeBtn = document.getElementById('theme-btn');
+
+        // Function to apply the theme
+        const applyTheme = (theme) => {
+          document.documentElement.classList.toggle('dark-theme', theme === 'dark');
+        };
+
+        // Function to save the theme to Local Storage
+        const saveTheme = (theme) => {
+          localStorage.setItem('theme', theme);
+        };
+
+        // Function to load the theme from Local Storage
+        const loadTheme = () => {
+          const savedTheme = localStorage.getItem('theme') || 'light';
+          applyTheme(savedTheme);
+        };
+
+        // Event listener for theme button
         themeBtn.addEventListener('click', () => {
-          document.documentElement.classList.toggle('dark-theme');
+          const currentTheme = document.documentElement.classList.contains('dark-theme') ? 'dark' : 'light';
+          const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+          applyTheme(newTheme);
+          saveTheme(newTheme);
         });
+
+        // Load the theme on page load
+        loadTheme();
       });
     </script>
   </body>
