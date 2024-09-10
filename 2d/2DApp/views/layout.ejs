@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/css/styles.css">
+    <title><%= title %></title>
+  </head>
+  <body>
+    <!-- Sidebar -->
+    <div class="sidebar">
+      <a class="navbar-brand" href="/">
+        <img src="images/polystar.png" alt="Polyfusion Logo" width="64" height="64">
+        Polyfusion
+      </a>
+      <button id="select-shape-btn" type="button" class="btn">Select Shape</button>
+      <button id="create-shape-btn" type="button" class="btn">Create Shape</button>
+      <button id="save-shape-btn" type="button" class="btn" data-bs-toggle="modal" data-bs-target="#saveModal">Save Shape</button>
+      
+      <!-- Load shapes dropdown -->
+      <div class="dropdown">
+        <button class="btn dropdown-toggle" type="button" id="loadShapesDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+          Load Shapes
+        </button>
+        <ul id="shapesDropdown" class="dropdown-menu" aria-labelledby="loadShapesDropdown">
+          <% for( let i = 0; i < savedShapes.length; i++ ) { %>
+            <li><a class="dropdown-item" href="#"><%= savedShapes[i].name %></a></li>
+          <% } %>
+        </ul>
+      </div>
+
+      <button id="pause-monte-btn" type="button" class="btn">Pause</button>
+
+      <!-- Modal for saving shapes -->
+      <div class="modal fade" id="saveModal" tabindex="-1" aria-labelledby="saveModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+          <form id="saveShapeForm">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h1 class="modal-title fs-5" id="saveModalLabel">Save Shape</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+              </div>
+              <div class="modal-body">
+                <div class="mb-3">
+                  <label for="shape-name" class="col-form-label">Shape Name:</label>
+                  <input autofocus type="text" class="form-control" id="shape-name">
+                </div>
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button id="save-shape" type="submit" class="btn btn-primary" data-bs-dismiss="modal">Save Shape</button>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <!-- Main content -->
+    <div class="main-content">
+      <nav class="navbar">
+        <button id="monte-carlo-btn" type="button" class="btn">Monte Carlo</button>
+        <button id="sutherland-btn" type="button" class="btn">Intersection</button>
+        <button id="2d-btn" type="button" class="btn" onclick="location.href='/2d'">2D</button>
+        <button id="home-btn" type="button" class="btn" onclick="location.href='/'">Home</button>
+        <button id="theme-btn" type="button" class="btn">Theme</button>
+      </nav>
+
+      <%- body %>
+    </div>
+
+    <!-- Theme Toggle -->
+    <script>
+      document.addEventListener('DOMContentLoaded', function() {
+        const themeBtn = document.getElementById('theme-btn');
+        themeBtn.addEventListener('click', () => {
+          document.documentElement.classList.toggle('dark-theme');
+        });
+      });
+    </script>
+  </body>
+</html>
