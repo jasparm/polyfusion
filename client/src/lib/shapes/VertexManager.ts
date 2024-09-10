@@ -2,7 +2,6 @@ import * as THREE from "three";
 
 export class VertexManager {
   vertexMap: Map<number, THREE.Vector3>;
-  connections: number[][];
   selectedVertices: number[]; // this stores a list of all the currently selected vertices
 
   id: number;
@@ -14,7 +13,7 @@ export class VertexManager {
     this.selectedVertices = [];
   }
 
-  init(vertices: number[], connections: number[][]) {
+  init(vertices: number[]) {
     for (let i = 0; i < vertices.length; i += 3) {
       this.vertexMap.set(
         this.id,
@@ -22,26 +21,16 @@ export class VertexManager {
       );
       this.id++;
     }
-    this.connections = connections;
   }
 
-  getVerticesInfo(): Float32Array {
-    var temp: number[] = [];
-    for (let i = 0; i < this.connections.length; i++) {
-      for (let j = 0; j < this.connections[i].length; j++) {
-        const vertex = this.vertexMap.get(this.connections[i][j]);
-        if (vertex) {
-          temp.push(vertex.x);
-          temp.push(vertex.y);
-          temp.push(vertex.z);
-        }
-      }
-    }
-    const vertices = new Float32Array(this.connections.length * 9); // Buffer geometry wants a typed array so we convert
-    for (let k = 0; k < temp.length; k++) {
-      vertices[k] = temp[k];
-    }
-    return vertices;
+  getVerticesInfo(): THREE.Vector3[] {
+    let temp2: THREE.Vector3[] = [];
+    // return vertices;
+    this.vertexMap.forEach((key, value) => {
+      temp2.push(key)
+    })
+
+    return temp2;
   }
 
   add(vertex: THREE.Vector3) {
