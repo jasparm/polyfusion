@@ -60,11 +60,15 @@
     <!-- Main content -->
     <div class="main-content">
       <nav class="navbar">
-        <button id="monte-carlo-btn" type="button" class="btn">Monte Carlo</button>
-        <button id="sutherland-btn" type="button" class="btn">Intersection</button>
-        <button id="2d-btn" type="button" class="btn" onclick="location.href='/2d'">2D</button>
-        <button id="home-btn" type="button" class="btn" onclick="location.href='/'">Home</button>
-        <button id="theme-btn" type="button" class="btn">Theme</button>
+        <div class="navbar-left">
+          <button id="monte-carlo-btn" type="button" class="btn">Monte Carlo</button>
+          <button id="sutherland-btn" type="button" class="btn">Intersection</button>
+          <button id="theme-btn" type="button" class="btn">Theme</button>
+        </div>
+        <div class="navbar-right">
+          <button id="2d-btn" type="button" class="btn" onclick="location.href='/2d'">2D</button>
+          <button id="home-btn" type="button" class="btn" onclick="location.href='/'">Home</button>
+        </div>
       </nav>
 
       <%- body %>
