@@ -26,10 +26,16 @@ export const state = {
 
 export let setup = () => {
     // Canvas Setup
+    let container = document.getElementById('canvas-container');
+    let containerWidth = container.offsetWidth;
+    let containerHeight = container.offsetHeight;
+
+    state.canvas = createCanvas(containerWidth, containerHeight);
+    state.canvas.parent('canvas-container');
     // const canvas = select("#canvas-container");
     // state.canvas = createCanvas(canvas.width, canvas.height);
-    state.canvas = createCanvas(windowWidth, windowHeight);
-    state.canvas.parent('canvas-container');
+    // state.canvas = createCanvas(windowWidth, windowHeight);
+    // state.canvas.parent('canvas-container');
 
     // Disabling default context menu as we want right-clicking capability
     state.canvas.elt.oncontextmenu = (e) => {
