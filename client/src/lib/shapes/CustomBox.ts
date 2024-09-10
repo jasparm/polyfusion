@@ -16,10 +16,7 @@ export class CustomBox extends CustomShape {
     this.width = width;
     this.height = height;
     this.colour = colour;
-
-    // Get vertices and connections for a box.
-    this.vertices = this.mapVerticesToVector3(this.createVertices());
-    this.connections = this.createConnections();
+    this.vertexManager.init(this.createVertices())
 
     this.init();
     this.group.add(this.mesh);
@@ -44,21 +41,6 @@ export class CustomBox extends CustomShape {
        halfLength, -halfWidth,  halfHeight, // Vertex 5
        halfLength,  halfWidth,  halfHeight, // Vertex 6
       -halfLength,  halfWidth,  halfHeight  // Vertex 7
-    ];
-  }
-
-  /**
-   * Creates the connections (faces) for the cube.
-   * @returns An array of connections where each connection is an array of three vertex indices.
-   */
-  private createConnections(): number[][] {
-    return [
-      [0, 1, 2], [0, 2, 3], // Front face
-      [1, 5, 6], [1, 6, 2], // Right face
-      [5, 4, 7], [5, 7, 6], // Back face
-      [4, 0, 3], [4, 3, 7], // Left face
-      [3, 2, 6], [3, 6, 7], // Top face
-      [0, 4, 5], [0, 5, 1]  // Bottom face
     ];
   }
 
