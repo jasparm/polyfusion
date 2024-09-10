@@ -37,14 +37,13 @@
 .navbar {
     background-color: var(--background-color);
     padding: 1rem;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    position: fixed;
-    top: 0;
-    left: 250px;
-    right: 0;
-    z-index: 1000;
+    height: 20%;
+    /* display: flex; */
+    /* justify-content: space-between; */
+    /* align-items: center; */
+    /* top: 0; */
+    /* left: 250px; */
+    /* right: 0; */
 }
 
 .navbar-left {
@@ -79,7 +78,7 @@ button {
     border-radius: 5px;
     cursor: pointer;
     font-size: 1rem;
-    transition: background-color 0.3s ease;
+    transition: background-color 0.3s;
 }
 
 button:hover {
@@ -122,15 +121,14 @@ button:focus {
 /* Sidebar styling */
 .sidebar {
     height: 100%;
-    width: 250px;
-    position: fixed;
-    top: 0;
-    left: 0;
+    /* width: 250px; */
+    /* top: 0; */
+    /* left: 0; */
     background-color: var(--background-color);
-    padding-top: 20px;
-    display: flex;
+    /* padding-top: 20px; */
+    /* display: flex;
     flex-direction: column;
-    align-items: center;
+    align-items: center; */
 }
 
 .sidebar .navbar-brand {
@@ -195,23 +193,21 @@ button:focus {
 }
 
 /* Main content styling */
-.main-content {
-    margin-left: 225px; /* Width of the sidebar */
-    margin-top: 65px; /* Height of the navbar */
-    padding: 20px;
-    box-sizing: border-box;
-    height: calc(100vh - 60px); /* Full height minus the navbar height */
-}
 
-/* Canvas styling */
-canvas {
-    width: 100%;
-    height: 100%;
-    display: block;
-}
+/* .main-content { */
+    /* margin-left: 225px; Width of the sidebar */
+    /* margin-top: 65px; Height of the navbar */
+    /* padding: 20px; */
+    /* box-sizing: border-box; */
+    /* height: calc(100vh - 60px); Full height minus the navbar height */
+/* } */
 
 /* Canvas container styling */
 #canvas-container {
-    display: flex;
+    /* display: flex; */
+    margin-left: 250px;
 }
+
+
+
 

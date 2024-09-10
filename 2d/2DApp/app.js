@@ -56,6 +56,11 @@ app.get("/2d", (req, res) => {
     res.render("index", { title: "Polyfusion", savedShapes: savedShapes, theme: userTheme });
 });
 
+// Serving the 3D page
+app.get("/3d", (req, res) => {
+    res.render("3d", { title: "Polyfusion", savedShapes: savedShapes, theme: userTheme });
+});
+
 // Using a post request to save shapes for now
 app.post("/", (req, res) => {
     const newShape = req.body.shape;
