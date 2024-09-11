@@ -1,7 +1,6 @@
 import * as THREE from "three";
 import { ConvexGeometry } from "three/addons/geometries/ConvexGeometry.js";
 
-
 import { VertexManager } from "./VertexManager.ts";
 
 /**
@@ -63,10 +62,10 @@ export class CustomShape {
 
     this.material = new THREE.MeshStandardMaterial({
       color: this.colour,
-      flatShading: true
+      flatShading: true,
     });
 
-    // @ts-ignore Typescript does not like material being passed here even though it works.
+    // create a new mesh from the geometry and material
     this.mesh = new THREE.Mesh(this.geometry, this.material);
     this.mesh.castShadow = true;
     this.mesh.receiveShadow = true;
@@ -101,7 +100,7 @@ export class CustomShape {
    *
    * @returns New array containing Vector3 elements that represent each vertex.
    */
-  mapVerticesToVector3(vertices): THREE.Vector3[] {
+  mapVerticesToVector3(vertices: number[]): THREE.Vector3[] {
     var vertexes: THREE.Vector3[] = [];
     // const vertices = this.geometry.attributes.position.array;
 
@@ -152,13 +151,21 @@ export class CustomShape {
       const ball = new THREE.SphereGeometry(radius);
       const ball_material = new THREE.MeshBasicMaterial({ color: colour });
       const ball_mesh = new THREE.Mesh(ball, ball_material);
-      // @ts-ignore
-      ball_mesh.position.x = vertex.x; // @ts-ignore
-      ball_mesh.position.y = vertex.y; // @ts-ignore
-      ball_mesh.position.z = vertex.z;
+      ball_mesh.position.set(vertex.x, vertex.y, vertex.z);
+
+      // this ensures that a ball maintains its scale by scaling by the inverse of any group scaling
+      ball_mesh.onBeforeRender = () => {
+        const scale = this.group.scale;
+        const inverseScale = new THREE.Vector3(
+          1 / scale.x,
+          1 / scale.y,
+          1 / scale.z
+        );
+        ball_mesh.scale.copy(inverseScale); // Prevent the ball from scaling with the group
+      };
+
       ball_mesh.name = id.toString();
       ball_mesh.layers.set(2);
-
       this.group.add(ball_mesh);
     });
   }
@@ -166,7 +173,7 @@ export class CustomShape {
   /**
    * Adds a vertex to the CustomShape.
    *
-   * @param point - The THREE.Vector3 representing the coordinates of the vertex to be added.
+   * @param point The THREE.Vector3 representing the coordinates of the vertex to be added.
    */
   addVertex(point: THREE.Vector3) {
     this.vertexManager.add(point);
@@ -189,15 +196,14 @@ export class CustomShape {
     if (!this.geometry) {
       return;
     }
-    //@ts-ignore edges geometry has broken as types
+    // This geometry adds edges to our current shape.
     const edgeGeometry = new THREE.EdgesGeometry(this.geometry);
-    const lineMat = new THREE.LineBasicMaterial({color: colour});
+    const lineMat = new THREE.LineBasicMaterial({ color: colour });
 
     const lineSegments = new THREE.LineSegments(edgeGeometry, lineMat);
 
     this.group.add(lineSegments);
   }
-
 
   updateMesh() {}
 }

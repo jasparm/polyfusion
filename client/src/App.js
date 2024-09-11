@@ -7,7 +7,11 @@ import CustomGui from "./lib/Gui";
 import { MonteCarloManager } from "./lib/algorithms/MonteCarlo";
 
 import { CustomShape } from "./lib/shapes/CustomShape.ts";
-import { CustomBox } from "./lib/shapes/CustomBox.ts";
+import { CustomBox } from "./lib/shapes/prefabs/CustomBox.ts";
+import { CustomTetrahedron } from "./lib/shapes/prefabs/Tetrahedron.ts";
+import { CustomOctahedron } from "./lib/shapes/prefabs/Octahedron.ts";
+import { CustomDodecahedron } from "./lib/shapes/prefabs/Dodecahedron.ts";
+import { CustomIcosahedron } from "./lib/shapes/prefabs/Icosahedron.ts";
 
 function App() {
   const [data, setData] = React.useState(null);
@@ -74,30 +78,10 @@ function App() {
 
     // test.scene.add(octahedron_mesh);
 
-    const verticesOfPyramid = [
-      -2, 0, -2, 2, 0, -2, -2, 0, 2, 2, 0, 2, //0, 1, 0
-    ];
-
-
-    const indicesOfPyramid2 = [
-      [2, 1, 0],
-      [3, 1, 2],
-      [1, 3, 0],
-    ];
-
-
-    const shape = new CustomShape(
-      verticesOfPyramid,
-      indicesOfPyramid2,
-      false,
-      true,
-      new THREE.Color(0x0000ff),
-      1,
-      new THREE.Color(0xffffffff)
-    );
+    const shape = new CustomOctahedron();
+    shape.group.position.z = -5
+    
     test.add(shape);
-    shape.addVertex(new THREE.Vector3(0, 2, 0));
-    shape.addVertex(new THREE.Vector3(0, -2, 0));
     // shape.group.position.y = 2
     // shape.wireframe = true
     shape.lineColour = new THREE.Color(0xffffff)
@@ -105,12 +89,21 @@ function App() {
     // shape.addVertex(new THREE.Vector3(-1, 1, 2));
     // shape.addVertex(new THREE.Vector3(-3, 1, -1));
 
-    const cube = new CustomBox(5.5, 2, 3, new THREE.Color(0x0000ff));
-    // cube.wireframe = false;;
-    // cube.addVertex(new THREE.Vector3(0, 0, 5))
-    // cube.group.position.z = 5
+    const cube = new CustomBox(1, 1, 1, new THREE.Color(0x0000ff));
+    const tet = new CustomTetrahedron();
+    test.add(tet)
+
+    cube.group.position.z = 5
     // test.scene.add(cube.group);
     test.add(cube)
+
+    const doc = new CustomDodecahedron(0.5);
+    doc.group.position.x = 5;
+    test.add(doc);
+
+    const iso = new CustomIcosahedron();
+    iso.group.position.x  = -5;
+    test.add(iso);
 
     const MonteCarlo = new MonteCarloManager(
       [mesh, octahedron_mesh],

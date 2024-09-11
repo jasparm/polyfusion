@@ -27,6 +27,7 @@ export class Controller {
 
   insertingSphere: THREE.Mesh;
   insertDistance: number = 1;
+  multiSelection: boolean = false;
 
   shapeManager: ShapeManager;
 
@@ -210,6 +211,10 @@ export class Controller {
 
     var sphere;
     this.selectedGroup.children.forEach((child) => {
+      if (!(child instanceof THREE.Mesh)) {
+        // if selected child is not a mesh, ignore it
+        return;
+      }
       if (child.geometry instanceof THREE.SphereGeometry) {
         sphere = child.clone();
       }
@@ -231,14 +236,12 @@ export class Controller {
 
     var vector = new THREE.Vector3(this.mouse.x, this.mouse.y, 0.5);
     vector.unproject(this.camera);
-    // @ts-ignore
     const camera_pos: THREE.Vector3 = this.camera.position;
 
     var dir = vector.sub(camera_pos);
     var distance = this.insertDistance;
     var pos = camera_pos.clone().add(dir.multiplyScalar(distance));
 
-    // @ts-ignore
     this.insertingSphere.position.set(pos.x, pos.y, pos.z);
   }
 
@@ -279,9 +282,10 @@ export class Controller {
     if (!shape) { return ;}
     const vertex = shape.vertexManager.getVertexFromID(id); // this is the vertex instance.
 
-    // @ts-ignore
-    console.log(object.material.color = new THREE.Color(100, 100, 100));
+    shape.vertexManager.selectVertex(id);
+    shape.vertexManager.colourSelectedVertices();
+    // console.log(object.material.color = new THREE.Color(100, 100, 100));
 
-    console.log(vertex);
+    // console.log(vertex);
   }
 }

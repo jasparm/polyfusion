@@ -53,7 +53,7 @@ export default class SceneManager {
       this.nearPlane,
       this.farPlane
     );
-    //@ts-ignore
+
     this.camera.position.set(0, 10, 0);
     this.camera.layers.enable(0); // default layer for meshes
     this.camera.layers.enable(1); // this is the layer for lines on meshes
@@ -61,18 +61,25 @@ export default class SceneManager {
 
     // Specify a canvas which is already in the HTML
     const canvas = document.getElementById(this.canvasId);
+
+    if (canvas === null) {
+      // @TODO
+      // deal with this
+      return;
+    }
+
     // Renderer
     this.renderer = new THREE.WebGLRenderer({
       canvas,
       antialias: true,
     });
-    // @ts-ignore shadow map does indeed exist of renderer as much as this think it doesn't
+    
     this.renderer.shadowMap.enabled = true;
     this.renderer.setSize(window.innerWidth, window.innerHeight);
     document.body.appendChild(this.renderer.domElement);
 
     // Comment out to enable/disable performance tracker
-    this.stats = Stats();
+    this.stats = new Stats();
     document.body.appendChild(this.stats.dom);
 
     this.shapeManager = new ShapeManager(this.scene);
