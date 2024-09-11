@@ -13,7 +13,9 @@ export function getCentrePoint(mesh: THREE.Mesh): THREE.Vector3 {
 
     // We can easily get the center of this bounding box
     const center = new THREE.Vector3();
-    geometry.boundingBox.getCenter(center);
+    if (geometry.boundingBox) {
+        geometry.boundingBox.getCenter(center);
+    }
     mesh.localToWorld(center); // convert the local coordinates of the mesh to world coords.
 
     return center;
