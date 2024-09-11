@@ -48,8 +48,6 @@ export class CustomShape {
 
     this.id = time;
     this.mesh.name = time;
-
-    this.group.add(this.mesh);
   }
 
   /**
@@ -60,19 +58,28 @@ export class CustomShape {
     const geometry = new ConvexGeometry(vertices); // This ensures a shape is always convex
     this.geometry = geometry;
 
-    this.material = new THREE.MeshStandardMaterial({
-      color: this.colour,
-      flatShading: true,
-    });
+    if (this.wireframe) {
+      // invisible material
+      this.material = new THREE.MeshBasicMaterial({
+        color: this.colour,
+        transparent: true,
+        opacity: 0.1,
+        side: THREE.DoubleSide
+      });
+    } else {
+      this.material = new THREE.MeshStandardMaterial({
+        color: this.colour,
+        flatShading: true,
+        side: THREE.DoubleSide,
+      });
+    }
 
     // create a new mesh from the geometry and material
     this.mesh = new THREE.Mesh(this.geometry, this.material);
     this.mesh.castShadow = true;
     this.mesh.receiveShadow = true;
 
-    if (!this.wireframe) {
-      this.group.add(this.mesh);
-    }
+    this.group.add(this.mesh);
     // Add additional details to the shape.
     if (this.drawBalls) {
       this.addSpheresToVertices(this.vertexSize);
@@ -203,6 +210,12 @@ export class CustomShape {
     const lineSegments = new THREE.LineSegments(edgeGeometry, lineMat);
 
     this.group.add(lineSegments);
+  }
+
+  setWireFrame(state: boolean) {
+    this.group.remove(...this.group.children);
+    this.wireframe = state;
+    this.init();
   }
 
   updateMesh() {}

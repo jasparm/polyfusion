@@ -1,4 +1,5 @@
 import * as THREE from 'three';
+import { CustomShape } from './shapes/CustomShape';
 
 
 // Check for collisions in all directions
@@ -43,26 +44,21 @@ export function collidesWith(position: THREE.Vector3, direction: THREE.Vector3, 
  * @param scene - Scene at which this point and objects exist inside
  * @returns Returns true if the point is partially inside the object
  */
-export function isPartiallyInside(point: THREE.Vector3, object: THREE.Mesh, scene: THREE.Scene): boolean {
-    const id = object.uuid;    
-
-    const validCollisions: object[] = [];
+export function isPartiallyInside(point: THREE.Vector3, object: CustomShape, scene: THREE.Scene): boolean {
+    const id = object.id;    
 
     for (var i = 0; i < directions.length; i ++){
         const collisions = collidesWith(point, directions[i], scene);
 
         // Filters out all collisions that do not have the correct uuid
-        const filtered = collisions.filter(collision => collision.object.uuid === id);
-
+        const filtered = collisions.filter(collision => collision.object.name === id);
+        
         // add only the collisions where this occurs once
         if (filtered.length === 1) {
-            validCollisions.push(filtered[0]);
+            return true;
         }
     }
 
-    if (validCollisions.length > 1){
-        return true;
-    }
 
     return false;
     
@@ -77,10 +73,9 @@ export function isPartiallyInside(point: THREE.Vector3, object: THREE.Mesh, scen
  * @param  scene - Scene at which this point and objects exist inside
  * @returns 
  */
-export function isInsideObjects(point: THREE.Vector3, objects: Array<THREE.Mesh>, scene: THREE.Scene): boolean {
+export function isInsideObjects(point: THREE.Vector3, objects: Array<CustomShape>, scene: THREE.Scene): boolean {
     for (var i = 0; i < objects.length; i++){
         const check = isPartiallyInside(point, objects[i], scene);
-
         if (check === false) {
             return false
         }

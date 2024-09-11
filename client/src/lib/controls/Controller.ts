@@ -209,7 +209,7 @@ export class Controller {
     this.state = ControllerState.Insert;
     this.orbitControls.enabled = false;
 
-    var sphere;
+    var sphere: any;
     this.selectedGroup.children.forEach((child) => {
       if (!(child instanceof THREE.Mesh)) {
         // if selected child is not a mesh, ignore it

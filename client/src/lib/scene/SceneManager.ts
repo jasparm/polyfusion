@@ -112,6 +112,9 @@ export default class SceneManager {
     this.renderer.domElement.addEventListener("wheel", (e) =>
       onMouseWheelEvent(e, controller)
     );
+    this.renderer.domElement.addEventListener('contextmenu', function(event) {
+      event.preventDefault(); // prevent the default right-click menu from appearing
+    })
 
     const keyStates = {};
     // Keyboard related events

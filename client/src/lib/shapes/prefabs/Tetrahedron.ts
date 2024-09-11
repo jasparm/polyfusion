@@ -15,7 +15,6 @@ export class CustomTetrahedron extends CustomShape {
     this.vertexManager.init(this.createVertices());
 
     this.init();
-    this.group.add(this.mesh);
   }
 
   /**
