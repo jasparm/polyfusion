@@ -14,7 +14,6 @@ import { CustomIcosahedron } from "./lib/shapes/prefabs/Icosahedron.ts";
 import { SaverLoader } from "./lib/scene/SaverLoader.ts";
 
 
-console.log("hello")
 const test = new SceneManager("threeJsCanvas");
 test.init();
 

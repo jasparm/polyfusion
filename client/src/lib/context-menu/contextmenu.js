@@ -4,7 +4,7 @@
 export class ContextMenu {
   constructor() {
     this.contextMenu = document.querySelector(".context");
-    console.log(this.contextMenu)
+
     document.addEventListener("click", () => {
       this.contextMenu.style.opacity = 0;
       this.contextMenu.style.pointerEvents = "none";
