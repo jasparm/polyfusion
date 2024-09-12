@@ -1,6 +1,9 @@
 import { Controller } from "../controls/Controller.ts";
 import { ControllerState } from "./ControllerStates.ts";
+import { ContextMenu } from "../context-menu/contextmenu.js";
 
+
+const contextMenu = new ContextMenu();
 export function onMouseMove(event, controller: Controller) {
   controller.getMousePosition(event, controller.renderer);
 
@@ -14,7 +17,7 @@ export function onMouseDown(event, controller: Controller) {
     case 0: // left mouse has been pressed
       onLeftMouseClick(event, controller);
       break;
-    case 1:
+    case 2:
       onRightMouseClick(event, controller);
       break;
 
@@ -27,11 +30,11 @@ function onLeftMouseClick(event, controller: Controller) {
   const status = controller.state;
   switch (status) {
     case ControllerState.Normal:
-      controller.checkForSelection();
+      controller.checkForSelection(true);
       break;
     case ControllerState.ShapeSelected:
       if (controller.checkForSelection) {
-        controller.checkForSelection();
+        controller.checkForSelection(true);
       }
       break;
     case ControllerState.Insert:
@@ -40,15 +43,12 @@ function onLeftMouseClick(event, controller: Controller) {
 }
 
 function onRightMouseClick(event, controller: Controller) {
-  const status = controller.state;
-  switch (status) {
-    case ControllerState.Normal:
-      // maybe could make it display shape properties or something here
-      break;
-    case ControllerState.ShapeSelected:
-      controller.checkForSelection();
-      break;
-  }
+      const shape = controller.checkForSelection(false);
+      console.log(shape)
+      if (shape !== null) {
+        controller.orbitControls.enablePan = false;
+        contextMenu.enableMenu(event)
+      }
 }
 
 export function onMouseWheelEvent(event, controller: Controller) {

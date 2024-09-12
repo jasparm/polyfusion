@@ -143,7 +143,7 @@ export class Controller {
     this.mouse = mouse;
   }
 
-  checkForSelection(): void {
+  checkForSelection(performSelection): any | void {
     if (!this.checkForShapes) {
       return;
     }
@@ -157,8 +157,8 @@ export class Controller {
     let foundGroup = false;
     let selectedVertex = false;
     var parentGroup;
-    intersects.forEach((intersect) => {
-      const object: THREE.Object3D = intersect.object;
+    for (let i = 0; i < intersects.length; i ++){
+      const object: THREE.Object3D = intersects[i].object;
 
       parentGroup = object.parent;
       while (parentGroup && !(parentGroup instanceof THREE.Group)) {
@@ -169,8 +169,9 @@ export class Controller {
         object instanceof THREE.Mesh &&
         !selectedVertex &&
         object.geometry instanceof THREE.SphereGeometry &&
-        parentGroup
+        parentGroup && performSelection
       ) {
+        if (!performSelection) { return parentGroup; }
         selectedVertex = true;
         this.selectedVertex = object;
         this.selectedGroup = parentGroup;
@@ -180,13 +181,15 @@ export class Controller {
 
       // We have selected a custom shape
       if (parentGroup && !foundGroup) {
+        if (!performSelection) { return parentGroup; }
         this.selectedGroup = parentGroup;
         this.orbitControls.enabled = false;
         this.selectShape();
         foundGroup = true;
         return;
       }
-    });
+    }
+    
   }
 
   /**

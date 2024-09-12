@@ -37,7 +37,7 @@ export default class SceneManager {
 
   constructor(canvasId: string) {
     // NOTE: Camera params;
-    this.fov = 75;
+    this.fov = 45;
     this.nearPlane = 1;
     this.farPlane = 1000;
     this.canvasId = canvasId;

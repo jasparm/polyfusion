@@ -17,7 +17,6 @@ export class SaverLoader {
 
     const json = JSON.stringify(data);
     const compressedData = LZString.compress(json)
-    console.log(JSON.parse(json));
 
     // do something here to save to database
     return compressedData;
