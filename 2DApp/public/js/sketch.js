@@ -62,6 +62,14 @@ window.draw = () => {
     // };
 };
 
+function windowResized() {
+    // Adjusting canvas size when window is resized
+    let container = document.getElementById('canvas-container');
+    let containerWidth = container.offsetWidth;
+    let containerHeight = container.offsetHeight;
+    resizeCanvas(containerWidth, containerHeight);
+}
+
 // Function that draws our shapes.
 // shape is a
 function drawShape(shape) {
