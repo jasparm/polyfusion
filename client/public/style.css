@@ -57,15 +57,19 @@ canvas {
     width: 100%; /* Full width */
     height: 100%; /* Full height */
     background-color: rgba(0,0,0,0.5); /* Black w/ opacity */
-  }
+    font-family: 'Inter', sans-serif;
+
+}
   
   /* Modal Content */
   .modal-content {
     background-color: #fff;
     margin: 15% auto;
     padding: 20px;
-    border: 1px solid #888;
-    width: 300px; /* Could be more or less, depending on screen size */
+    border: 1px solid #eeeeee;
+    width: 20rem;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
   }
   
   /* Close button */

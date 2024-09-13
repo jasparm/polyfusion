@@ -47,9 +47,8 @@ function onRightMouseClick(event, controller: Controller) {
         controller.contextMenu.selectedShape = controller.shapeManager.getShapeFromID(shape.children[0].name);
         controller.contextMenu.enableMenu(event);
       }
-      else {
-        controller.orbitControls.enablePan = true;
-      }
+      // re-enable once menu has been displayed
+      controller.orbitControls.enablePan = true;
 
 }
 

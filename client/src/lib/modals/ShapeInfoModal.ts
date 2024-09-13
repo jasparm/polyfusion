@@ -26,6 +26,7 @@ export class ShapeInfoModal {
     window.addEventListener("click", (event) => {
       if (event.target === this.shapeSettingsModal) {
         this.shapeSettingsModal.style.display = "none";
+        
       }
     });
 
@@ -44,6 +45,11 @@ export class ShapeInfoModal {
       if (numberVertices) {
         numberVertices.innerText =
           "Number of vertices: " + shape.vertexManager.vertexMap.size.toString();
+      }
+
+      const numberFaces = document.getElementById("infoNumFaces");
+      if (numberFaces) {
+        numberFaces.innerText = "Number of faces: " + shape.geometry.attributes.position.count / shape.geometry.attributes.position.itemSize;
       }
     }
     this.shapeSettingsModal.style.display = "block";
