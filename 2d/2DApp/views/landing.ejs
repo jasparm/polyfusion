@@ -2,43 +2,67 @@
   <h1>Welcome to Polyfusion</h1>
   <p>TESTTESTTESTTESTTESTTESTTESTTESTTESTTESTTESTTESTTESTTEST</p>
 
-  <!-- Login Options -->
-  <div class="login-options">
-    <form id="login-form" action="/login" method="POST">
-      <input type="text" name="username" placeholder="Username" required>
-      <input type="password" name="password" placeholder="Password" required>
-      <button type="submit" class="btn">Log In</button>
-    </form>
+  <!-- Login and Sign-Up Buttons to Trigger Modals -->
+  <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#loginModal">
+    Log In
+  </button>
+  <button type="button" class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#signupModal">
+    Sign Up
+  </button>
+
+  <!-- Login Modal -->
+  <div class="modal fade" id="loginModal" tabindex="-1" aria-labelledby="loginModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <form id="loginForm" action="/login" method="POST">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h1 class="modal-title fs-5" id="loginModalLabel">Log In</h1>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <div class="mb-3">
+              <label for="username" class="col-form-label">Username:</label>
+              <input type="text" class="form-control" id="username" name="username" required>
+            </div>
+            <div class="mb-3">
+              <label for="password" class="col-form-label">Password:</label>
+              <input type="password" class="form-control" id="password" name="password" required>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            <button type="submit" class="btn btn-primary">Log In</button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Sign-Up Modal -->
+  <div class="modal fade" id="signupModal" tabindex="-1" aria-labelledby="signupModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <form id="signupForm" action="/signup" method="POST">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h1 class="modal-title fs-5" id="signupModalLabel">Sign Up</h1>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <div class="mb-3">
+              <label for="signup-username" class="col-form-label">Username:</label>
+              <input type="text" class="form-control" id="signup-username" name="username" required>
+            </div>
+            <div class="mb-3">
+              <label for="signup-password" class="col-form-label">Password:</label>
+              <input type="password" class="form-control" id="signup-password" name="password" required>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            <button type="submit" class="btn btn-primary">Sign Up</button>
+          </div>
+        </div>
+      </form>
+    </div>
   </div>
 </div>
-
-<script>
-  document.addEventListener('DOMContentLoaded', function() {
-    const loginForm = document.getElementById('login-form');
-    loginForm.addEventListener('submit', (e) => {
-      e.preventDefault();
-      fetch('/login', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          username: loginForm.username.value,
-          password: loginForm.password.value
-        })
-      })
-      .then(response => response.json())
-      .then(data => {
-        if (data.success) {
-          alert('Login successful');
-        } else {
-          alert('Login failed: ' + data.message);
-        }
-      });
-    });
-  });
-</script>
-
-
-
-

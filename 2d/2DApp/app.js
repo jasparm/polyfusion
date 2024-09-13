@@ -48,17 +48,17 @@ app.get('/shapes', (req, res) => {
 
 // Serving the landing page
 app.get("/", (req, res) => {
-    res.render("landing", { title: "Polyfusion", savedShapes: savedShapes, theme: userTheme });
+    res.render("landing", { title: "Polyfusion", page: "landing", savedShapes: savedShapes, theme: userTheme });
 });
 
 // Serving the 2D page
 app.get("/2d", (req, res) => {
-    res.render("index", { title: "Polyfusion", savedShapes: savedShapes, theme: userTheme });
+    res.render("index", { title: "Polyfusion", page: "index" , savedShapes: savedShapes, theme: userTheme});
 });
 
 // Serving the 3D page
 app.get("/3d", (req, res) => {
-    res.render("3d", { title: "Polyfusion", savedShapes: savedShapes, theme: userTheme });
+    res.render("3d", { title: "Polyfusion", page: "3D", savedShapes: savedShapes, theme: userTheme });
 });
 
 // Using a post request to save shapes for now
@@ -89,9 +89,35 @@ app.post("/theme", (req, res) => {
 app.post("/login", (req, res) => {
     const { username, password } = req.body;
     if (username && password) {
-        users.push({ username, password });
-        res.json({ success: true });
+        // Check if user exists
+        const user = users.find(u => u.username === username && u.password === password);
+        if (user) {
+            console.log("Login successful");
+            res.json({ success: true });
+        } else {
+            console.log("Invalid credentials");
+            res.status(400).json({ success: false, message: "Invalid credentials" });
+        }
     } else {
         res.status(400).json({ success: false, message: "Invalid login data" });
+    }
+});
+
+// Route to handle sign-up data
+app.post("/signup", (req, res) => {
+    const { username, password } = req.body;
+    if (username && password) {
+        // Check if user already exists
+        const userExists = users.some(u => u.username === username);
+        if (userExists) {
+            console.log("User already exists");
+            res.status(400).json({ success: false, message: "User already exists" });
+        } else {
+            users.push({ username, password });
+            console.log(users);
+            res.json({ success: true });
+        }
+    } else {
+        res.status(400).json({ success: false, message: "Invalid sign-up data" });
     }
 });

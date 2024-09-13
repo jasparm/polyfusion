@@ -1,213 +1,69 @@
-/* Define default theme variables */
 :root {
-    --primary-color: #f2f4ffff;
-    --secondary-color: #a9d3ffff;
-    --background-color: #96c5f7ff;
-    --hovor-color: #93acb5ff;
-    --text-color: #424b54ff;
-    --dropdown-hover-color: #f8f9fa;
-    --dropdown-border-color: #ccc;
-    --dropdown-text-color: #333;
+    /* Light Theme Colors */
+    --primary-color: #a9d3ff; /* Background color for primary elements */
+    --secondary-color: #7fb3e6; /* Slightly darker background color for buttons */
+    --background-color: #f2f4ff; /* General background color */
+    --hover-color: #5f9ac6; /* Darker hover state color */
+    --text-color: #424b54; /* Text color */
+    --dropdown-hover-color: #f8f9fa; /* Dropdown hover background color */
+    --dropdown-border-color: #ccc; /* Dropdown border color */
+    --dropdown-text-color: #333; /* Dropdown text color */
 
-    --charcoal: #424b54ff;
-    --cadet-gray: #93acb5ff;
-    --jordy-blue: #96c5f7ff;
-    --uranian-blue: #a9d3ffff;
-    --ghost-white: #f2f4ffff;
+    /* Additional Colors */
+    --charcoal: #424b54;
+    --cadet-gray: #93acb5;
+    --jordy-blue: #96c5f7;
+    --uranian-blue: #a9d3ff;
+    --ghost-white: #f2f4ff;
 }
 
 :root.dark-theme {
-    --primary-color: #343a40;
-    --secondary-color: #495057;
-    --background-color: #212529;
-    --hover-color: #1c1e21;
-    --text-color: #ffffff;
-    --dropdown-hover-color: #2f4f4f;
-    --dropdown-border-color: #444;
-    --dropdown-text-color: #f0f0f0;
+    /* Dark Theme Colors */
+    --primary-color: #495057; /* Background color for primary elements */
+    --secondary-color: #3a3f44; /* Slightly lighter background color for buttons */
+    --background-color: #212529; /* General background color */
+    --hover-color: #2a2e33; /* Lighter hover state color */
+    --text-color: #ffffff; /* Text color */
+    --dropdown-hover-color: #2f4f4f; /* Dropdown hover background color */
+    --dropdown-border-color: #444; /* Dropdown border color */
+    --dropdown-text-color: #f0f0f0; /* Dropdown text color */
 
-    --onyx: #474448ff;
-    --raisin-black: #2d232eff;
-    --wenge: #534b52ff;
-    --air-superiority-blue: #7a93acff;
-    --jordy-blue: #96c5f7ff;
+    /* Additional Colors */
+    --onyx: #474448;
+    --raisin-black: #2d232e;
+    --wenge: #534b52;
+    --air-superiority-blue: #7a93ac;
+    --jordy-blue: #96c5f7;
 }
 
-/* Navbar styling */
-.navbar {
+/* Applying the Colors */
+body {
     background-color: var(--background-color);
-    padding: 1rem;
-    height: 20%;
-    /* display: flex; */
-    /* justify-content: space-between; */
-    /* align-items: center; */
-    /* top: 0; */
-    /* left: 250px; */
-    /* right: 0; */
-}
-
-.navbar-left {
-    display: flex;
-    align-items: center;
-}
-
-.navbar-right {
-    display: flex;
-    align-items: center;
-}
-
-
-.navbar-brand {
     color: var(--text-color);
-    font-size: 1.5rem;
-    text-decoration: none;
-    display: flex;
-    align-items: center;
 }
 
-.navbar-brand img {
-    margin-right: 10px;
+.navbar, .sidebar {
+    background-color: var(--primary-color) !important;
+    color: var(--text-color) !important;
 }
 
-button {
-    background-color: var(--primary-color);
-    color: var(--text-color);
-    border: none;
-    padding: 0.5rem 1rem;
-    margin: 0.5rem;
-    border-radius: 5px;
-    cursor: pointer;
-    font-size: 1rem;
-    transition: background-color 0.3s;
+.navbar .navbar-brand,
+.navbar .navbar-nav .nav-link,
+.sidebar .btn {
+    color: var(--text-color) !important;
 }
 
-button:hover {
-    background-color: var(--hover-color);
+.navbar .btn, .sidebar .btn {
+    background-color: var(--secondary-color) !important;
+    color: var(--text-color) !important;
 }
 
-button:focus {
-    outline: none;
-}
-
-.dropdown-toggle {
-    background-color: var(--secondary-color);
-    color: var(--text-color);
-    border: none;
-    padding: 0.5rem 1rem;
-    border-radius: 5px;
-    cursor: pointer;
-    font-size: 1rem;
+.navbar .btn:hover, .sidebar .btn:hover {
+    background-color: var(--hover-color) !important;
 }
 
 .dropdown-menu {
-    background-color: var(--text-color);
-    border: 1px solid var(--dropdown-border-color);
-    border-radius: 5px;
-    padding: 0.5rem;
-}
-
-.dropdown-menu a {
-    color: var(--dropdown-text-color);
-    text-decoration: none;
-    display: block;
-    padding: 0.5rem 1rem;
-}
-
-.dropdown-menu a:hover {
     background-color: var(--dropdown-hover-color);
-}
-
-
-/* Sidebar styling */
-.sidebar {
-    height: 100%;
-    /* width: 250px; */
-    /* top: 0; */
-    /* left: 0; */
-    background-color: var(--background-color);
-    /* padding-top: 20px; */
-    /* display: flex;
-    flex-direction: column;
-    align-items: center; */
-}
-
-.sidebar .navbar-brand {
-    color: var(--text-color);
-    font-size: 1.5rem;
-    text-decoration: none;
-    display: flex;
-    align-items: center;
-    margin-bottom: 20px;
-}
-
-.sidebar .navbar-brand img {
-    margin-right: 10px;
-}
-
-.sidebar .btn {
-    background-color: var(--primary-color);
-    color: var(--text-color);
-    border: none;
-    padding: 0.5rem 1rem;
-    margin: 0.5rem;
-    border-radius: 5px;
-    cursor: pointer;
-    font-size: 1rem;
-    transition: background-color 0.3s ease;
-}
-
-.sidebar .btn:hover {
-    background-color: var(--hover-color);
-}
-
-.sidebar .btn:focus {
-    outline: none;
-}
-
-.sidebar .dropdown-toggle {
-    background-color: var(--secondary-color);
-    color: var(--text-color);
-    border: none;
-    padding: 0.5rem 1rem;
-    border-radius: 5px;
-    cursor: pointer;
-    font-size: 1rem;
-}
-
-.sidebar .dropdown-menu {
-    background-color: var(--text-color);
-    border: 1px solid var(--dropdown-border-color);
-    border-radius: 5px;
-    padding: 0.5rem;
-}
-
-.sidebar .dropdown-menu a {
+    border-color: var(--dropdown-border-color);
     color: var(--dropdown-text-color);
-    text-decoration: none;
-    display: block;
-    padding: 0.5rem 1rem;
 }
-
-.sidebar .dropdown-menu a:hover {
-    background-color: var(--dropdown-hover-color);
-}
-
-/* Main content styling */
-
-/* .main-content { */
-    /* margin-left: 225px; Width of the sidebar */
-    /* margin-top: 65px; Height of the navbar */
-    /* padding: 20px; */
-    /* box-sizing: border-box; */
-    /* height: calc(100vh - 60px); Full height minus the navbar height */
-/* } */
-
-/* Canvas container styling */
-#canvas-container {
-    /* display: flex; */
-    margin-left: 250px;
-}
-
-
-
-
