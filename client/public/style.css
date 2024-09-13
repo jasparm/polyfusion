@@ -1,0 +1,83 @@
+body {
+    margin: 0;
+    color: black;
+    background-color: white;
+    padding: 0;
+}
+
+canvas {
+    margin-left: 5rem;
+}
+
+.sidebar {
+    width: 5rem;
+    height: 100vh;
+    position: fixed;
+    background-color: lightslategrey;
+    transition: width 200ms ease;
+}
+
+.sidebar-items {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    height: 100%;
+}
+
+
+.sidebar-item {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    height: 5rem;
+}
+
+.sidebar-item svg {
+    min-width: 2.5rem;
+    margin: 0 1rem;
+    color: aliceblue;
+}
+
+
+.sidebar-item:last-child {
+    margin-top: auto;
+}
+
+
+/* The Modal (background) */
+.modal {
+    display: none; /* Hidden by default */
+    position: fixed; /* Stay in place */
+    z-index: 100; /* Sit on top */
+    left: 0;
+    top: 0;
+    width: 100%; /* Full width */
+    height: 100%; /* Full height */
+    background-color: rgba(0,0,0,0.5); /* Black w/ opacity */
+  }
+  
+  /* Modal Content */
+  .modal-content {
+    background-color: #fff;
+    margin: 15% auto;
+    padding: 20px;
+    border: 1px solid #888;
+    width: 300px; /* Could be more or less, depending on screen size */
+  }
+  
+  /* Close button */
+  .close {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+  }
+  
+  .close:hover, .close:focus {
+    color: black;
+    cursor: pointer;
+  }
+  

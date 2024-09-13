@@ -3,6 +3,7 @@ import { OrbitControls, TransformControls } from "three/examples/jsm/Addons.js";
 import { ControllerState, MovementState } from "./ControllerStates.ts";
 import { ShapeManager } from "../shapes/CustomShapeManager.ts";
 import { CustomShape } from "../shapes/CustomShape.ts";
+import { ContextMenu } from "../context-menu/contextmenu.js";
 
 /**
  * Controller class looks after all player controls including their interaction with other objects.
@@ -30,6 +31,7 @@ export class Controller {
   multiSelection: boolean = false;
 
   shapeManager: ShapeManager;
+  contextMenu: ContextMenu;
 
   constructor(
     scene: THREE.Scene,
@@ -44,6 +46,8 @@ export class Controller {
     this.renderer = renderer;
     this.initControls();
     this.selectedVertex = null;
+
+    this.contextMenu = new ContextMenu();
 
     this.shapeManager = shapeManager;
 
@@ -136,9 +140,11 @@ export class Controller {
   getMousePosition(event, renderer: THREE.WebGLRenderer): void {
     event.preventDefault();
 
+    const canvasBounds = renderer.domElement.getBoundingClientRect();
+
     const mouse = new THREE.Vector2();
-    mouse.setX((event.clientX / window.innerWidth) * 2 - 1);
-    mouse.setY(-(event.clientY / window.innerHeight) * 2 + 1);
+    mouse.setX(((event.clientX - canvasBounds.left) / canvasBounds.width) * 2 - 1);
+    mouse.setY(-((event.clientY - canvasBounds.top) / canvasBounds.height) * 2 + 1);
 
     this.mouse = mouse;
   }

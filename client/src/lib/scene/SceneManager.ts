@@ -46,6 +46,15 @@ export default class SceneManager {
   init() {
     this.scene = new THREE.Scene();
 
+    // Specify a canvas which is already in the HTML
+    const canvas = document.getElementById(this.canvasId);
+
+    if (canvas === null) {
+      // @TODO
+      // deal with this
+      return;
+    }
+
     // Camera
     this.camera = new THREE.PerspectiveCamera(
       this.fov,
@@ -58,15 +67,6 @@ export default class SceneManager {
     this.camera.layers.enable(0); // default layer for meshes
     this.camera.layers.enable(1); // this is the layer for lines on meshes
     this.camera.layers.enable(2); // this is the layer for balls on vertices
-
-    // Specify a canvas which is already in the HTML
-    const canvas = document.getElementById(this.canvasId);
-
-    if (canvas === null) {
-      // @TODO
-      // deal with this
-      return;
-    }
 
     // Renderer
     this.renderer = new THREE.WebGLRenderer({

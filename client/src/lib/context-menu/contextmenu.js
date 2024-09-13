@@ -1,15 +1,38 @@
+import { ShapeInfoModal } from "../modals/ShapeInfoModal";
+
 // This class handles the context menu in 3D. Should behave differently depending on what is selected in the scene.
 // Init context menu
 
 export class ContextMenu {
   constructor() {
     this.contextMenu = document.querySelector(".context");
+    this.selectedShape = null;
+
+    this.shapeInfo = new ShapeInfoModal(this.selectedShape);
 
     document.addEventListener("click", () => {
       this.contextMenu.style.opacity = 0;
       this.contextMenu.style.pointerEvents = "none";
     });
+    // add listeners for context menu items
+    this.addMenuEventListeners();
   }
+
+  addMenuEventListeners() {
+    const shapeSettings = document.getElementById("shapeSettings");
+    const shapeProperties = document.getElementById("shapeProperties");
+
+    // Event listener for Shape Settings
+    shapeSettings.addEventListener("click", (event) => {
+      this.handleShapeSettings();
+    });
+
+    // Event listener for Shape Info
+    shapeProperties.addEventListener("click", (event) => {
+      this.handleShapeInfo();
+    });
+  }
+
   updateMenuPosition = (x, y) => {
     const maxLeftValue = window.innerWidth - this.contextMenu.offsetWidth;
     const maxTopValue = window.innerHeight - this.contextMenu.offsetHeight;
@@ -24,5 +47,16 @@ export class ContextMenu {
     this.contextMenu.style.opacity = 1;
     this.contextMenu.style.visibility = "visible";
     this.contextMenu.style.pointerEvents = "auto";
+  }
+
+  // Method to handle Shape Settings click
+  handleShapeSettings() {
+    console.log("Shape Settings clicked");
+    
+  }
+
+  // Method to handle Shape Info click
+  handleShapeInfo() {
+    this.shapeInfo.openModal(this.selectedShape);
   }
 }

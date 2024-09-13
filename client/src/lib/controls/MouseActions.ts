@@ -1,9 +1,7 @@
 import { Controller } from "../controls/Controller.ts";
 import { ControllerState } from "./ControllerStates.ts";
-import { ContextMenu } from "../context-menu/contextmenu.js";
 
 
-const contextMenu = new ContextMenu();
 export function onMouseMove(event, controller: Controller) {
   controller.getMousePosition(event, controller.renderer);
 
@@ -44,11 +42,15 @@ function onLeftMouseClick(event, controller: Controller) {
 
 function onRightMouseClick(event, controller: Controller) {
       const shape = controller.checkForSelection(false);
-      console.log(shape)
-      if (shape !== null) {
+      if (shape !== undefined) {
         controller.orbitControls.enablePan = false;
-        contextMenu.enableMenu(event)
+        controller.contextMenu.selectedShape = controller.shapeManager.getShapeFromID(shape.children[0].name);
+        controller.contextMenu.enableMenu(event);
       }
+      else {
+        controller.orbitControls.enablePan = true;
+      }
+
 }
 
 export function onMouseWheelEvent(event, controller: Controller) {
