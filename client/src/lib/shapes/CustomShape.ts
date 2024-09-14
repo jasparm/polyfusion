@@ -1,5 +1,5 @@
 import * as THREE from "three";
-import { ConvexGeometry } from "three/addons/geometries/ConvexGeometry.js";
+import { ConvexGeometry } from "three/examples/jsm/geometries/ConvexGeometry.js";
 
 import { VertexManager } from "./VertexManager.ts";
 
@@ -9,9 +9,9 @@ import { VertexManager } from "./VertexManager.ts";
  * Actual object which should be added to the scene is the *group* attribute.
  */
 export class CustomShape {
-  geometry: THREE.BufferGeometry; // Stores the geometry of the shape
-  material: THREE.Material; // Stores the material used on the shape
-  mesh: THREE.Mesh; // Stores the combined mesh which can be added to the scene.
+  geometry!: THREE.BufferGeometry; // Stores the geometry of the shape
+  material!: THREE.Material; // Stores the material used on the shape
+  mesh!: THREE.Mesh; // Stores the combined mesh which can be added to the scene.
   group: THREE.Group; // Stores all other shapes that are part of the mesh.
   wireframe: boolean; // If the shape should be drawn as a wire frame.
   drawBalls: boolean; // If shape should have spheres on each vertex.
@@ -99,47 +99,6 @@ export class CustomShape {
     }
 
     return;
-  }
-
-  /**
-   * Maps vertices array to array of Vector3. This is much easier to work with to distinguish between each vertex.
-   * Takes the vertex positions from the geometry.
-   *
-   * @returns New array containing Vector3 elements that represent each vertex.
-   */
-  mapVerticesToVector3(vertices: number[]): THREE.Vector3[] {
-    var vertexes: THREE.Vector3[] = [];
-    // const vertices = this.geometry.attributes.position.array;
-
-    for (let i = 0; i < vertices.length; i += 3) {
-      vertexes.push(
-        new THREE.Vector3(
-          vertices[i] * this.scale,
-          vertices[i + 1] * this.scale,
-          vertices[i + 2] * this.scale
-        )
-      );
-    }
-
-    return vertexes;
-  }
-
-  /**
-   * Converts array of Vector3 back to array of vertices.
-   * This is needed as THREE.JS expects the array to be of this type and not to be of type Vector3.
-   * NOTE: Might not actually be needed, will delete later if not needed.
-   *
-   * @returns Converted Vector3 array.
-   */
-  mapVector3ToVertices(vertexes: THREE.Vector3[]): number[] {
-    var vertices: number[] = [];
-    // use instances stored vertices array and create a new array.
-    // this way we can maintain the instances vertices array.
-    vertexes.forEach((vertex) => {
-      vertices.push(vertex.x, vertex.y, vertex.z);
-    });
-
-    return vertices;
   }
 
   /**

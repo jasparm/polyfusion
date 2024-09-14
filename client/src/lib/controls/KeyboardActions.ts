@@ -4,7 +4,7 @@ import { ControllerState, MovementState } from "./ControllerStates.ts";
 let shapeSelected = false;
 let inserting = false;
 
-export function onKeyDown(event, controller: Controller) {
+export function onKeyDown(event: KeyboardEvent, controller: Controller) {
   const key = event.code;
 
   // When shift is pressed and a shape is selected, we want to temporarily disable the selection in order to move the camera
@@ -48,7 +48,7 @@ export function onKeyDown(event, controller: Controller) {
   }
 }
 
-export function onKeyUp(event, controller: Controller) {
+export function onKeyUp(event: KeyboardEvent, controller: Controller) {
   const key = event.code;
   // When shift is released and a shape is selected, we will re-enable transform controls
   if (key === "ShiftLeft" && shapeSelected) {
@@ -65,7 +65,7 @@ export function onKeyUp(event, controller: Controller) {
   }
 }
 
-export function whileKeyDown(event, controller: Controller) {
+export function whileKeyDown(event: KeyboardEvent, controller: Controller) {
   const key = event.code;
 
   // this will handle keyboard controls for inserting

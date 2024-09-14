@@ -1,8 +1,8 @@
-import { CustomShape } from "../shapes/CustomShape";
+import { CustomShape } from "../shapes/CustomShape.ts";
 
 export class ShapeInfoModal {
-  shapeSettingsModal: HTMLElement;
-  closeModalButton: Element;
+  shapeSettingsModal!: HTMLElement;
+  closeModalButton!: Element;
   selectedShape: CustomShape;
 
   constructor(selectedShape: CustomShape) {
@@ -49,7 +49,11 @@ export class ShapeInfoModal {
 
       const numberFaces = document.getElementById("infoNumFaces");
       if (numberFaces) {
-        numberFaces.innerText = "Number of faces: " + shape.geometry.attributes.position.count / shape.geometry.attributes.position.itemSize;
+        if (shape.geometry.attributes.position) {
+          numberFaces.innerText = "Number of faces: " + shape.geometry.attributes.position.count / shape.geometry.attributes.position.itemSize;
+        } else {
+          numberFaces.innerText = "Number of faces: N/A";
+        }
       }
     }
     this.shapeSettingsModal.style.display = "block";

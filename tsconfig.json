@@ -12,6 +12,8 @@
     "noImplicitOverride": true,
     "allowImportingTsExtensions": true,
     "noEmit": true,
+    "moduleResolution": "NodeNext",
+    "module": "NodeNext",
 
     "declaration": true,
     "composite": true,

@@ -17,23 +17,23 @@ import { OrbitControls } from "three/examples/jsm/Addons.js";
 
 export default class SceneManager {
   // NOTE: Core components to initialize Three.js app.
-  private scene: THREE.Scene;
-  camera: THREE.PerspectiveCamera;
-  renderer: THREE.WebGLRenderer;
+  private scene!: THREE.Scene;
+  camera!: THREE.PerspectiveCamera;
+  renderer!: THREE.WebGLRenderer;
 
   fov: number;
   nearPlane: number;
   farPlane: number;
   canvasId: string;
 
-  controls: OrbitControls;
+  controls!: OrbitControls;
   stats: any;
 
   // Lights
-  ambientLight: THREE.AmbientLight;
-  directionalLight: THREE.DirectionalLight;
+  ambientLight: THREE.AmbientLight | undefined;
+  directionalLight: THREE.DirectionalLight | undefined;
 
-  shapeManager: ShapeManager; // this manages shapes for this scene
+  shapeManager!: ShapeManager; // this manages shapes for this scene
 
   constructor(canvasId: string) {
     // NOTE: Camera params;
@@ -116,11 +116,11 @@ export default class SceneManager {
       event.preventDefault(); // prevent the default right-click menu from appearing
     })
 
-    const keyStates = {};
+    const keyStates: { [key: string]: boolean } = {};
     // Keyboard related events
     window.addEventListener("keydown", (e) => {
-      const key = e.key;
-      // CHeck if the key is already pressed,this ensures it will only be called once.
+      const key: string = e.key;
+      // Check if the key is already pressed,this ensures it will only be called once.
       if (!keyStates[key]) {
         keyStates[key] = true;
         onKeyDown(e, controller);
@@ -128,8 +128,8 @@ export default class SceneManager {
       whileKeyDown(e, controller);
     });
 
-    window.addEventListener("keyup", (e) => {
-      const key = e.key;
+    window.addEventListener("keyup", (e: KeyboardEvent) => {
+      const key: string = e.key;
       // Check if the key was previously pressed
       if (keyStates[key]) {
         keyStates[key] = false;

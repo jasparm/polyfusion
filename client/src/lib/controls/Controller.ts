@@ -12,13 +12,13 @@ export class Controller {
   scene: THREE.Scene;
   camera: THREE.Camera;
   mouse: THREE.Vector2;
-  selectedGroup: THREE.Group;
+  selectedGroup: THREE.Group |undefined;
   selectedVertex: THREE.Mesh | null;
   renderer: THREE.WebGLRenderer;
 
   // different types of controls we have in our scene at any given time.
-  orbitControls: OrbitControls; // controls that are used to move the camera
-  transformControls: TransformControls; // controls that are used to move shapes within the scene
+  orbitControls!: OrbitControls; // controls that are used to move the camera
+  transformControls!: TransformControls; // controls that are used to move shapes within the scene
 
   state: ControllerState;
   movementState: MovementState;
@@ -26,7 +26,7 @@ export class Controller {
 
   raycaster: THREE.Raycaster;
 
-  insertingSphere: THREE.Mesh;
+  insertingSphere: THREE.Mesh | undefined;
   insertDistance: number = 1;
   multiSelection: boolean = false;
 
@@ -87,10 +87,10 @@ export class Controller {
     }
   }
 
-  getCustomShape() {
+  getCustomShape(): CustomShape | undefined {
     var selected = false;
     var selectedShape;
-    this.selectedGroup.children.forEach((child) => {
+    this.selectedGroup?.children.forEach((child) => {
       const shape = this.shapeManager.getShapeFromID(child.name);
 
       if (shape instanceof CustomShape && !selected) {
@@ -109,7 +109,9 @@ export class Controller {
   selectShape() {
     const state = this.movementState;
     // we could add options here for changing controls depending on what is selected
-    this.transformControls.attach(this.selectedGroup);
+    if (this.selectedGroup) {
+      this.transformControls.attach(this.selectedGroup);
+    }
     if (state === MovementState.Transform) {
       this.transformControls.setMode("translate");
     } else if (state === MovementState.Rotate) {
@@ -137,7 +139,7 @@ export class Controller {
    * @param event
    * @param renderer
    */
-  getMousePosition(event, renderer: THREE.WebGLRenderer): void {
+  getMousePosition(event: MouseEvent, renderer: THREE.WebGLRenderer): void {
     event.preventDefault();
 
     const canvasBounds = renderer.domElement.getBoundingClientRect();
@@ -149,7 +151,7 @@ export class Controller {
     this.mouse = mouse;
   }
 
-  checkForSelection(performSelection): any | void {
+  checkForSelection(performSelection: boolean): THREE.Group<any> | void {
     if (!this.checkForShapes) {
       return;
     }
@@ -164,7 +166,9 @@ export class Controller {
     let selectedVertex = false;
     var parentGroup;
     for (let i = 0; i < intersects.length; i ++){
-      const object: THREE.Object3D = intersects[i].object;
+      const intersect = intersects[i];
+      if (!intersect) continue; // if there are no intersects, skip this iteration
+      const object: THREE.Object3D = intersect.object;
 
       parentGroup = object.parent;
       while (parentGroup && !(parentGroup instanceof THREE.Group)) {
@@ -219,7 +223,7 @@ export class Controller {
     this.orbitControls.enabled = false;
 
     var sphere: any;
-    this.selectedGroup.children.forEach((child) => {
+    this.selectedGroup?.children.forEach((child) => {
       if (!(child instanceof THREE.Mesh)) {
         // if selected child is not a mesh, ignore it
         return;
@@ -251,7 +255,9 @@ export class Controller {
     var distance = this.insertDistance;
     var pos = camera_pos.clone().add(dir.multiplyScalar(distance));
 
-    this.insertingSphere.position.set(pos.x, pos.y, pos.z);
+    if (this.insertingSphere) {
+      this.insertingSphere.position.set(pos.x, pos.y, pos.z);
+    }
   }
 
   /**
@@ -259,7 +265,9 @@ export class Controller {
    */
   finaliseInsertion() {
     const position = new THREE.Vector3();
-    this.insertingSphere.getWorldPosition(position);
+    if (this.insertingSphere) {
+      this.insertingSphere.getWorldPosition(position);
+    }
 
     const shape: CustomShape | undefined = this.getCustomShape();
     if (!shape) {
@@ -279,13 +287,19 @@ export class Controller {
    */
   cleanupInsertion() {
     this.orbitControls.enabled = true;
-    this.scene.remove(this.insertingSphere);
+    if (this.insertingSphere) {
+      this.scene.remove(this.insertingSphere);
+    }
     this.state = ControllerState.Normal;
   }
 
   selectVertex(object: THREE.Object3D) {
     const id = Number(object.name);
-    const shapeID = this.getCustomShape().mesh.name;
+    const customShape = this.getCustomShape();
+    if (!customShape) {
+      return;
+    }
+    const shapeID = customShape.mesh.name;
     // with above information, we can get the information of the correct vertex.
     const shape: CustomShape | undefined = this.shapeManager.getShapeFromID(shapeID);
     if (!shape) { return ;}

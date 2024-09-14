@@ -21,6 +21,7 @@
     "dat.gui": "^0.7.9",
     "eslint-plugin-jsdoc": "^50.2.3",
     "express": "^4.19.2",
+    "lz-string": "^1.5.0",
     "three": "^0.165.0"
   },
   "devDependencies": {

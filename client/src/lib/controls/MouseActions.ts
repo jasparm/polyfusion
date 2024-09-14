@@ -2,7 +2,7 @@ import { Controller } from "../controls/Controller.ts";
 import { ControllerState } from "./ControllerStates.ts";
 
 
-export function onMouseMove(event, controller: Controller) {
+export function onMouseMove(event: MouseEvent, controller: Controller) {
   controller.getMousePosition(event, controller.renderer);
 
   if (controller.state === ControllerState.Insert) {
@@ -10,7 +10,7 @@ export function onMouseMove(event, controller: Controller) {
   }
 }
 
-export function onMouseDown(event, controller: Controller) {
+export function onMouseDown(event: MouseEvent, controller: Controller) {
   switch (event.button) {
     case 0: // left mouse has been pressed
       onLeftMouseClick(event, controller);
@@ -24,7 +24,7 @@ export function onMouseDown(event, controller: Controller) {
   }
 }
 
-function onLeftMouseClick(event, controller: Controller) {
+function onLeftMouseClick(event: MouseEvent, controller: Controller) {
   const status = controller.state;
   switch (status) {
     case ControllerState.Normal:
@@ -40,11 +40,13 @@ function onLeftMouseClick(event, controller: Controller) {
   }
 }
 
-function onRightMouseClick(event, controller: Controller) {
+function onRightMouseClick(event: MouseEvent, controller: Controller) {
       const shape = controller.checkForSelection(false);
       if (shape !== undefined) {
         controller.orbitControls.enablePan = false;
-        controller.contextMenu.selectedShape = controller.shapeManager.getShapeFromID(shape.children[0].name);
+        if (shape && shape.children[0]) {
+          controller.contextMenu.selectedShape = controller.shapeManager.getShapeFromID(shape.children[0].name);
+        }
         controller.contextMenu.enableMenu(event);
       }
       // re-enable once menu has been displayed
@@ -52,7 +54,7 @@ function onRightMouseClick(event, controller: Controller) {
 
 }
 
-export function onMouseWheelEvent(event, controller: Controller) {
+export function onMouseWheelEvent(event: WheelEvent, controller: Controller) {
   if (controller.state === ControllerState.Insert) {
     controller.insertDistance += event.deltaY * 0.001;
     controller.moveInsert();
@@ -66,13 +68,13 @@ export function onMouseWheelEvent(event, controller: Controller) {
   }
 }
 
-function onMouseWheelUp(event, controller) {
+function onMouseWheelUp(event: WheelEvent, controller: Controller) {
   if (controller.state === ControllerState.Insert) {
     // this is where we would adjust the position of a vertex we are adding
   }
   // console.log("Wheel up!")
 }
 
-function onMouseWheelDown(event, controller) {
+function onMouseWheelDown(event: WheelEvent, controller: Controller) {
   // console.log("Wheel down!")
 }

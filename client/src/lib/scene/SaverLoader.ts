@@ -1,7 +1,7 @@
 import LZString from 'lz-string';
 
-import { CustomShape } from "../shapes/CustomShape";
-import SceneManager from "./SceneManager";
+import { CustomShape } from "../shapes/CustomShape.ts";
+import SceneManager from "./SceneManager.js";
 
 
 export class SaverLoader {
@@ -11,7 +11,7 @@ export class SaverLoader {
 
     const shapes = scene.shapeManager.getShapes();
     let data: string[] = []
-    shapes.forEach((shape) => {
+    shapes.forEach((shape: CustomShape) => {
         data.push(this.serializeShape(shape));
     })
 
@@ -22,7 +22,7 @@ export class SaverLoader {
     return compressedData;
   }
 
-  static loadScene(data) {
+  static loadScene(data: any) {
     // should probably have some sort of scene ID that we use
     // to track each scene
     // so instead of providing data, we just get an id we check in DB
