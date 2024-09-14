@@ -22,6 +22,7 @@ export class CustomShape {
 
   vertexSize: number = 0.05; // radius of sphere to be added on vertices
   id: string; // this is used to uniquely identify a given custom shape.
+  opacity: number;
 
   vertexManager: VertexManager;
 
@@ -43,6 +44,7 @@ export class CustomShape {
 
     this.vertexManager = new VertexManager(time);
     this.vertexManager.init(vertices);
+    this.opacity = 1;
 
     this.init();
 
@@ -54,6 +56,7 @@ export class CustomShape {
    * Initialises/Resets the current shape.
    */
   init() {
+    console.log(this.opacity);
     const vertices = this.vertexManager.getVerticesInfo();
     const geometry = new ConvexGeometry(vertices); // This ensures a shape is always convex
     this.geometry = geometry;
@@ -63,7 +66,7 @@ export class CustomShape {
       this.material = new THREE.MeshBasicMaterial({
         color: this.colour,
         transparent: true,
-        opacity: 0.1,
+        opacity: 0,
         side: THREE.DoubleSide
       });
     } else {
@@ -71,6 +74,8 @@ export class CustomShape {
         color: this.colour,
         flatShading: true,
         side: THREE.DoubleSide,
+        opacity: this.opacity,
+        transparent: true ? this.opacity < 1 : false
       });
     }
 
@@ -177,5 +182,9 @@ export class CustomShape {
     this.init();
   }
 
-  updateMesh() {}
+  update() {
+    this.group.remove(...this.group.children);
+    this.group.matrixAutoUpdate = true; // no idea what this does but three.js docs says its a good thing.
+    this.init();
+  }
 }

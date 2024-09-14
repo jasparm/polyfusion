@@ -49,6 +49,9 @@ function onRightMouseClick(event: MouseEvent, controller: Controller) {
         }
         controller.contextMenu.enableMenu(event);
       }
+      else {
+        controller.contextMenu.hideMenu();
+      }
       // re-enable once menu has been displayed
       controller.orbitControls.enablePan = true;
 

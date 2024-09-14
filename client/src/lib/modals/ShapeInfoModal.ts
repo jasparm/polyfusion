@@ -1,31 +1,31 @@
 import { CustomShape } from "../shapes/CustomShape.ts";
+import type { Modal } from "./Modal.ts";
 
-export class ShapeInfoModal {
-  shapeSettingsModal!: HTMLElement;
+export class ShapeInfoModal implements Modal {
+  modalElement!: HTMLElement;
   closeModalButton!: Element;
-  selectedShape: CustomShape;
-
+  
   constructor(selectedShape: CustomShape) {
+
     const shapeSettingsModal = document.getElementById(
       "shapeSettingsProperties"
     );
     const closeModalButton = document.querySelector(".close");
-    this.selectedShape = selectedShape;
 
     if (!shapeSettingsModal || !closeModalButton) {
       return;
     }
 
-    this.shapeSettingsModal = shapeSettingsModal;
+    this.modalElement = shapeSettingsModal;
     this.closeModalButton = closeModalButton;
 
     this.closeModalButton.addEventListener("click", () => {
-      this.shapeSettingsModal.style.display = "none";
+      this.modalElement.style.display = "none";
     });
 
     window.addEventListener("click", (event) => {
-      if (event.target === this.shapeSettingsModal) {
-        this.shapeSettingsModal.style.display = "none";
+      if (event.target === this.modalElement) {
+        this.modalElement.style.display = "none";
         
       }
     });
@@ -56,6 +56,6 @@ export class ShapeInfoModal {
         }
       }
     }
-    this.shapeSettingsModal.style.display = "block";
+    this.modalElement.style.display = "block";
   }
 }

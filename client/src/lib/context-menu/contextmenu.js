@@ -1,4 +1,5 @@
 import { ShapeInfoModal } from "../modals/ShapeInfoModal";
+import { ShapeSettingsModal } from "../modals/ShapeSettingsModal.ts";
 
 // This class handles the context menu in 3D. Should behave differently depending on what is selected in the scene.
 // Init context menu
@@ -9,10 +10,10 @@ export class ContextMenu {
     this.selectedShape = null;
 
     this.shapeInfo = new ShapeInfoModal(this.selectedShape);
+    this.shapeSettings = new ShapeSettingsModal(this.selectedShape);
 
     document.addEventListener("click", () => {
-      this.contextMenu.style.opacity = 0;
-      this.contextMenu.style.pointerEvents = "none";
+      this.hideMenu();
     });
     // add listeners for context menu items
     this.addMenuEventListeners();
@@ -51,12 +52,17 @@ export class ContextMenu {
 
   // Method to handle Shape Settings click
   handleShapeSettings() {
-    console.log("Shape Settings clicked");
+    this.shapeSettings.openModal(this.selectedShape);
     
   }
 
   // Method to handle Shape Info click
   handleShapeInfo() {
     this.shapeInfo.openModal(this.selectedShape);
+  }
+
+  hideMenu() {
+    this.contextMenu.style.opacity = 0;
+    this.contextMenu.style.pointerEvents = "none";
   }
 }

@@ -55,18 +55,6 @@ ball_mesh.castShadow = true;
 test.sphere = ball_mesh;
 
 
-
-const octahedron = new THREE.OctahedronGeometry(2, 0);
-const octahedron_mat = new THREE.MeshStandardMaterial({
-  color: 0xff00ff,
-  wireframe: true,
-  side: THREE.DoubleSide,
-});
-const octahedron_mesh = new THREE.Mesh(octahedron, octahedron_mat);
-
-octahedron_mesh.castShadow = true;
-test.octahedron = octahedron_mesh;
-
 // test.scene.add(octahedron_mesh);
 
 const shape = new CustomOctahedron();
@@ -75,15 +63,12 @@ shape.group.position.z = -5;
 test.add(shape);
 // shape.group.position.y = 2
 // shape.wireframe = true
-shape.lineColour = new THREE.Color(0xffffff);
 // shape.addVertex(new THREE.Vector3(1, 1, 2));
 // shape.addVertex(new THREE.Vector3(-1, 1, 2));
 // shape.addVertex(new THREE.Vector3(-3, 1, -1));
-shape.wireframe = true;
 
 const cube = new CustomBox(5, 5, 5, new THREE.Color(0x0000ff));
 const tet = new CustomTetrahedron(2);
-tet.wireframe = true;
 test.add(tet);
 
 cube.group.position.z = 5;
@@ -96,10 +81,7 @@ test.add(doc);
 
 const iso = new CustomIcosahedron();
 iso.group.position.x = -5;
-iso.setWireFrame(true);
 test.add(iso);
-tet.setWireFrame(true);
-cube.setWireFrame(true);
 
 const MonteCarlo = new MonteCarloManager([cube, tet], test.scene);
 MonteCarlo.radius = 0.25;
