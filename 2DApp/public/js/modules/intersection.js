@@ -4,6 +4,7 @@ File responsible for the Sutherland-Hodgman Algorithm for our IoU.
 
 import { state } from "./setup.js";
 import { rayCast } from "./shapeUtils.js";
+import { Shape } from "./Shape.js";
 
 let addedPoints = new Set();
 
@@ -12,9 +13,10 @@ export function sutherlandHodgman(shape1, shape2) {
     // Starting with one shape, let's see which lines intersect
     // Getting the intersections between both shapes
     [state.intersectLines, state.enclosedLines] = getIntersections(shape1, shape2);
-    let intersectionShape = sortPoints(state.pointsOfIntersection);
+    let intersectionShape = new Shape(sortPoints(state.pointsOfIntersection));
+    state.shapes.push(intersectionShape);
     console.log(intersectionShape);
-    areaPolygon(intersectionShape);
+    console.log(areaOfPolygon(intersectionShape.points));
 };
 
 function getIntersections(shape1, shape2) {
@@ -189,20 +191,30 @@ function sortPoints(points) {
     return points;
 };
 
-function areaPolygon(points) {
+export function areaOfPolygon(points) {
     // This calculates the area of the polygon by using the determinant
 
     // Reverse through points and add last point to it
-    let newPoints = [points[points.length - 1]];
-    for (let p of points) {
-        newPoints.push(p);
+    let newPoints = [points[0]];
+    for (let i = points.length - 1; i >= 0; i--) {
+        newPoints.push(points[i]);
+    };
+    // console.log(newPoints);
+
+    // Now we need to calculate the determinant for the area
+    let sumOfDets = 0;
+    for (let i = 0; i < newPoints.length - 1; i++) {
+        let a = newPoints[i].x // x1
+        let b = newPoints[i + 1].x // x2
+        let c = newPoints[i].y // y1
+        let d = newPoints[i + 1].y // y2
+        sumOfDets = sumOfDets + calcDet(a, b, c, d)
     };
 
-    // Now we need to calculate the determinant by reversing through
-    
-    // x1 -> xn
-    // y2 -> yn, y1
-    // y1 -> yn
-    // x2 -> xn, x1
+    return Math.abs(sumOfDets / 2);
+};
 
-}
+// Calculates the determinant (a*d - b*c)
+function calcDet(a, b, c, d) {
+    return a * d - b * c
+};

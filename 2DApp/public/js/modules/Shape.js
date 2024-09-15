@@ -2,12 +2,15 @@
 Class for our shapes
 */
 
+import { areaOfPolygon } from "./intersection.js";
+
 export class Shape {
     constructor(points, colour=null) {
         this._points = points;
         this.colour = colour;
         this.isSelected = false;
         this.name;
+        this.area = areaOfPolygon(points);
     };
     // is shape selected or not
     get selected() {

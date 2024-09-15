@@ -13,11 +13,11 @@ window.draw = () => {
     background(220);
     // Drawing all shapes on the canvas
     for (let shape of state.shapes) {
-        // if (shape.selected) {
-        //     stroke('red');
-        // } else {
-        //     stroke('black');
-        // }
+        if (shape.selected) {
+            stroke('red');
+        } else {
+            stroke('black');
+        }
         drawShape(shape.points);
     };
     // And drawing the current shape being made on the canvas
@@ -73,9 +73,11 @@ function windowResized() {
 // Function that draws our shapes.
 // shape is a
 function drawShape(shape) {
+    // beginShape();
     // Drawing the shapes
     strokeWeight(20);
     for (let p of shape) {
+        vertex(p.x, p.y);
         point(p.x, p.y);
     };
 
@@ -92,6 +94,7 @@ function drawShape(shape) {
         let pLast = shape[shape.length - 1];
         line(pLast.x, pLast.y, p1.x, p1.y);
     };
+    // endShape(CLOSE);
 };
 
 function highlightArea(shape) {

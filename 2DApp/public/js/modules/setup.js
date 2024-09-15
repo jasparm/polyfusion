@@ -21,7 +21,8 @@ export const state = {
     intersectPoints: [],
     intersectLines: [],
     enclosedLines: [],
-    pointsOfIntersection: []
+    pointsOfIntersection: [],
+    undoPoints: []
 };
 
 export let setup = () => {
@@ -133,6 +134,12 @@ export let setup = () => {
     // Showing button if a shape is selected
     saveButton.hide();
 
+    // testing
+    saveButton.mousePressed(() => {
+        // This means we can't delete any shapes.
+        state.selectShapeMode = false;
+    });
+
     // Getting our form
     const saveShapeForm = document.getElementById("saveShapeForm");
 
@@ -165,6 +172,9 @@ export let setup = () => {
         }).then(response => response.json()).then(data => {
             if (data.success) {
                 updateSavedShapes();
+                // Resetting our select shape mode.
+                state.selectShapeMode = true;
+                resetSelectShape();
                 console.log("Saved Shape Successfully.");
             } else {
                 console.log("Error: Failed to save shape.")
@@ -176,6 +186,31 @@ export let setup = () => {
         console.log(`Pushed shape: ${selectedShape.name}`);
 
         saveShapeForm.elements['shape-name'].value = '';
+    });
+
+    // This is for clearing the canvas
+    const clearCanvasBtn = select("#clear-btn");
+    clearCanvasBtn.mousePressed(() => {
+        // Resets our points and shapes.
+        state.shapes = [];
+        state.points = [];
+    });
+
+    // Undoing
+    const undoBtn = select("#undo-btn");
+    undoBtn.mousePressed(()=> {
+        if (state.points.length > 0) {
+            state.undoPoints.push(state.points.pop());
+        }
+        
+    });
+
+    // Redoing
+    const redoBtn = select("#redo-btn");
+    redoBtn.mousePressed(()=> {
+        if (state.undoPoints.length > 0) {
+            state.points.push(state.undoPoints.pop());
+        }
     });
 };
 
@@ -197,6 +232,9 @@ export function resetSelectShape() {
         state.selectedShapes = [];
         sutherlandButton.hide();
         saveButton.hide();
+
+        // Resetting intersection
+        state.pointsOfIntersection = [];
 
         // Updating html canvas elements
         selectButton.html("Select Shape");
