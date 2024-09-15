@@ -1,5 +1,8 @@
 import * as THREE from "three";
 
+/**
+ * This class is responsible for all vertices contained inside a CustomShape instance.
+ */
 export class VertexManager {
   vertexMap: Map<number, THREE.Vector3>;
   selectedVertices: number[]; // this stores a list of all the currently selected vertices
@@ -13,6 +16,10 @@ export class VertexManager {
     this.selectedVertices = [];
   }
 
+  /**
+   * Initialises the Vertex Manager
+   * @param vertices List of initial vertices to be added into this manager.
+   */
   init(vertices: number[]) {
     for (let i = 0; i < vertices.length; i += 3) {
       this.vertexMap.set(
@@ -23,6 +30,10 @@ export class VertexManager {
     }
   }
 
+  /**
+   * Returns an array of all vertices stored by this instance.
+   * @returns List of all vertices in Vector3 from.
+   */
   getVerticesInfo(): THREE.Vector3[] {
     let temp2: THREE.Vector3[] = [];
     // return vertices;
@@ -33,12 +44,21 @@ export class VertexManager {
     return temp2;
   }
 
+  /**
+   * Adds a new vertex to the managers list.
+   * @param vertex Vertex to be added.
+   */
   add(vertex: THREE.Vector3) {
     this.vertexMap.set(this.id, vertex);
     this.id++;
   }
 
-  getVertexFromID(vertexID: number) {
+  /**
+   * Gets vertexes information given the vertex ID.
+   * @param vertexID ID for vertex to check
+   * @returns Vertex information from that ID if they vertex is handled by this manager.
+   */
+  getVertexFromID(vertexID: number): THREE.Vector3 | undefined {
     return this.vertexMap.get(vertexID);
   }
 

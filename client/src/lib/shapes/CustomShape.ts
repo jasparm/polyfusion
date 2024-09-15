@@ -53,7 +53,7 @@ export class CustomShape {
   }
 
   /**
-   * Initialises/Resets the current shape.
+   * Initialises the current shape.
    */
   init() {
     console.log(this.opacity);
@@ -67,7 +67,7 @@ export class CustomShape {
         color: this.colour,
         transparent: true,
         opacity: 0,
-        side: THREE.DoubleSide
+        side: THREE.DoubleSide,
       });
     } else {
       this.material = new THREE.MeshStandardMaterial({
@@ -75,13 +75,12 @@ export class CustomShape {
         flatShading: true,
         side: THREE.DoubleSide,
         opacity: this.opacity,
-        transparent: true ? this.opacity < 1 : false
+        transparent: true ? this.opacity < 1 : false,
       });
     }
 
     // create a new mesh from the geometry and material
     this.mesh = new THREE.Mesh(this.geometry, this.material);
-    this.mesh.castShadow = true;
     this.mesh.receiveShadow = true;
 
     this.group.add(this.mesh);
@@ -176,12 +175,19 @@ export class CustomShape {
     this.group.add(lineSegments);
   }
 
+  /**
+   * Updates the wireframe status and re-draws the shape.
+   * @param state 
+   */
   setWireFrame(state: boolean) {
     this.group.remove(...this.group.children);
     this.wireframe = state;
     this.init();
   }
 
+  /**
+   * Updates the current shape. This should be called whenever any changes are applied to the shape.
+   */
   update() {
     this.group.remove(...this.group.children);
     this.group.matrixAutoUpdate = true; // no idea what this does but three.js docs says its a good thing.

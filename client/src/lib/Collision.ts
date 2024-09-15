@@ -1,7 +1,7 @@
 import * as THREE from "three";
 import { CustomShape } from "./shapes/CustomShape.ts";
 
-// Check for collisions in all directions
+// The directions we will want to check collisions in.
 const directions: THREE.Vector3[] = [
   new THREE.Vector3(1, 0, 0),
   new THREE.Vector3(-1, 0, 0),

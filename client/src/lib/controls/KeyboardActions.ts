@@ -4,6 +4,11 @@ import { ControllerState, MovementState } from "./ControllerStates.ts";
 let shapeSelected = false;
 let inserting = false;
 
+/**
+ * For events when a key is pressed down.
+ * @param event - Keyboard event from the key being pressed
+ * @param controller - reference to a controller instance which will apply the controls from these actions
+ */
 export function onKeyDown(event: KeyboardEvent, controller: Controller) {
   const key = event.code;
 
@@ -20,18 +25,23 @@ export function onKeyDown(event: KeyboardEvent, controller: Controller) {
     controller.movementState = MovementState.Rotate;
     controller.transformControls.setMode("rotate");
   }
+  // If T is pressed, change the mode to translation
   if (key === "KeyT" && controller.state === ControllerState.ShapeSelected) {
     controller.movementState = MovementState.Transform;
     controller.transformControls.setMode("translate");
   }
+  // If S is pressed, change the mode to scale
   if (key === "KeyS" && controller.state === ControllerState.ShapeSelected) {
     controller.movementState = MovementState.Scale;
     controller.transformControls.setMode("scale");
   }
-
+  // If I is pressed, we begin trying to insert a new vertex
   if (key === "KeyI" && controller.state === ControllerState.ShapeSelected) {
+    controller.insertDistance = 1;
     controller.insertVertex();
   }
+  // If we press shift at any time, temporarily disable controls.
+  // this allows user to move around the camera without accidentally selecting controls.
   if (key === "ShiftLeft" && controller.state === ControllerState.Insert) {
     controller.cleanupInsertion();
     inserting = true;
@@ -48,6 +58,11 @@ export function onKeyDown(event: KeyboardEvent, controller: Controller) {
   }
 }
 
+/**
+ * This handles when a key is released
+ * @param event - Keyboard action for the key that was released.
+ * @param controller - reference to the controller.
+ */
 export function onKeyUp(event: KeyboardEvent, controller: Controller) {
   const key = event.code;
   // When shift is released and a shape is selected, we will re-enable transform controls
@@ -65,6 +80,11 @@ export function onKeyUp(event: KeyboardEvent, controller: Controller) {
   }
 }
 
+/**
+ * Handles when a key is held down
+ * @param event - Keyboard action for the key that is being held down.
+ * @param controller 
+ */
 export function whileKeyDown(event: KeyboardEvent, controller: Controller) {
   const key = event.code;
 
@@ -76,7 +96,8 @@ export function whileKeyDown(event: KeyboardEvent, controller: Controller) {
         controller.moveInsert();
         break;
       case "ArrowDown":
-        controller.insertDistance -= 0.1;
+        // limit the distance it can move backwards so it does not go behind the camera.
+        controller.insertDistance = Math.max(controller.insertDistance - 0.1, 0.3);
         controller.moveInsert();
         break;
       default:
