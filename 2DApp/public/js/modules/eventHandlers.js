@@ -64,13 +64,22 @@ export let mouseDragged = () => {
         let moveX = mouseX - state.moveOffset.x;
         let moveY = mouseY - state.moveOffset.y;
         // Getting the shapes we are moving
-        for (let idx of state.movingShapes) {
-            let shape = state.shapes[idx].points;
+        if (state.movingShapes.length == 3) {
+            let shape = state.shapes[state.shapes.length - 1].points;
             // Updating each point by the offset
             for (let p of shape) {
                 p.x += moveX;
                 p.y += moveY;
             };
+        } else {
+            for (let idx of state.movingShapes) {
+                let shape = state.shapes[idx].points;
+                // Updating each point by the offset
+                for (let p of shape) {
+                    p.x += moveX;
+                    p.y += moveY;
+                };
+            }
         }
         // Updating offset
         state.moveOffset.set(mouseX, mouseY);

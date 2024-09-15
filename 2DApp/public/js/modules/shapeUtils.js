@@ -147,5 +147,6 @@ export function completeShape() {
         state.shapes.push(newShape);
         // And resetting our current shape
         state.points = [];
+        state.undoPoints = [];
     };
 };
