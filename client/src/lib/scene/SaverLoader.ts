@@ -1,11 +1,12 @@
-import LZString from 'lz-string';
-
 import { CustomShape } from "../shapes/CustomShape.ts";
 import SceneManager from "./SceneManager.js";
 
 
 export class SaverLoader {
-  static saveScene(scene: SceneManager, customID?: string) {
+  static async saveScene(scene: SceneManager, customID?: string) {
+    // Dynamically import LZString
+    const {default: LZString} = await import('lz-string');
+
     // use custom ID if provided, else use the current time as id
     const id = customID ? customID : `${Date.now()}`;
 
@@ -22,7 +23,8 @@ export class SaverLoader {
     return compressedData;
   }
 
-  static loadScene(data: any) {
+  static async loadScene(data: any) {
+    const {default: LZString} = await import('lz-string');
     // should probably have some sort of scene ID that we use
     // to track each scene
     // so instead of providing data, we just get an id we check in DB
@@ -33,7 +35,8 @@ export class SaverLoader {
     });
   }
 
-  static saveShape(shape: CustomShape, customID?: string) {
+  static async saveShape(shape: CustomShape, customID?: string) {
+    const {default: LZString} = await import('lz-string');
     const id = customID ? customID : shape.id;
     const data = this.serializeShape(shape);
     const json = JSON.stringify(data);
