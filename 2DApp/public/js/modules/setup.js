@@ -9,7 +9,7 @@ export const state = {
     points: [],
     selectedShapes: [],
     savedShapes: [],
-    moveShapeIndex: -1,
+    movingShapes: [],
     moveOffset: null,
     createShapeMode: false,
     selectShapeMode: false,
@@ -202,7 +202,6 @@ export let setup = () => {
         if (state.points.length > 0) {
             state.undoPoints.push(state.points.pop());
         }
-        
     });
 
     // Redoing
