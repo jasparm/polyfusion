@@ -2,9 +2,6 @@
 # Summary
 
 [Introduction](./intro.md)
-# User Guide
-- [Installation](./user_guides/installation.md)
-
 
 # User Guide
 
@@ -20,3 +17,4 @@
 - [2D](./documentation/2d/2d.md)
 - [Server](./documentation/server/server.md)
   - [Endpoints](./documentation/server/endpoints.md)
+- [Testing](./documentation/testing/testing.md)

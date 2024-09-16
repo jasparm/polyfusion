@@ -10,7 +10,7 @@
     "server": "node server/index.js",
     "client": "npm start --prefix client",
     "dev": "concurrently \"npm run server\" \"npm run client\"",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "mocha --recursive"
   },
   "keywords": [],
   "author": "",
@@ -20,6 +20,7 @@
     "cross-env": "^7.0.3",
     "dat.gui": "^0.7.9",
     "express": "^4.19.2",
+    "mocha": "^10.7.3",
     "three": "^0.165.0"
   }
 }
