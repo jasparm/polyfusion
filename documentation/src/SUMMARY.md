@@ -16,4 +16,4 @@
   - [Custom Shape](./documentation/3d/custom_shape.md)
 - [2D](./documentation/2d/2d.md)
 - [Server](./documentation/server/server.md)
-  - [REST API](./documentation/server/rest_api.md)
+  - [Endpoints](./documentation/server/endpoints.md)
