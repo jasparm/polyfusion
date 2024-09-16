@@ -56,6 +56,11 @@ export function onKeyDown(event: KeyboardEvent, controller: Controller) {
     inserting = false;
     controller.state = ControllerState.Normal;
   }
+  // Undo
+  if (event.ctrlKey && key == "KeyZ") {
+    controller.undoManager.undo();
+    event.preventDefault();
+  }
 }
 
 /**
