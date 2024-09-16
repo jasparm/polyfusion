@@ -2,9 +2,6 @@
 # Summary
 
 [Introduction](./intro.md)
-# User Guide
-- [Installation](./user_guides/installation.md)
-
 
 # User Guide
 
