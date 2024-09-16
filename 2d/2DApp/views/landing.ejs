@@ -1,68 +1,48 @@
-<div class="landing-page">
-  <h1>Welcome to Polyfusion</h1>
-  <p>TESTTESTTESTTESTTESTTESTTESTTESTTESTTESTTESTTESTTESTTEST</p>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= title %></title>
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+    <div class="container landing-page">
+        <h1>Welcome to Polyfusion</h1>
+        <p>TESTTESTTESTTESTTESTTESTTESTTESTTESTTESTTESTTESTTESTTEST</p>
 
-  <!-- Login and Sign-Up Buttons to Trigger Modals -->
-  <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#loginModal">
-    Log In
-  </button>
-  <button type="button" class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#signupModal">
-    Sign Up
-  </button>
+        <% if (!locals.loggedIn) { %>
+            <!-- Login Form -->
+            <form id="loginForm" action="/login" method="POST" class="mb-3">
+                <h2>Log In</h2>
+                <div class="mb-3">
+                    <label for="username" class="col-form-label">Username:</label>
+                    <input type="text" class="form-control" id="username" name="username" required>
+                </div>
+                <div class="mb-3">
+                    <label for="password" class="col-form-label">Password:</label>
+                    <input type="password" class="form-control" id="password" name="password" required>
+                </div>
+                <button type="submit" class="btn btn-primary">Log In</button>
+            </form>
 
-  <!-- Login Modal -->
-  <div class="modal fade" id="loginModal" tabindex="-1" aria-labelledby="loginModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-      <form id="loginForm" action="/login" method="POST">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h1 class="modal-title fs-5" id="loginModalLabel">Log In</h1>
-            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-          </div>
-          <div class="modal-body">
-            <div class="mb-3">
-              <label for="username" class="col-form-label">Username:</label>
-              <input type="text" class="form-control" id="username" name="username" required>
-            </div>
-            <div class="mb-3">
-              <label for="password" class="col-form-label">Password:</label>
-              <input type="password" class="form-control" id="password" name="password" required>
-            </div>
-          </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-            <button type="submit" class="btn btn-primary">Log In</button>
-          </div>
-        </div>
-      </form>
+            <!-- Sign-Up Form -->
+            <form id="signupForm" action="/signup" method="POST">
+                <h2>Sign Up</h2>
+                <div class="mb-3">
+                    <label for="signup-username" class="col-form-label">Username:</label>
+                    <input type="text" class="form-control" id="signup-username" name="username" required>
+                </div>
+                <div class="mb-3">
+                    <label for="signup-password" class="col-form-label">Password:</label>
+                    <input type="password" class="form-control" id="signup-password" name="password" required>
+                </div>
+                <button type="submit" class="btn btn-secondary">Sign Up</button>
+            </form>
+        <% } %>
     </div>
-  </div>
 
-  <!-- Sign-Up Modal -->
-  <div class="modal fade" id="signupModal" tabindex="-1" aria-labelledby="signupModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-      <form id="signupForm" action="/signup" method="POST">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h1 class="modal-title fs-5" id="signupModalLabel">Sign Up</h1>
-            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-          </div>
-          <div class="modal-body">
-            <div class="mb-3">
-              <label for="signup-username" class="col-form-label">Username:</label>
-              <input type="text" class="form-control" id="signup-username" name="username" required>
-            </div>
-            <div class="mb-3">
-              <label for="signup-password" class="col-form-label">Password:</label>
-              <input type="password" class="form-control" id="signup-password" name="password" required>
-            </div>
-          </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-            <button type="submit" class="btn btn-primary">Sign Up</button>
-          </div>
-        </div>
-      </form>
-    </div>
-  </div>
-</div>
+    <script src="/js/bootstrap.min.js"></script>
+</body>
+</html>

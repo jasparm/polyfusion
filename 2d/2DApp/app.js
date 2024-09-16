@@ -3,6 +3,7 @@ import path from "path";
 import expressLayouts from "express-ejs-layouts";
 import { fileURLToPath } from 'url';
 import { dirname } from 'path';
+import session from 'express-session';
 
 // Port number
 const PORT_NUM = 8000;
@@ -32,74 +33,49 @@ app.use("/js", express.static(path.join(__dirname, "node_modules/bootstrap/dist/
 app.use("/js", express.static(path.join(__dirname, "node_modules/p5/lib/p5.min.js")));
 app.use("/js", express.static(path.join(__dirname, "node_modules/p5/lib/p5.js")));
 
-// Listening
-app.listen(PORT_NUM, () => {
-    console.log(`App listening on port number: ${PORT_NUM}.`);
-});
+// Session setup
+app.use(session({
+    secret: 'your_secret_key', // Replace with a strong secret key
+    resave: false,
+    saveUninitialized: true,
+    cookie: { secure: false } // Set to true if using HTTPS
+}));
 
-// Saved shapes
-let savedShapes = [];
-let userTheme = 'light'; // Default theme
-let users = []; // Array to store user login data
+// Array to store user login data
+let users = [];
 
-app.get('/shapes', (req, res) => {
-    res.json(savedShapes);
-});
+// Array to store shapes
+let shapes = [];
 
-// Serving the landing page
-app.get("/", (req, res) => {
-    res.render("landing", { title: "Polyfusion", page: "landing", savedShapes: savedShapes, theme: userTheme });
-});
-
-// Serving the 2D page
-app.get("/2d", (req, res) => {
-    res.render("index", { title: "Polyfusion", page: "index" , savedShapes: savedShapes, theme: userTheme});
-});
-
-// Serving the 3D page
-app.get("/3d", (req, res) => {
-    res.render("3d", { title: "Polyfusion", page: "3D", savedShapes: savedShapes, theme: userTheme });
-});
-
-// Using a post request to save shapes for now
-app.post("/", (req, res) => {
-    const newShape = req.body.shape;
-    if (newShape) {
-        savedShapes.push(newShape);
-        console.log(savedShapes);
-        res.json({ success: true });
-    } else {
-        res.status(400).json({ success: false, message: "Invalid shape data" });
-    }
-    console.log("received post");
-});
-
-// Route to handle theme changes
-app.post("/theme", (req, res) => {
-    const newTheme = req.body.theme;
-    if (newTheme) {
-        userTheme = newTheme;
-        res.json({ success: true });
-    } else {
-        res.status(400).json({ success: false, message: "Invalid theme data" });
-    }
+// Middleware to set login status
+app.use((req, res, next) => {
+    res.locals.loggedIn = !!req.session.userId;
+    next();
 });
 
 // Route to handle login data
 app.post("/login", (req, res) => {
+    console.log("Login route hit"); 
     const { username, password } = req.body;
+    console.log(`Username: ${username}, Password: ${password}`); 
     if (username && password) {
         // Check if user exists
         const user = users.find(u => u.username === username && u.password === password);
         if (user) {
+            req.session.userId = user.username; 
+            console.log(user.savedShapes)
+            req.session.savedShapes = user.savedShapes || []; 
+            req.session.userTheme = user.userTheme || 'light'; 
             console.log("Login successful");
-            res.json({ success: true });
+            console.log(users);
+            console.log("hihihihi");
+            res.redirect('/'); // Redirect to home page after successful login
         } else {
             console.log("Invalid credentials");
-            res.status(400).json({ success: false, message: "Invalid credentials" });
+            res.status(400).send("Invalid credentials");
         }
     } else {
-        res.status(400).json({ success: false, message: "Invalid login data" });
+        res.status(400).send("Invalid login data");
     }
 });
 
@@ -111,13 +87,74 @@ app.post("/signup", (req, res) => {
         const userExists = users.some(u => u.username === username);
         if (userExists) {
             console.log("User already exists");
-            res.status(400).json({ success: false, message: "User already exists" });
+            res.status(400).send("User already exists");
         } else {
-            users.push({ username, password });
+            const newUser = { username, password, savedShapes: [], userTheme: 'light' };
+            users.push(newUser);
+            req.session.userId = newUser.username; 
+            req.session.savedShapes = newUser.savedShapes;
+            req.session.userTheme = newUser.userTheme;
             console.log(users);
-            res.json({ success: true });
+            res.redirect('/'); // Redirect to home page after successful sign-up
         }
     } else {
-        res.status(400).json({ success: false, message: "Invalid sign-up data" });
+        res.status(400).send("Invalid sign-up data");
     }
+});
+
+// Route to handle logout
+app.post("/logout", (req, res) => {
+    req.session.destroy(err => {
+        if (err) {
+            return res.status(500).json({ success: false, message: "Failed to log out" });
+        }
+        console.log("byebye")
+        res.redirect('/'); // Redirect to home page after logout
+    });
+});
+
+// Route to check login state
+app.get('/check-login', (req, res) => {
+    if (req.session.userId) {
+        res.json({ loggedIn: true });
+    } else {
+        res.json({ loggedIn: false });
+    }
+});
+
+// Serving the landing page
+app.get("/", (req, res) => {
+    res.render("landing", { title: "Polyfusion", page: "landing", savedShapes: shapes, theme: req.session.userTheme || 'light' });
+});
+
+// Serving the 2D page
+app.get("/2d", (req, res) => {
+    res.render("index", { title: "Polyfusion", page: "index", savedShapes: shapes, theme: req.session.userTheme || 'light' });
+});
+
+// Serving the 3D page
+app.get("/3d", (req, res) => {
+    res.render("3d", { title: "Polyfusion", page: "3D", savedShapes: shapes, theme: req.session.userTheme || 'light' });
+});
+
+// Using a post request to save shapes for now
+app.post("/", (req, res) => {
+    const newShape = req.body.shape;
+    if (newShape) {
+        shapes.push(newShape);
+        console.log(shapes);
+        res.json({ success: true });
+    } else {
+        res.status(400).json({ success: false, message: "Invalid shape data" });
+    }
+    console.log("received post");
+});
+
+app.get("/get-saved-shapes", (req, res) => {
+    res.json(shapes);
+});
+
+// Listening
+app.listen(PORT_NUM, () => {
+    console.log(`App listening on port number: ${PORT_NUM}.`);
 });

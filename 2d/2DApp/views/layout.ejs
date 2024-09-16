@@ -50,6 +50,13 @@
               </ul>
             </div>
             <button id="pause-monte-btn" type="button" class="btn mb-2">Pause</button>
+
+            <!-- Logout Button -->
+            <% if (loggedIn) { %>
+              <form action="/logout" method="post" class="mt-2">
+                <button type="submit" class="btn btn-danger">Logout</button>
+              </form>
+            <% } %>
   
           <!-- Modal for saving shapes -->
           <div class="modal fade" id="saveModal" tabindex="-1" aria-labelledby="saveModalLabel" aria-hidden="true">
