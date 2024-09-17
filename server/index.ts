@@ -17,7 +17,7 @@ const client = new MongoClient(uri as string, {
     },
 });
 
-const app = express();
+export const app = express();
 const port = process.env.PORT || 3000;
 let db;
 let db_api: DBApi;
