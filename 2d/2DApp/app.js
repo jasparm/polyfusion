@@ -36,7 +36,7 @@ app.use("/js", express.static(path.join(__dirname, "node_modules/p5/lib/p5.js"))
 // Session setup
 app.use(session({
     secret: 'your_secret_key', // Replace with a strong secret key
-    resave: false,
+    resave: true,
     saveUninitialized: true,
     cookie: { secure: false } // Set to true if using HTTPS
 }));
@@ -124,17 +124,17 @@ app.get('/check-login', (req, res) => {
 
 // Serving the landing page
 app.get("/", (req, res) => {
-    res.render("landing", { title: "Polyfusion", page: "landing", savedShapes: shapes, theme: req.session.userTheme || 'light' });
+    res.render("landing", { title: "Polyfusion", page: "landing", savedShapes: shapes, theme: req.session.userTheme || 'light', loggedIn: res.locals.loggedIn });
 });
 
 // Serving the 2D page
 app.get("/2d", (req, res) => {
-    res.render("index", { title: "Polyfusion", page: "index", savedShapes: shapes, theme: req.session.userTheme || 'light' });
+    res.render("index", { title: "Polyfusion", page: "index", savedShapes: shapes, theme: req.session.userTheme || 'light', loggedIn: res.locals.loggedIn });
 });
 
 // Serving the 3D page
 app.get("/3d", (req, res) => {
-    res.render("3d", { title: "Polyfusion", page: "3D", savedShapes: shapes, theme: req.session.userTheme || 'light' });
+    res.render("3d", { title: "Polyfusion", page: "3D", savedShapes: shapes, theme: req.session.userTheme || 'light', loggedIn: res.locals.loggedIn });
 });
 
 // Using a post request to save shapes for now
