@@ -1,0 +1,71 @@
+<div class="App" style="position: relative;">
+    <!-- Side bar -->
+      <nav class="sidebar">
+        <ul class="sidebar-items">
+          <li class="sidebar-item" id="sceneSettings">
+            <img src="./assets/gear-solid.svg">
+            <!-- <span class="sidebar-label">Info</span> -->
+          </li>
+          <li class="sidebar-item" id="insertShapes">
+            <img src="./assets/cube-solid.svg">
+            <!-- <span class="sidebar-label">Insert</span> -->
+          </li>
+          <li class="sidebar-item" id="saveScene">
+            <img src="./assets/floppy-disk-regular.svg">
+            <!-- <span class="sidebar-label">Save</span> -->
+          </li>
+        </ul>
+      </nav>
+      <!-- ThreeJS Canvas -->
+      <canvas id="threeJsCanvas"></canvas>
+      <!-- Context menu -->
+      <ul class="context" id="contextMenu">
+        <li class="context-link" id="shapeSettings">
+          <ion-icon name="settings-outline"></ion-icon>
+          <span class="context-label">Shape Settings</span>
+        </li>
+        <li class="context-link" id="saveShape">
+          <ion-icon name="save-outline"></ion-icon>
+          <span class="context-label">Save Shape</span>
+        </li>
+        <li class="context-link" id="shapeProperties">
+          <ion-icon name="information-circle-outline"></ion-icon>
+          <span class="context-label">Shape Info</span>
+        </li>
+      </ul>
+
+     <!-- Modal for Shape Settings -->
+    <div id="shapeSettingsProperties" class="modal">
+      <div class="modal-content">
+        <span class="close">&times;</span>
+        <h2>Shape Information</h2>
+          <p id="infoID">ID</p>
+          <p id="infoNumVertices">Vertices</p>
+          <p id="infoNumFaces">Faces</p>
+    </div>
+    </div>
+
+    <div id="shapeSettingsModal" class="modal">
+      <div class="modal-content">
+        <span class="close" id="closeSettings">&times;</span>
+        <h2>Shape Settings</h2>
+        <form>
+          <input type="color" value="#652802" id="colourPicker"/>
+          <label for="colourPicker">Shape colour</label>
+          <br/>
+          <input type="checkbox" id="wireframe">
+          <label for="checkbox">Wireframe</label>
+          <br>
+          <input type="range" max="1" min="0.05" step="0.05" id="opacity">
+          <label for="opacity">Opacity: <output id="opacityValue"></output></label>
+          <br>
+          <button type="button" id="applySettings">Apply</button>
+        </form>
+      </div>
+    </div>
+</div>
+
+<script src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
+
+<!-- <script src="contextmenu.js"></script> -->
+<script type="module" src="../dist/App.js"></script>
