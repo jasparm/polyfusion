@@ -17,27 +17,27 @@ import { OrbitControls } from "three/examples/jsm/Addons.js";
 
 export default class SceneManager {
   // NOTE: Core components to initialize Three.js app.
-  private scene: THREE.Scene;
-  camera: THREE.PerspectiveCamera;
-  renderer: THREE.WebGLRenderer;
+  private scene!: THREE.Scene;
+  camera!: THREE.PerspectiveCamera;
+  renderer!: THREE.WebGLRenderer;
 
   fov: number;
   nearPlane: number;
   farPlane: number;
   canvasId: string;
 
-  controls: OrbitControls;
+  controls!: OrbitControls;
   stats: any;
 
   // Lights
-  ambientLight: THREE.AmbientLight;
-  directionalLight: THREE.DirectionalLight;
+  ambientLight: THREE.AmbientLight | undefined;
+  directionalLight: THREE.DirectionalLight | undefined;
 
-  shapeManager: ShapeManager; // this manages shapes for this scene
+  shapeManager!: ShapeManager; // this manages shapes for this scene
 
   constructor(canvasId: string) {
     // NOTE: Camera params;
-    this.fov = 75;
+    this.fov = 45;
     this.nearPlane = 1;
     this.farPlane = 1000;
     this.canvasId = canvasId;
@@ -46,6 +46,15 @@ export default class SceneManager {
   init() {
     this.scene = new THREE.Scene();
 
+    // Specify a canvas which is already in the HTML
+    const canvas = document.getElementById(this.canvasId);
+
+    if (canvas === null) {
+      // @TODO
+      // deal with this
+      return;
+    }
+
     // Camera
     this.camera = new THREE.PerspectiveCamera(
       this.fov,
@@ -53,26 +62,24 @@ export default class SceneManager {
       this.nearPlane,
       this.farPlane
     );
-    //@ts-ignore
+
     this.camera.position.set(0, 10, 0);
     this.camera.layers.enable(0); // default layer for meshes
     this.camera.layers.enable(1); // this is the layer for lines on meshes
     this.camera.layers.enable(2); // this is the layer for balls on vertices
 
-    // Specify a canvas which is already in the HTML
-    const canvas = document.getElementById(this.canvasId);
     // Renderer
     this.renderer = new THREE.WebGLRenderer({
       canvas,
       antialias: true,
     });
-    // @ts-ignore shadow map does indeed exist of renderer as much as this think it doesn't
+    
     this.renderer.shadowMap.enabled = true;
     this.renderer.setSize(window.innerWidth, window.innerHeight);
     document.body.appendChild(this.renderer.domElement);
 
     // Comment out to enable/disable performance tracker
-    this.stats = Stats();
+    this.stats = new Stats();
     document.body.appendChild(this.stats.dom);
 
     this.shapeManager = new ShapeManager(this.scene);
@@ -105,12 +112,15 @@ export default class SceneManager {
     this.renderer.domElement.addEventListener("wheel", (e) =>
       onMouseWheelEvent(e, controller)
     );
+    this.renderer.domElement.addEventListener('contextmenu', function(event) {
+      event.preventDefault(); // prevent the default right-click menu from appearing
+    })
 
-    const keyStates = {};
+    const keyStates: { [key: string]: boolean } = {};
     // Keyboard related events
     window.addEventListener("keydown", (e) => {
-      const key = e.key;
-      // CHeck if the key is already pressed,this ensures it will only be called once.
+      const key: string = e.key;
+      // Check if the key is already pressed,this ensures it will only be called once.
       if (!keyStates[key]) {
         keyStates[key] = true;
         onKeyDown(e, controller);
@@ -118,8 +128,8 @@ export default class SceneManager {
       whileKeyDown(e, controller);
     });
 
-    window.addEventListener("keyup", (e) => {
-      const key = e.key;
+    window.addEventListener("keyup", (e: KeyboardEvent) => {
+      const key: string = e.key;
       // Check if the key was previously pressed
       if (keyStates[key]) {
         keyStates[key] = false;

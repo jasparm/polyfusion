@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import { CustomShape } from "./CustomShape.ts";
+import { CustomShape } from "../CustomShape.ts";
 
 /**
  * This defines a prefab shape for a rectangular prism.
@@ -10,7 +10,7 @@ export class CustomBox extends CustomShape {
   width: number;
   height: number;
 
-  constructor(length=1, width=1, height=1, colour: THREE.Color = new THREE.Color(0xff00ff)) {
+  constructor(length=1, width=1, height=1, colour: THREE.Color = new THREE.Color(0x0000ff)) {
     super();
     this.length = length;
     this.width = width;
@@ -19,7 +19,6 @@ export class CustomBox extends CustomShape {
     this.vertexManager.init(this.createVertices())
 
     this.init();
-    this.group.add(this.mesh);
 
   }
 

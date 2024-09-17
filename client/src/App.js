@@ -1,142 +1,95 @@
-import React from "react";
-
-import * as THREE from "three";
+import * as THREE from 'three';
+import './App.css';
+import './lib/context-menu/contextmenu.css'
 
 import SceneManager from "./lib/scene/SceneManager.ts";
-import CustomGui from "./lib/Gui";
-import { MonteCarloManager } from "./lib/algorithms/MonteCarlo";
+import { MonteCarloManager } from "./lib/algorithms/MonteCarlo.js";
 
 import { CustomShape } from "./lib/shapes/CustomShape.ts";
-import { CustomBox } from "./lib/shapes/CustomBox.ts";
-
-function App() {
-  const [data, setData] = React.useState(null);
-
-  React.useEffect(() => {
-    const test = new SceneManager("threeJsCanvas");
-    test.init();
-
-    // add settings GUI
-    const gui = new CustomGui();
-
-    test.scene.background = new THREE.Color(0x2e3359);
-
-    // set up ground
-    const groundGeometry = new THREE.BoxGeometry(8, 0.5, 8);
-    const groundMaterial = new THREE.MeshPhongMaterial({ color: 0xfafafa });
-
-    // phone material
-    const groundMesh = new THREE.Mesh(groundGeometry, groundMaterial);
-    groundMesh.receiveShadow = true;
-    groundMesh.position.y = -2;
-
-    test.scene.add(groundMesh);
-
-    // Box
-    const boxTexture = new THREE.TextureLoader().load("./assets/texture01.png"); // creates texture and loads them in
-
-    const box = new THREE.BoxGeometry(2, 2, 2);
-    const mat = new THREE.MeshStandardMaterial({
-      map: boxTexture,
-      side: THREE.DoubleSide,
-    }); // instead of choosing colour, we can choose a texture to map
-    const mesh = new THREE.Mesh(box, mat);
-    mesh.castShadow = true;
-
-    // test.scene.add(mesh);
-    test.box = mesh;
-    test.mesh = mesh;
-
-    const ball = new THREE.SphereGeometry(0.25);
-    const ball_mat = new THREE.MeshStandardMaterial({ color: 0x00ff00 });
-    const ball_mesh = new THREE.Mesh(ball, ball_mat);
-    ball_mesh.position.x = 3;
-    ball_mesh.castShadow = true;
-
-    test.sphere = ball_mesh;
-
-    // test.scene.add(ball_mesh);
-
-    gui.init_mesh(test.mesh);
-    gui.init_ball(ball_mesh);
+import { CustomBox } from "./lib/shapes/prefabs/CustomBox.ts";
+import { CustomTetrahedron } from "./lib/shapes/prefabs/Tetrahedron.ts";
+import { CustomOctahedron } from "./lib/shapes/prefabs/Octahedron.ts";
+import { CustomDodecahedron } from "./lib/shapes/prefabs/Dodecahedron.ts";
+import { CustomIcosahedron } from "./lib/shapes/prefabs/Icosahedron.ts";
+import { SaverLoader } from "./lib/scene/SaverLoader.ts";
 
 
-    const octahedron = new THREE.OctahedronGeometry(2, 0);
-    const octahedron_mat = new THREE.MeshStandardMaterial({
-      color: 0xff00ff,
-      wireframe: true,
-      side: THREE.DoubleSide,
-    });
-    const octahedron_mesh = new THREE.Mesh(octahedron, octahedron_mat);
-
-    octahedron_mesh.castShadow = true;
-    test.octahedron = octahedron_mesh;
-
-    // test.scene.add(octahedron_mesh);
-
-    const verticesOfPyramid = [
-      -2, 0, -2, 2, 0, -2, -2, 0, 2, 2, 0, 2, //0, 1, 0
-    ];
+const test = new SceneManager("threeJsCanvas");
+test.init();
 
 
-    const indicesOfPyramid2 = [
-      [2, 1, 0],
-      [3, 1, 2],
-      [1, 3, 0],
-    ];
+test.scene.background = new THREE.Color(0x2e3359);
+
+// set up ground
+const groundGeometry = new THREE.BoxGeometry(8, 0.5, 8);
+const groundMaterial = new THREE.MeshPhongMaterial({ color: 0xfafafa });
+
+// phone material
+const groundMesh = new THREE.Mesh(groundGeometry, groundMaterial);
+groundMesh.receiveShadow = true;
+groundMesh.position.y = -2;
+
+test.scene.add(groundMesh);
+
+// Box
+const boxTexture = new THREE.TextureLoader().load("./assets/texture01.png"); // creates texture and loads them in
+
+const box = new THREE.BoxGeometry(2, 2, 2);
+const mat = new THREE.MeshStandardMaterial({
+  map: boxTexture,
+  side: THREE.DoubleSide,
+}); // instead of choosing colour, we can choose a texture to map
+const mesh = new THREE.Mesh(box, mat);
+mesh.castShadow = true;
+
+// test.scene.add(mesh);
+test.box = mesh;
+test.mesh = mesh;
+
+const ball = new THREE.SphereGeometry(0.25);
+const ball_mat = new THREE.MeshStandardMaterial({ color: 0x00ff00 });
+const ball_mesh = new THREE.Mesh(ball, ball_mat);
+ball_mesh.position.x = 3;
+ball_mesh.castShadow = true;
+
+test.sphere = ball_mesh;
 
 
-    const shape = new CustomShape(
-      verticesOfPyramid,
-      indicesOfPyramid2,
-      false,
-      true,
-      new THREE.Color(0x0000ff),
-      1,
-      new THREE.Color(0xffffffff)
-    );
-    test.add(shape);
-    shape.addVertex(new THREE.Vector3(0, 2, 0));
-    shape.addVertex(new THREE.Vector3(0, -2, 0));
-    // shape.group.position.y = 2
-    // shape.wireframe = true
-    shape.lineColour = new THREE.Color(0xffffff)
-    // shape.addVertex(new THREE.Vector3(1, 1, 2));
-    // shape.addVertex(new THREE.Vector3(-1, 1, 2));
-    // shape.addVertex(new THREE.Vector3(-3, 1, -1));
+// test.scene.add(octahedron_mesh);
 
-    const cube = new CustomBox(5.5, 2, 3, new THREE.Color(0x0000ff));
-    // cube.wireframe = false;;
-    // cube.addVertex(new THREE.Vector3(0, 0, 5))
-    // cube.group.position.z = 5
-    // test.scene.add(cube.group);
-    test.add(cube)
+const shape = new CustomOctahedron();
+shape.group.position.z = -5;
 
-    const MonteCarlo = new MonteCarloManager(
-      [mesh, octahedron_mesh],
-      test.scene
-    );
-    MonteCarlo.radius = 0.25;
+test.add(shape);
+// shape.group.position.y = 2
+// shape.wireframe = true
+// shape.addVertex(new THREE.Vector3(1, 1, 2));
+// shape.addVertex(new THREE.Vector3(-1, 1, 2));
+// shape.addVertex(new THREE.Vector3(-3, 1, -1));
 
-    gui.init_monte(MonteCarlo);
+const cube = new CustomBox(5, 5, 5, new THREE.Color(0x0000ff));
+const tet = new CustomTetrahedron(2);
+test.add(tet);
 
-    test.animate();
+cube.group.position.z = 5;
+// test.scene.add(cube.group);
+test.add(cube);
 
-    // fetch("/api")
-    //   .then((res) => res.json())
-    //   .then((data) => setData(data.message))
+const doc = new CustomDodecahedron(0.5);
+doc.group.position.x = 5;
+test.add(doc);
 
-    return () => {
-      gui.destroy();
-    };
-  }, []);
+const iso = new CustomIcosahedron();
+iso.group.position.x = -5;
+test.add(iso);
 
-  return (
-    <div className="App">
-      <canvas id="threeJsCanvas"></canvas>
-      {/* <p>{!data ? "Loading..." : data}</p> */}
-    </div>
-  );
-}
+const MonteCarlo = new MonteCarloManager([cube, tet], test.scene);
+MonteCarlo.radius = 0.25;
 
-export default App;
+
+test.animate();
+
+SaverLoader.saveScene(test);
+// fetch("/api")
+//   .then((res) => res.json())
+//   .then((data) => setData(data.message))

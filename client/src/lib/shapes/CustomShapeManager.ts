@@ -31,4 +31,17 @@ export class ShapeManager {
   getShapeFromID(id: string): CustomShape | undefined {
     return this.shapesMap.get(id);
   }
+
+  /**
+   * Returns an array of all shapes currently managed by
+   * this shape manager.
+   * @returns 
+   */
+  getShapes(): CustomShape[] {
+    let shapes: CustomShape[] = [];
+    this.shapesMap.forEach((value, key) => {
+      shapes.push(value)
+    });
+    return shapes;
+  }
 }

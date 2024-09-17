@@ -1,6 +1,5 @@
 import * as THREE from "three";
-import { ConvexGeometry } from "three/addons/geometries/ConvexGeometry.js";
-
+import { ConvexGeometry } from "three/examples/jsm/geometries/ConvexGeometry.js";
 
 import { VertexManager } from "./VertexManager.ts";
 
@@ -10,9 +9,9 @@ import { VertexManager } from "./VertexManager.ts";
  * Actual object which should be added to the scene is the *group* attribute.
  */
 export class CustomShape {
-  geometry: THREE.BufferGeometry; // Stores the geometry of the shape
-  material: THREE.Material; // Stores the material used on the shape
-  mesh: THREE.Mesh; // Stores the combined mesh which can be added to the scene.
+  geometry!: THREE.BufferGeometry; // Stores the geometry of the shape
+  material!: THREE.Material; // Stores the material used on the shape
+  mesh!: THREE.Mesh; // Stores the combined mesh which can be added to the scene.
   group: THREE.Group; // Stores all other shapes that are part of the mesh.
   wireframe: boolean; // If the shape should be drawn as a wire frame.
   drawBalls: boolean; // If shape should have spheres on each vertex.
@@ -23,6 +22,7 @@ export class CustomShape {
 
   vertexSize: number = 0.05; // radius of sphere to be added on vertices
   id: string; // this is used to uniquely identify a given custom shape.
+  opacity: number;
 
   vertexManager: VertexManager;
 
@@ -44,36 +44,46 @@ export class CustomShape {
 
     this.vertexManager = new VertexManager(time);
     this.vertexManager.init(vertices);
+    this.opacity = 1;
 
     this.init();
 
     this.id = time;
     this.mesh.name = time;
-
-    this.group.add(this.mesh);
   }
 
   /**
-   * Initialises/Resets the current shape.
+   * Initialises the current shape.
    */
   init() {
+    console.log(this.opacity);
     const vertices = this.vertexManager.getVerticesInfo();
     const geometry = new ConvexGeometry(vertices); // This ensures a shape is always convex
     this.geometry = geometry;
 
-    this.material = new THREE.MeshStandardMaterial({
-      color: this.colour,
-      flatShading: true
-    });
+    if (this.wireframe) {
+      // invisible material
+      this.material = new THREE.MeshBasicMaterial({
+        color: this.colour,
+        transparent: true,
+        opacity: 0,
+        side: THREE.DoubleSide,
+      });
+    } else {
+      this.material = new THREE.MeshStandardMaterial({
+        color: this.colour,
+        flatShading: true,
+        side: THREE.DoubleSide,
+        opacity: this.opacity,
+        transparent: true ? this.opacity < 1 : false,
+      });
+    }
 
-    // @ts-ignore Typescript does not like material being passed here even though it works.
+    // create a new mesh from the geometry and material
     this.mesh = new THREE.Mesh(this.geometry, this.material);
-    this.mesh.castShadow = true;
     this.mesh.receiveShadow = true;
 
-    if (!this.wireframe) {
-      this.group.add(this.mesh);
-    }
+    this.group.add(this.mesh);
     // Add additional details to the shape.
     if (this.drawBalls) {
       this.addSpheresToVertices(this.vertexSize);
@@ -96,47 +106,6 @@ export class CustomShape {
   }
 
   /**
-   * Maps vertices array to array of Vector3. This is much easier to work with to distinguish between each vertex.
-   * Takes the vertex positions from the geometry.
-   *
-   * @returns New array containing Vector3 elements that represent each vertex.
-   */
-  mapVerticesToVector3(vertices): THREE.Vector3[] {
-    var vertexes: THREE.Vector3[] = [];
-    // const vertices = this.geometry.attributes.position.array;
-
-    for (let i = 0; i < vertices.length; i += 3) {
-      vertexes.push(
-        new THREE.Vector3(
-          vertices[i] * this.scale,
-          vertices[i + 1] * this.scale,
-          vertices[i + 2] * this.scale
-        )
-      );
-    }
-
-    return vertexes;
-  }
-
-  /**
-   * Converts array of Vector3 back to array of vertices.
-   * This is needed as THREE.JS expects the array to be of this type and not to be of type Vector3.
-   * NOTE: Might not actually be needed, will delete later if not needed.
-   *
-   * @returns Converted Vector3 array.
-   */
-  mapVector3ToVertices(vertexes: THREE.Vector3[]): number[] {
-    var vertices: number[] = [];
-    // use instances stored vertices array and create a new array.
-    // this way we can maintain the instances vertices array.
-    vertexes.forEach((vertex) => {
-      vertices.push(vertex.x, vertex.y, vertex.z);
-    });
-
-    return vertices;
-  }
-
-  /**
    * Adds little spheres to the corners of the shape.
    *
    * @param radius Radius of the balls. Defaults to 0.1.
@@ -152,13 +121,21 @@ export class CustomShape {
       const ball = new THREE.SphereGeometry(radius);
       const ball_material = new THREE.MeshBasicMaterial({ color: colour });
       const ball_mesh = new THREE.Mesh(ball, ball_material);
-      // @ts-ignore
-      ball_mesh.position.x = vertex.x; // @ts-ignore
-      ball_mesh.position.y = vertex.y; // @ts-ignore
-      ball_mesh.position.z = vertex.z;
+      ball_mesh.position.set(vertex.x, vertex.y, vertex.z);
+
+      // this ensures that a ball maintains its scale by scaling by the inverse of any group scaling
+      ball_mesh.onBeforeRender = () => {
+        const scale = this.group.scale;
+        const inverseScale = new THREE.Vector3(
+          1 / scale.x,
+          1 / scale.y,
+          1 / scale.z
+        );
+        ball_mesh.scale.copy(inverseScale); // Prevent the ball from scaling with the group
+      };
+
       ball_mesh.name = id.toString();
       ball_mesh.layers.set(2);
-
       this.group.add(ball_mesh);
     });
   }
@@ -166,7 +143,7 @@ export class CustomShape {
   /**
    * Adds a vertex to the CustomShape.
    *
-   * @param point - The THREE.Vector3 representing the coordinates of the vertex to be added.
+   * @param point The THREE.Vector3 representing the coordinates of the vertex to be added.
    */
   addVertex(point: THREE.Vector3) {
     this.vertexManager.add(point);
@@ -189,15 +166,31 @@ export class CustomShape {
     if (!this.geometry) {
       return;
     }
-    //@ts-ignore edges geometry has broken as types
+    // This geometry adds edges to our current shape.
     const edgeGeometry = new THREE.EdgesGeometry(this.geometry);
-    const lineMat = new THREE.LineBasicMaterial({color: colour});
+    const lineMat = new THREE.LineBasicMaterial({ color: colour });
 
     const lineSegments = new THREE.LineSegments(edgeGeometry, lineMat);
 
     this.group.add(lineSegments);
   }
 
+  /**
+   * Updates the wireframe status and re-draws the shape.
+   * @param state 
+   */
+  setWireFrame(state: boolean) {
+    this.group.remove(...this.group.children);
+    this.wireframe = state;
+    this.init();
+  }
 
-  updateMesh() {}
+  /**
+   * Updates the current shape. This should be called whenever any changes are applied to the shape.
+   */
+  update() {
+    this.group.remove(...this.group.children);
+    this.group.matrixAutoUpdate = true; // no idea what this does but three.js docs says its a good thing.
+    this.init();
+  }
 }
