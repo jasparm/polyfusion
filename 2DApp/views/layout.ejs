@@ -6,6 +6,8 @@
     <!-- Including Bootstrap -->
     <link rel="stylesheet" href="/css/bootstrap.min.css">
     <script src="/js/bootstrap.bundle.js"></script>
+    <!-- Font Awesome -->
+    <script src="https://kit.fontawesome.com/c3fe118872.js" crossorigin="anonymous"></script>
     <link rel="stylesheet" href="/css/style.css">
     <title><%= title %></title>
   </head>
@@ -50,26 +52,26 @@
       <div class="modal-dialog">
         <form id="saveShapeForm">
           <div class="modal-content">
-          <div class="modal-header">
-            <h1 class="modal-title fs-5" id="saveModalLabel">Save Shape</h1>
-            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-          </div>
-          <div class="modal-body">
-              <div class="mb-3">
-                <label for="shape-name" class="col-form-label">Shape Name:</label>
-                <input autofocus type="text" class="form-control" id="shape-name">
-              </div>
-          </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-            <button id="save-shape" type="submit" class="btn btn-primary" data-bs-dismiss="modal">Save Shape</button>
+            <div class="modal-header">
+              <h1 class="modal-title fs-5" id="saveModalLabel">Save Shape</h1>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="mb-3">
+                  <label for="shape-name" class="col-form-label">Shape Name:</label>
+                  <input autofocus type="text" class="form-control" id="shape-name">
+                </div>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+              <button id="save-shape" type="submit" class="btn btn-primary" data-bs-dismiss="modal">Save Shape</button>
+            </div>
           </div>
         </form>
       </div>
-      </div>
     </div>
-    <div class="container-fluid g-0">
-      <div class="row g-0">
+    <div class="container-fluid g-0 h-100">
+      <div class="row g-0 h-100">
         <div class="sidebar col-2">
           <h1>Sidebar goes here</h1>
           <h2>Blah Blah Blah</h2>

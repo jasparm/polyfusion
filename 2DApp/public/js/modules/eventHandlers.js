@@ -13,7 +13,6 @@ export let keyPressed = () => {
 };
 
 // The final boss of mouse pressing
-//! Turn the code under each mouse pressed into functions so we know what's going on
 export let mousePressed = () => {
     // Left click adds a point to the canvas for the moment
     if (mouseButton === LEFT) {
@@ -64,23 +63,23 @@ export let mouseDragged = () => {
         let moveX = mouseX - state.moveOffset.x;
         let moveY = mouseY - state.moveOffset.y;
         // Getting the shapes we are moving
-        if (state.movingShapes.length == 3) {
-            let shape = state.shapes[state.shapes.length - 1].points;
+        // if (state.movingShapes.length == 3) {
+        //     let shape = state.shapes[state.shapes.length - 1].points;
+        //     // Updating each point by the offset
+        //     for (let p of shape) {
+        //         p.x += moveX;
+        //         p.y += moveY;
+        //     };
+        // } else {
+        for (let idx of state.movingShapes) {
+            let shape = state.shapes[idx].points;
             // Updating each point by the offset
             for (let p of shape) {
                 p.x += moveX;
                 p.y += moveY;
             };
-        } else {
-            for (let idx of state.movingShapes) {
-                let shape = state.shapes[idx].points;
-                // Updating each point by the offset
-                for (let p of shape) {
-                    p.x += moveX;
-                    p.y += moveY;
-                };
-            }
         }
+        // }
         // Updating offset
         state.moveOffset.set(mouseX, mouseY);
     };
