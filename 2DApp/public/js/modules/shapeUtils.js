@@ -28,7 +28,7 @@ export function selectShape() {
             // If shape is already selected, de-select it
             if (state.shapes[i].selected) {
                 deSelect(state.shapes[i]);
-            } else {
+            } else if (!state.shapes[i].selected) {
                 state.shapes[i].isSelected = true;
                 state.selectedShapes.push(state.shapes[i]);
             };
@@ -62,9 +62,9 @@ export function deSelect(shape) {
     state.selectedShapes.splice(index, 1);
 
     // Now checking if we have no selected shapes anymore
-    if (state.selectedShapes.length == 0) {
-        resetSelectShape();
-    };
+    // if (state.selectedShapes.length == 0) {
+    //     resetSelectShape();
+    // };
 };
 
 
@@ -147,5 +147,6 @@ export function completeShape() {
         state.shapes.push(newShape);
         // And resetting our current shape
         state.points = [];
+        state.undoPoints = [];
     };
 };

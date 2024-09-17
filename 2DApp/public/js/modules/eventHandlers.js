@@ -13,7 +13,6 @@ export let keyPressed = () => {
 };
 
 // The final boss of mouse pressing
-//! Turn the code under each mouse pressed into functions so we know what's going on
 export let mousePressed = () => {
     // Left click adds a point to the canvas for the moment
     if (mouseButton === LEFT) {
@@ -24,7 +23,10 @@ export let mousePressed = () => {
             // Need to now ensure that each point results in a convex shape
             // If convex, we add
             if (!checkConvexNew(state.points)) {
-                state.points.pop()
+                state.points.pop();
+            // This resets undo points as if we add a new point, we cannot re-do
+            } else {
+                state.undoPoints = [];
             };
         }
         // Now checking if select shape mode is on
@@ -37,9 +39,10 @@ export let mousePressed = () => {
             for (let i = 0; i < state.shapes.length; i++) {
                 // Using ray casting to check if the user has clicked inside a shape
                 if (rayCast(mouseX, mouseY, state.shapes[i].points)) {
-                    state.moveShapeIndex = i;
+                    moveShapeIndex = i;
+                    state.movingShapes.push(i)
                     state.moveOffset = createVector(mouseX, mouseY);
-                    return;
+                    // return;
                 };
             };
         };
@@ -48,23 +51,35 @@ export let mousePressed = () => {
 
 // Resets move shape index
 export let mouseReleased = () => {
-    state.moveShapeIndex = -1;
+    moveShapeIndex = -1;
+    state.movingShapes = [];
     cursor();
 };
 
 // Override method for implementation when the mouse is being dragged
 export let mouseDragged = () => {
-    if (state.moveShapeIndex !== -1) {
+    if (moveShapeIndex !== -1) {
         cursor('grabbing');
-        // Getting the shape we are moving
-        let shape = state.shapes[state.moveShapeIndex].points;
         let moveX = mouseX - state.moveOffset.x;
         let moveY = mouseY - state.moveOffset.y;
-        // Updating each point by the offset
-        for (let p of shape) {
-            p.x += moveX;
-            p.y += moveY;
-        };
+        // Getting the shapes we are moving
+        // if (state.movingShapes.length == 3) {
+        //     let shape = state.shapes[state.shapes.length - 1].points;
+        //     // Updating each point by the offset
+        //     for (let p of shape) {
+        //         p.x += moveX;
+        //         p.y += moveY;
+        //     };
+        // } else {
+        for (let idx of state.movingShapes) {
+            let shape = state.shapes[idx].points;
+            // Updating each point by the offset
+            for (let p of shape) {
+                p.x += moveX;
+                p.y += moveY;
+            };
+        }
+        // }
         // Updating offset
         state.moveOffset.set(mouseX, mouseY);
     };
