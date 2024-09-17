@@ -38,8 +38,8 @@ export class VertexManager {
     let temp2: THREE.Vector3[] = [];
     // return vertices;
     this.vertexMap.forEach((key, value) => {
-      temp2.push(key)
-    })
+      temp2.push(key);
+    });
 
     return temp2;
   }
@@ -104,5 +104,21 @@ export class VertexManager {
 
       // vertex.material.color = new THREE.Color(100, 100, 100);
     });
+  }
+
+  public clone(): VertexManager {
+    // Create a new VertexManager with the same groupID
+    const cloneManager = new VertexManager(this.groupID);
+
+    // Deep clone the vertexMap by iterating through all its entries
+    this.vertexMap.forEach((vertex, id) => {
+      cloneManager.vertexMap.set(id, vertex.clone());
+    });
+
+    // Clone other properties like `id` and `selectedVertices`
+    cloneManager.id = this.id; // Same ID counter value
+    cloneManager.selectedVertices = [...this.selectedVertices]; // Deep copy of selected vertices
+
+    return cloneManager;
   }
 }
