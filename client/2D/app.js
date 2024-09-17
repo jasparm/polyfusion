@@ -4,6 +4,7 @@ import expressLayouts from "express-ejs-layouts";
 import { fileURLToPath } from 'url';
 import { dirname } from 'path';
 import ejs from "ejs";
+import { createServer as createViteServer } from 'vite';
 
 // Port number
 const PORT_NUM = 8000;
@@ -14,6 +15,11 @@ const __dirname = dirname(__filename);
 
 // Setting up the app
 let app = express();
+const vite = await createViteServer( {
+    server: {middlewareMode: 'html'}
+})
+
+app.use(vite.middlewares)
 
 // EJS stuff
 // app.engine("html", ejs.renderFile);
@@ -33,7 +39,33 @@ app.use("/css", express.static(path.join(__dirname, "node_modules/bootstrap/dist
 app.use("/js", express.static(path.join(__dirname, "node_modules/bootstrap/dist/js")));
 app.use("/js", express.static(path.join(__dirname, "node_modules/p5/lib/p5.min.js")));
 app.use("/js", express.static(path.join(__dirname, "node_modules/p5/lib/p5.js")));
-app.use("/three", express.static(path.join(__dirname, "node_modules/three/build")));
+// app.use("/three", express.static(path.join(__dirname, "node_modules/three/build")));
+
+  // Route to serve the Vite app
+  app.get("/", async (req, res, next) => {
+    try {
+      const template = `
+        <!DOCTYPE html>
+        <html lang="en">
+          <head>
+            <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <title>Vite + Express</title>
+            <script type="module" src="/src/main.js"></script>
+          </head>
+          <body>
+            <div id="app"></div>
+          </body>
+        </html>
+      `;
+
+      // Serve the Vite app template with hot reload during development
+      res.status(200).set({ "Content-Type": "text/html" }).end(template);
+    } catch (e) {
+      vite.ssrFixStacktrace(e);
+      next(e);
+    }
+  });
 
 // Listening
 app.listen(PORT_NUM, () => {
