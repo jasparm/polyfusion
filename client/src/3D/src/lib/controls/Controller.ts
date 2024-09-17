@@ -4,7 +4,7 @@ import { ControllerState, MovementState } from "./ControllerStates.ts";
 import { ShapeManager } from "../shapes/CustomShapeManager.ts";
 import { CustomShape } from "../shapes/CustomShape.ts";
 import { ContextMenu } from "../context-menu/contextmenu.js";
-import { UndoManager } from "../scene/UndoManager.ts";
+// import { UndoManager } from "../scene/UndoManager.ts";
 
 /**
  * Controller class looks after all player controls including their interaction with other objects.
@@ -34,14 +34,14 @@ export class Controller {
   shapeManager: ShapeManager;
   contextMenu: ContextMenu;
 
-  undoManager: UndoManager
+  // undoManager: UndoManager
 
   constructor(
     scene: THREE.Scene,
     camera: THREE.Camera,
     renderer: THREE.WebGLRenderer,
     shapeManager: ShapeManager,
-    undoManager: UndoManager
+    // undoManager: UndoManager
   ) {
     this.scene = scene;
     this.camera = camera;
@@ -62,7 +62,7 @@ export class Controller {
     this.raycaster.layers.enable(2); // this is the layer that vertex spheres live on
 
     this.checkForShapes = true;
-    this.undoManager = undoManager;
+    // this.undoManager = undoManager;
   }
 
   private initControls() {
@@ -78,7 +78,7 @@ export class Controller {
 
     this.scene.add(this.transformControls);
     this.transformControls.addEventListener('mouseUp', (event: THREE.Event) => {
-      this.undoManager.saveState();
+      // this.undoManager.saveState();
     })
 
   }
@@ -300,7 +300,7 @@ export class Controller {
       this.scene.remove(this.insertingSphere);
     }
     this.state = ControllerState.Normal;
-    this.undoManager.saveState();
+    // this.undoManager.saveState();
   }
 
   selectVertex(object: THREE.Object3D) {

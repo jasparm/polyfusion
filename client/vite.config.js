@@ -3,7 +3,7 @@ import { defineConfig } from 'vite';
 
 const root = resolve(__dirname, 'src');
 const outDir = resolve(__dirname, 'dist');
-
+console.log("hello")
 export default defineConfig({
     root,
     build: {
@@ -11,10 +11,9 @@ export default defineConfig({
         emptyOutDir: true,
         rollupOptions: {
             input: {
-                
-                twoD: "./src/2D/index.html",
-                threeD: "./src/3D/3d.html",
-                // fafa: resolve(root, 'index.html')
+                main: resolve(root, 'index.html'),
+                twoD: resolve(root, '2D', 'index.html'),
+                threeD: resolve(root, "3D", "index.html")
             }
         }
     }
