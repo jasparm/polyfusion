@@ -5,13 +5,11 @@ body, html {
   height: 100%;
 }
 
-.content {
-  position: relative;
+i {
+  color: rgb(191, 190, 190);
 }
 
-#canvas-container {
-  width: 100%;
-  height: 100%;
+.content {
   position: relative;
 }
 
@@ -43,7 +41,18 @@ body, html {
   background-color: rgb(87, 87, 87);
 }
 
-i {
-  color: rgb(191, 190, 190);
+#canvas-container {
+  width: 100%;
+  height: 100%;
+  position: relative;
 }
+
+#canvas {
+  width: 100%;
+  height: 100%;
+  position: relative;
+  background-color: black;
+}
+
+
 

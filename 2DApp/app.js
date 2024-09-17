@@ -3,6 +3,7 @@ import path from "path";
 import expressLayouts from "express-ejs-layouts";
 import { fileURLToPath } from 'url';
 import { dirname } from 'path';
+import ejs from "ejs";
 
 // Port number
 const PORT_NUM = 8000;
@@ -15,6 +16,7 @@ const __dirname = dirname(__filename);
 let app = express();
 
 // EJS stuff
+// app.engine("html", ejs.renderFile);
 app.set("view engine", "ejs");
 // Setting the directory for EJS templates and files
 app.set('views', path.join(__dirname, "views"));
@@ -31,6 +33,8 @@ app.use("/css", express.static(path.join(__dirname, "node_modules/bootstrap/dist
 app.use("/js", express.static(path.join(__dirname, "node_modules/bootstrap/dist/js")));
 app.use("/js", express.static(path.join(__dirname, "node_modules/p5/lib/p5.min.js")));
 app.use("/js", express.static(path.join(__dirname, "node_modules/p5/lib/p5.js")));
+app.use("/js", express.static(path.join(__dirname, "node_modules/three/build/three.module.js")));
+app.use("/js", express.static(path.join(__dirname, "node_modules/three/build/three.module.min.js")));
 
 // Listening
 app.listen(PORT_NUM, () => {
@@ -64,3 +68,7 @@ app.post("/", (req, res) => {
     };
     console.log("received post");
 });
+
+// app.get("/3d", (req, res) => {
+//     res.render("three", { title: "Polyfusion", savedShapes: savedShapes })
+// })
