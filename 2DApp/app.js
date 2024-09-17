@@ -33,8 +33,7 @@ app.use("/css", express.static(path.join(__dirname, "node_modules/bootstrap/dist
 app.use("/js", express.static(path.join(__dirname, "node_modules/bootstrap/dist/js")));
 app.use("/js", express.static(path.join(__dirname, "node_modules/p5/lib/p5.min.js")));
 app.use("/js", express.static(path.join(__dirname, "node_modules/p5/lib/p5.js")));
-app.use("/js", express.static(path.join(__dirname, "node_modules/three/build/three.module.js")));
-app.use("/js", express.static(path.join(__dirname, "node_modules/three/build/three.module.min.js")));
+app.use("/three", express.static(path.join(__dirname, "node_modules/three/build")));
 
 // Listening
 app.listen(PORT_NUM, () => {
@@ -69,6 +68,6 @@ app.post("/", (req, res) => {
     console.log("received post");
 });
 
-// app.get("/3d", (req, res) => {
-//     res.render("three", { title: "Polyfusion", savedShapes: savedShapes })
-// })
+app.get("/3d", (req, res) => {
+    res.render("three", { title: "Polyfusion", savedShapes: savedShapes })
+})
