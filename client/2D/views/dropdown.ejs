@@ -1,0 +1,12 @@
+<!-- Dropdown code taken away -->
+<!-- Load shapes dropdown -->
+<div class="dropdown">
+<button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+    Load Shapes
+</button>
+<ul id="shapesDropdown" class="dropdown-menu">
+    <% for( let i = 0; i < savedShapes.length; i++ ) { %>
+    <li><a class="dropdown-item"><%= savedShapes[i].name %></a></li>
+    <% } %>
+</ul>
+</div>

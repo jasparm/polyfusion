@@ -9,7 +9,7 @@
     <!-- Font Awesome -->
     <script src="https://kit.fontawesome.com/c3fe118872.js" crossorigin="anonymous"></script>
     <link rel="stylesheet" href="/css/style.css">
-    <title><%= title %></title>
+    <title>2D Polyfusion</title>
   </head>
   <body>
     <!-- Navbar from Bootstrap -->
@@ -27,19 +27,6 @@
       <button id="clear-btn" type="button" class="btn btn-dark">Clear Canvas</button>
       <button id="undo-btn" type="button" class="btn"><img src="images/undo.png" width="25"></button>
       <button id="redo-btn" type="button" class="btn"><img src="images/redo.png" width="25"></button>
-
-      <!-- Load shapes dropdown -->
-      <div class="dropdown">
-        <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-          Load Shapes
-        </button>
-        <ul id="shapesDropdown" class="dropdown-menu">
-          <% for( let i = 0; i < savedShapes.length; i++ ) { %>
-            <li><a class="dropdown-item"><%= savedShapes[i].name %></a></li>
-          <% } %>
-        </ul>
-      </div>
-
       <!-- Adding a pause button for now -->
       <button id="pause-monte-btn" type="button" class="btn btn-info">Pause</button>
       <!-- Sutherland-Hodgman Button -->
@@ -77,9 +64,40 @@
           <h2>Blah Blah Blah</h2>
         </div>
         <div class="content col-10 vh-100">
-          <%- body %>
+          <div class="toolbar">
+            <div class="btn toolbar-btn">
+                <i class="icon fa-solid fa-plus fa-2xl"></i>
+            </div>
+            <div class="btn toolbar-btn">
+                <i class="fa-solid fa-hand-pointer fa-xl"></i>
+            </div>
+            <div class="btn toolbar-btn">
+                <i class="fa-solid fa-list fa-lg"></i>
+            </div>
+            <div class="btn toolbar-btn">
+                <i class="fa-solid fa-cube fa-xl"></i>
+            </div>
+            <div class="btn toolbar-btn">
+                <i class="fa-solid fa-braille fa-lg"></i>
+            </div>
+            <div class="btn toolbar-btn">
+                <i class="fa-solid fa-rotate-left fa-xl"></i>
+            </div>
+            <div class="btn toolbar-btn">
+                <i class="fa-solid fa-rotate-right fa-xl"></i>
+            </div>
+            <div class="btn toolbar-btn">
+                <i class="fa-solid fa-trash fa-lg"></i>
+            </div>
+            <!-- Canvas Element for p5-->
+          </div>
+          <div class="" id="canvas-container">
+          </div>
         </div>
       </div>
     </div>
+    <!-- p5.js and sketch file -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/p5.js"></script>
+    <script type="module" src="/js/sketch.js"></script>
   </body>
 </html>
