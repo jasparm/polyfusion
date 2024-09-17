@@ -13,7 +13,8 @@ import {
 } from "../controls/KeyboardActions.ts";
 import { ShapeManager } from "../shapes/CustomShapeManager.ts";
 import { CustomShape } from "../shapes/CustomShape.ts";
-import { OrbitControls } from "three/examples/jsm/Addons.js";
+import { OrbitControls, TransformControls } from "three/examples/jsm/Addons.js";
+import { UndoManager } from "./UndoManager.ts";
 
 export default class SceneManager {
   // NOTE: Core components to initialize Three.js app.
@@ -26,7 +27,7 @@ export default class SceneManager {
   farPlane: number;
   canvasId: string;
 
-  controls!: OrbitControls;
+  controller!: Controller;
   stats: any;
 
   // Lights
@@ -34,6 +35,7 @@ export default class SceneManager {
   directionalLight: THREE.DirectionalLight | undefined;
 
   shapeManager!: ShapeManager; // this manages shapes for this scene
+  undoManager: UndoManager;
 
   constructor(canvasId: string) {
     // NOTE: Camera params;
@@ -41,6 +43,8 @@ export default class SceneManager {
     this.nearPlane = 1;
     this.farPlane = 1000;
     this.canvasId = canvasId;
+
+    this.undoManager = new UndoManager(this);
   }
 
   init() {
@@ -73,7 +77,7 @@ export default class SceneManager {
       canvas,
       antialias: true,
     });
-    
+
     this.renderer.shadowMap.enabled = true;
     this.renderer.setSize(window.innerWidth, window.innerHeight);
     document.body.appendChild(this.renderer.domElement);
@@ -83,11 +87,12 @@ export default class SceneManager {
     document.body.appendChild(this.stats.dom);
 
     this.shapeManager = new ShapeManager(this.scene);
-    const controller = new Controller(
+    this.controller = new Controller(
       this.scene,
       this.camera,
       this.renderer,
-      this.shapeManager
+      this.shapeManager,
+      this.undoManager
     );
 
     // Lights
@@ -104,17 +109,17 @@ export default class SceneManager {
     // Event listeners
     window.addEventListener("resize", () => this.onWindowResize(), false);
     this.renderer.domElement.addEventListener("pointermove", (e) =>
-      onMouseMove(e, controller)
+      onMouseMove(e, this.controller)
     );
     this.renderer.domElement.addEventListener("mousedown", (e) =>
-      onMouseDown(e, controller)
+      onMouseDown(e, this.controller)
     );
     this.renderer.domElement.addEventListener("wheel", (e) =>
-      onMouseWheelEvent(e, controller)
+      onMouseWheelEvent(e, this.controller)
     );
-    this.renderer.domElement.addEventListener('contextmenu', function(event) {
+    this.renderer.domElement.addEventListener("contextmenu", function (event) {
       event.preventDefault(); // prevent the default right-click menu from appearing
-    })
+    });
 
     const keyStates: { [key: string]: boolean } = {};
     // Keyboard related events
@@ -123,9 +128,9 @@ export default class SceneManager {
       // Check if the key is already pressed,this ensures it will only be called once.
       if (!keyStates[key]) {
         keyStates[key] = true;
-        onKeyDown(e, controller);
+        onKeyDown(e, this.controller);
       }
-      whileKeyDown(e, controller);
+      whileKeyDown(e, this.controller);
     });
 
     window.addEventListener("keyup", (e: KeyboardEvent) => {
@@ -133,7 +138,7 @@ export default class SceneManager {
       // Check if the key was previously pressed
       if (keyStates[key]) {
         keyStates[key] = false;
-        onKeyUp(e, controller);
+        onKeyUp(e, this.controller);
       }
     });
   }
@@ -156,11 +161,48 @@ export default class SceneManager {
     this.renderer.setSize(window.innerWidth, window.innerHeight);
   }
 
-  add(object: THREE.Object3D) {
+  add(object: THREE.Object3D | CustomShape, save = true) {
     if (object instanceof CustomShape) {
       this.shapeManager.insert(object);
+      if (save) {
+        this.undoManager.saveState();
+      }
+
       return;
     }
     this.scene.add(object);
+  }
+
+  // Removes all custom shapes from the scene
+  removeAll() {
+    this.shapeManager.getShapes().forEach((shape) => {
+      const object = this.scene.getObjectByName(shape.id)?.parent;
+      if (object) {
+        this.scene.remove(object);
+      }
+    });
+  }
+
+  cloneScene(): THREE.Scene {
+    const scene = this.scene;
+    const clone = new THREE.Scene();
+
+    // Clone all objects in the scene
+    scene.children.forEach((child) => {
+      if (child instanceof CustomShape) {
+        clone.add(child.clone());
+      }
+      
+    });
+
+    return clone;
+  }
+
+  public get sceneInfo(): THREE.Scene {
+    return this.scene;
+  }
+
+  public set sceneInfo(scene: THREE.Scene) {
+    this.scene = scene;
   }
 }

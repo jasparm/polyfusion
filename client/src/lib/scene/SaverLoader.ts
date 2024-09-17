@@ -32,6 +32,7 @@ export class SaverLoader {
     const shapeData: string[] = JSON.parse(json);
     shapeData.forEach(shape => {
         // re-create shapes
+        
     });
   }
 

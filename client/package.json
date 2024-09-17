@@ -11,6 +11,7 @@
     "three": "^0.165.0",
     "three-stdlib": "^2.32.2",
     "typescript": "^5.6.2",
+    "undo-manager": "^1.1.1",
     "web-vitals": "^2.1.4"
   },
   "scripts": {

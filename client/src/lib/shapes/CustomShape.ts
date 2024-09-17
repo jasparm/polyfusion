@@ -56,7 +56,6 @@ export class CustomShape {
    * Initialises the current shape.
    */
   init() {
-    console.log(this.opacity);
     const vertices = this.vertexManager.getVerticesInfo();
     const geometry = new ConvexGeometry(vertices); // This ensures a shape is always convex
     this.geometry = geometry;
@@ -193,4 +192,31 @@ export class CustomShape {
     this.group.matrixAutoUpdate = true; // no idea what this does but three.js docs says its a good thing.
     this.init();
   }
+
+  public clone(): CustomShape {
+    // Create a new CustomShape object without initializing its geometry, material, or mesh
+    const cloneShape = new CustomShape([], this.wireframe, this.drawBalls, this.colour.clone(), this.scale, this.lineColour.clone());
+
+    // Clone properties
+    cloneShape.geometry = this.geometry.clone(); // Clone geometry
+    cloneShape.material = this.material.clone(); // Clone material
+    cloneShape.mesh = this.mesh.clone(); // Clone mesh
+    cloneShape.group = this.group.clone(true); // Deep clone group and all its children
+
+    // Clone primitives and simple objects
+    cloneShape.wireframe = this.wireframe;
+    cloneShape.drawBalls = this.drawBalls;
+    cloneShape.colour = this.colour.clone();
+    cloneShape.scale = this.scale;
+    cloneShape.lineColour = this.lineColour.clone();
+    cloneShape.vertexSize = this.vertexSize;
+    cloneShape.id = this.id;
+    cloneShape.opacity = this.opacity;
+
+    cloneShape.vertexManager = this.vertexManager.clone();
+
+    // Return the cloned object
+    return cloneShape;
+}
+
 }

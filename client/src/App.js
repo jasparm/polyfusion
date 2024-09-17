@@ -60,7 +60,7 @@ test.sphere = ball_mesh;
 const shape = new CustomOctahedron();
 shape.group.position.z = -5;
 
-test.add(shape);
+// test.add(shape);
 // shape.group.position.y = 2
 // shape.wireframe = true
 // shape.addVertex(new THREE.Vector3(1, 1, 2));
@@ -73,15 +73,15 @@ test.add(tet);
 
 cube.group.position.z = 5;
 // test.scene.add(cube.group);
-test.add(cube);
+// test.add(cube);
 
 const doc = new CustomDodecahedron(0.5);
 doc.group.position.x = 5;
-test.add(doc);
+// test.add(doc);
 
 const iso = new CustomIcosahedron();
 iso.group.position.x = -5;
-test.add(iso);
+// test.add(iso);
 
 const MonteCarlo = new MonteCarloManager([cube, tet], test.scene);
 MonteCarlo.radius = 0.25;
