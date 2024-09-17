@@ -1,39 +1,40 @@
 import * as THREE from '/three/three.module.js';
 
-function init() {
-    // Create a scene
-    const scene = new THREE.Scene();
+// Create a scene
+const scene = new THREE.Scene();
 
-    // Create a camera
-    const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-    camera.position.z = 5;
+const canvas = document.getElementById("canvas");
 
-    // Create a renderer
-    const renderer = new THREE.WebGLRenderer();
-    renderer.setSize(window.innerWidth, window.innerHeight);
-    document.body.appendChild(renderer.domElement);
+// Create a camera
+const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+camera.position.set(0, 0, 5);
 
-    // Create a geometry and a material, then combine them into a mesh
-    const geometry = new THREE.BoxGeometry();
-    const material = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
-    const cube = new THREE.Mesh(geometry, material);
+const al = new THREE.AmbientLight(0xffffff, 0.7);
+scene.add(al);
 
-    // Add the mesh to the scene
-    scene.add(cube);
+// Create a renderer
+const renderer = new THREE.WebGLRenderer({ canvas: canvas });
+renderer.setSize(window.innerWidth, window.innerHeight);
+document.body.appendChild(renderer.domElement);
 
-    // Animation loop
-    function animate() {
-        requestAnimationFrame(animate);
+// Create a geometry and a material, then combine them into a mesh
+const geometry = new THREE.BoxGeometry();
+const material = new THREE.MeshBasicMaterial({ color: 0xffffff });
+const cube = new THREE.Mesh(geometry, material);
 
-        // Rotate the cube
-        cube.rotation.x += 0.01;
-        cube.rotation.y += 0.01;
+// Add the mesh to the scene
+scene.add(cube);
 
-        // Render the scene from the perspective of the camera
-        renderer.render(scene, camera);
-    }
+// Animation loop
+function animate() {
+    requestAnimationFrame(animate);
 
-    animate();
+    // Rotate the cube
+    cube.rotation.x += 0.01;
+    cube.rotation.y += 0.01;
+
+    // Render the scene from the perspective of the camera
+    renderer.render(scene, camera);
 }
 
-window.onload = init;
+animate();
