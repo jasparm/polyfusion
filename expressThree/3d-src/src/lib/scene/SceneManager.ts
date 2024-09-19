@@ -48,6 +48,13 @@ export default class SceneManager {
 
     // Specify a canvas which is already in the HTML
     const canvas = document.getElementById(this.canvasId);
+    if (!canvas) {
+      return;
+    }
+    const parent = canvas.parentElement;
+    if (!parent) {
+      return;
+    }
 
     if (canvas === null) {
       // @TODO
@@ -76,7 +83,7 @@ export default class SceneManager {
     
     this.renderer.shadowMap.enabled = true;
     this.renderer.setSize(window.innerWidth, window.innerHeight);
-    document.body.appendChild(this.renderer.domElement);
+    parent.appendChild(this.renderer.domElement);
 
     // Comment out to enable/disable performance tracker
     this.stats = new Stats();
