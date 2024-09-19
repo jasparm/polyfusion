@@ -1,6 +1,6 @@
 body, html {
   overflow-x: hidden;
-  overflow-y: hidden;
+  /* overflow-y: hidden; */
   width: 100%;
   height: 100%;
 }
@@ -53,6 +53,45 @@ i {
   position: relative;
   background-color: black;
 }
+
+
+.sidebar {
+  width: 5rem;
+  height: 100vh;
+  position: absolute;
+  background-color: lightslategrey;
+  transition: width 200ms ease;
+}
+
+.sidebar-items {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  height: 100%;
+}
+
+
+.sidebar-item {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  height: 5rem;
+}
+
+.sidebar-item img {
+  min-width: 2.5rem;
+  margin: 0 1rem;
+  color: aliceblue;
+}
+
+
+.sidebar-item:last-child {
+  margin-top: auto;
+}
+
 
 
 

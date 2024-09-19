@@ -31,6 +31,7 @@ export default class SceneManager {
         this.scene = new THREE.Scene();
         // Specify a canvas which is already in the HTML
         const canvas = document.getElementById(this.canvasId);
+        const parent = document.getElementById(this.canvasId).parentElement;
         if (canvas === null) {
             // @TODO
             // deal with this
@@ -49,7 +50,7 @@ export default class SceneManager {
         });
         this.renderer.shadowMap.enabled = true;
         this.renderer.setSize(window.innerWidth, window.innerHeight);
-        document.body.appendChild(this.renderer.domElement);
+        parent.appendChild(this.renderer.domElement);
         // Comment out to enable/disable performance tracker
         this.stats = new Stats();
         document.body.appendChild(this.stats.dom);

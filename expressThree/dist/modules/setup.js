@@ -30,16 +30,19 @@ export let setup = () => {
     let containerHeight = container.offsetHeight;
     state.canvas = createCanvas(containerWidth, containerHeight);
     state.canvas.parent('canvas-container');
-    // const canvas = select("#canvas-container");
-    // state.canvas = createCanvas(canvas.width, canvas.height);
-    // state.canvas = createCanvas(windowWidth, windowHeight);
-    // state.canvas.parent('canvas-container');
     // Disabling default context menu as we want right-clicking capability
     state.canvas.elt.oncontextmenu = (e) => {
         e.preventDefault();
     };
+
+    // Initialising tooltips for bootstrap
+    const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]')
+    const tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl));
+
     // Adding event listeners for our buttons
     const createShapeButton = select('#create-shape-btn');
+    // Getting the icon
+    const createShapeIcon = select('#create-shape-icon')
     // Triggers shape creation
     createShapeButton.mousePressed(() => {
         // Ensuring we only save if shape has 3 points
@@ -55,10 +58,21 @@ export let setup = () => {
         else {
             state.points = [];
             state.createShapeMode = false;
-        }
+        };
+
+        // testing tooltip stuff
+
         // HTML changes to the button depending on the mode
-        createShapeButton.html(state.createShapeMode ? "Complete Shape" : "Create Shape");
-        createShapeButton.class(state.createShapeMode ? "btn btn-success" : "btn btn-primary");
+        // createShapeButton.html(state.createShapeMode ? "Complete Shape" : "Create Shape");
+        // createShapeButton.class(state.createShapeMode ? "btn btn-success" : "btn btn-primary");
+        createShapeIcon.class(state.createShapeMode ? "fa-solid fa-check fa-xl" : "fa-solid fa-plus fa-2xl");
+        let tooltip = tooltipList[0];
+        if (state.createShapeMode && tooltip._config.title === "Create Shape") {
+            tooltip._config.title = "Complete Shape"
+        } else {
+            tooltip._config.title = "Create Shape"
+        }
+        console.log(tooltip);
     });
     // Event listener for select button
     const selectShapeButton = select('#select-shape-btn');

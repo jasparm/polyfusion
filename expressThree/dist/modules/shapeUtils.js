@@ -77,6 +77,7 @@ export function deSelect(shape) {
 ;
 // Checks if the user's mouse is within our canvas
 export function mouseInCanvas() {
+    //! Update this to ignore clicks on the toolbar
     return mouseX >= 0 && mouseX <= width && mouseY >= 0 && mouseY <= height;
 }
 export function checkConvexNew(points) {

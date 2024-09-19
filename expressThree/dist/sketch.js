@@ -1,5 +1,7 @@
 import { setup, state } from "./modules/setup.js";
 import { keyPressed, mousePressed, mouseReleased, mouseDragged } from "./modules/eventHandlers.js";
+
+
 window.setup = setup;
 window.keyPressed = keyPressed;
 window.mousePressed = mousePressed;
