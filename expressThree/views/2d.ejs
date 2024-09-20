@@ -12,41 +12,52 @@
          data-bs-title="Select Shape">
         <i class="fa-solid fa-hand-pointer fa-xl" id="select-shape-icon"></i>
     </div>
-    <div class="btn toolbar-btn"
+    <div class="btn toolbar-btn dropdown" id="load-shape-btn"
+        data-bs-toggle="tooltip"
+        data-bs-placement="right"
+        data-bs-title="Load Shapes">
+        <i class="fa-solid fa-list fa-xl" id="load-icon" data-bs-toggle="dropdown" aria-expanded="false"></i>
+        <ul id="shapesDropdown" class="dropdown-menu dropdown-menu-end">
+            <% for( let i = 0; i < savedShapes.length; i++ ) { %>
+                <li><a class="dropdown-item"><%= savedShapes[i].name %></a></li>
+            <% } %>
+        </ul>
+    </div>
+    <div class="btn toolbar-btn" id="save-shape-btn"
          data-bs-toggle="tooltip"
          data-bs-placement="right"
-         data-bs-title="Load Shapes">
-        <i class="fa-solid fa-list fa-lg"></i>
+         data-bs-title="Save Shape">
+        <i class="fa-solid fa-floppy-disk fa-xl" id="save-icon"></i>
     </div>
-    <div class="btn toolbar-btn"
+    <div class="btn toolbar-btn disabled" id="intersection-btn"
          data-bs-toggle="tooltip"
          data-bs-placement="right"
          data-bs-title="Intersection">
-        <i class="fa-solid fa-cube fa-xl"></i>
+        <i class="fa-solid fa-cube fa-xl" id="intersection-icon"></i>
     </div>
-    <div class="btn toolbar-btn"
+    <div class="btn toolbar-btn" id="monte-btn"
          data-bs-toggle="tooltip"
          data-bs-placement="right"
          data-bs-title="Monte Carlo">
-        <i class="fa-solid fa-braille fa-lg"></i>
+        <i class="fa-solid fa-braille fa-lg" id="monte-icon"></i>
     </div>
     <div class="btn toolbar-btn" id="undo-btn"
          data-bs-toggle="tooltip"
          data-bs-placement="right"
          data-bs-title="Undo">
-        <i class="fa-solid fa-rotate-left fa-xl"></i>
+        <i class="fa-solid fa-rotate-left fa-xl" id="undo-icon"></i>
     </div>
     <div class="btn toolbar-btn" id="redo-btn"
          data-bs-toggle="tooltip"
          data-bs-placement="right"
          data-bs-title="Redo">
-        <i class="fa-solid fa-rotate-right fa-xl"></i>
+        <i class="fa-solid fa-rotate-right fa-xl" id="redo-icon"></i>
     </div>
     <div class="btn toolbar-btn" id="clear-btn"
          data-bs-toggle="tooltip"
          data-bs-placement="right"
          data-bs-title="Clear Canvas">
-        <i class="fa-solid fa-trash fa-lg"></i>
+        <i class="fa-solid fa-trash fa-lg" id="clear-icon"></i>
     </div>
 </div>
 <div id="canvas-container">

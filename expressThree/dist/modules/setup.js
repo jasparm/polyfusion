@@ -63,7 +63,12 @@ export let setup = () => {
 
 
         // HTML changes to the button depending on the mode
-        createShapeIcon.class(state.createShapeMode ? "fa-solid fa-check fa-xl" : "fa-solid fa-plus fa-2xl");
+        createShapeIcon.class(state.createShapeMode ? "fa-solid fa-check fa-2xl" : "fa-solid fa-plus fa-2xl");
+        if (state.createShapeMode) {
+            createShapeIcon.style("color", "rgb(55, 254, 114)")
+        } else {
+            createShapeIcon.style("color", "rgb(0, 183, 255)")
+        }
         // Updating the text on the tooltip
         let tooltip = tooltipList[0];
         if (state.createShapeMode && tooltip._config.title === "Create Shape") {
@@ -79,42 +84,30 @@ export let setup = () => {
         resetSelectShape();
     });
     // Monte Carlo
-    const monteCarloButton = select('#monte-carlo-btn');
-    const pauseMonteButton = select('#pause-monte-btn');
-    pauseMonteButton.hide();
+    const monteCarloButton = select('#monte-btn');
+    const monteCarloIcon = select('#monte-icon')
     monteCarloButton.mousePressed(() => {
+        console.log(state.monteCarloMode);
+        // Changing the icon
         // Toggle monte carlo mode
-        state.monteCarloMode = !state.monteCarloMode;
-        monteCarloButton.html(state.monteCarloMode ? "Done" : "Monte Carlo");
         if (!state.monteCarloMode) {
-            //! Turn this into a function that gets called
-            //! Like a cleanup() function
-            clearInterval(state.monteInterval);
-            state.montePoints = [];
-            state.unionPoints = [];
-            state.intersectPoints = [];
-            pauseMonteButton.hide();
-            state.pauseMonte = false;
-            pauseMonteButton.html("Pause");
-        }
-        else {
+            state.monteCarloMode = true;
             state.monteInterval = setInterval(monteCarlo, 20);
-            pauseMonteButton.show();
+            monteCarloIcon.class("fa-solid fa-pause fa-xl")
+        } else {
+            clearInterval(state.monteInterval);
+            state.pauseMonte = !state.pauseMonte;
+            if (state.pauseMonte) {
+                monteCarloIcon.class("fa-solid fa-play fa-xl")
+            } else {
+                monteCarloIcon.class("fa-solid fa-pause fa-xl")
+            }
         }
-        ;
     });
-    // Pausing the monte carlo method
-    pauseMonteButton.mousePressed(() => {
-        clearInterval(state.monteInterval);
-        state.pauseMonte = !state.pauseMonte;
-        pauseMonteButton.html(state.pauseMonte ? "Resume" : "Pause");
-    });
-    // Sutherland-Hodgman
-    const sutherlandButton = select('#sutherland-btn');
-    // Initially hiding the button
-    sutherlandButton.hide();
+    // Intersection algorithm
+    const intersectBtn = select("#intersection-btn");
     // Now we do an event listener
-    sutherlandButton.mousePressed(() => {
+    intersectBtn.mousePressed(() => {
         // We should (if I have coded correctly) have two selected shapes
         // Let's send them to old mate sutherland
         let [shape1, shape2] = state.selectedShapes;
@@ -179,8 +172,19 @@ export let setup = () => {
         // Resets our points and shapes.
         state.shapes = [];
         state.points = [];
-        resetSelectShape();
-        
+        if (state.selectShapeMode) {
+            resetSelectShape();
+        };
+        // Clearing Monte Carlo
+        if (state.monteCarloMode) {
+            clearInterval(state.monteInterval);
+            state.montePoints = [];
+            state.unionPoints = [];
+            state.intersectPoints = [];
+            state.pauseMonte = false;
+            monteCarloIcon.class("fa-solid fa-braille fa-lg");
+            state.monteCarloMode = false;
+        }
     });
     // Undoing
     const undoBtn = select("#undo-btn");
@@ -201,10 +205,9 @@ export let setup = () => {
 export function resetSelectShape() {
     // Getting our html elements
     let selectIcon = select("#select-shape-icon");
-    let sutherlandButton = select("#sutherland-btn");
     let saveButton = select("#save-shape-btn");
 
-    // And select shape tooltips
+    // And select shape and load shape tooltips
     let selectTip = tooltipList[1];
 
     // If toggled on we reset
@@ -212,28 +215,35 @@ export function resetSelectShape() {
         // Reset selected shapes
         for (let shape of state.selectedShapes) {
             shape.isSelected = false;
-        }
-        ;
+        };
         // Hiding buttons
         state.selectedShapes = [];
-        sutherlandButton.hide();
+        document.getElementById("intersection-btn").classList.add("disabled");
         saveButton.hide();
+        
+        // saveIcon.hide();
         // Resetting intersection
         state.pointsOfIntersection = [];
         // Updating html canvas elements
         selectIcon.class("fa-solid fa-hand-pointer fa-xl");
+        selectIcon.style("color", "rgb(255, 240, 104)")
         selectTip._config.title = "Select Shape";
+
         state.selectShapeMode = false;
     }
     else {
         // Updating html canvas elements
         selectIcon.class("fa-solid fa-xmark fa-2xl");
+        selectIcon.style("color", "lightcoral")
         selectTip._config.title = "Complete Selection";
+        // saveIcon.show();
+
+        // Updating load shapes button icon
+        // loadIcon.class("fa-solid fa-floppy-disk fa-xl")
+        // loadTooltip._config.title = "Save Shape";
         state.selectShapeMode = true;
-    }
-    ;
-}
-;
+    };
+};
 // Helper function to extract points from p5 context
 function extractPoints(shape) {
     let allPoints = [];

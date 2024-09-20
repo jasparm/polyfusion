@@ -46,20 +46,23 @@ export function selectShape() {
     }
     // When we select two shapes, we have the option of using the sutherland-hodgman alg
     // When we select more than one, we can save
-    const sutherlandButton = select('#sutherland-btn');
+    // const sutherlandButton = select('#sutherland-btn');
+    
     const saveButton = select('#save-shape-btn');
     if (state.selectedShapes.length < 3) {
         if (state.selectedShapes.length == 1) {
-            saveButton.show();
+            saveButton.style("display", "inline-flex");
+            saveButton.style("justify-content", "center");
         }
         if (state.selectedShapes.length == 2) {
-            sutherlandButton.show();
+            // sutherlandButton.show();
+            document.getElementById("intersection-btn").classList.remove("disabled");
             saveButton.hide();
         }
         ;
     }
     else {
-        sutherlandButton.hide();
+        document.getElementById("intersection-btn").classList.add("disabled");
         saveButton.hide();
     }
 }

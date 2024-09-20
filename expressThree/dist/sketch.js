@@ -1,6 +1,7 @@
 import { setup, state } from "./modules/setup.js";
 import { keyPressed, mousePressed, mouseReleased, mouseDragged } from "./modules/eventHandlers.js";
 
+const DEFAULT_SHAPE_COLOUR = "rgb(180, 180, 180)"
 
 window.setup = setup;
 window.keyPressed = keyPressed;
@@ -18,13 +19,13 @@ window.draw = () => {
             stroke('white');
         }
         else {
-            stroke('black');
+            stroke(DEFAULT_SHAPE_COLOUR);
         }
         drawShape(shape.points);
     }
     ;
     // And drawing the current shape being made on the canvas
-    stroke('black');
+    stroke(DEFAULT_SHAPE_COLOUR);
     drawShape(state.points);
     //! Add to seperate function
     if (state.monteCarloMode) {

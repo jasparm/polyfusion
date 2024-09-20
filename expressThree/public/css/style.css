@@ -1,5 +1,5 @@
 :root {
-  --background-colour: rgb(65, 65, 65);
+  --background-colour: rgb(20, 20, 20);
 }
 
 
@@ -11,8 +11,24 @@ body, html {
   background-color: rgb(33, 33, 33);
 }
 
-i {
-  color: rgb(255, 255, 255);
+nav {
+  background-color: rgb(25, 25, 25);
+}
+
+.brand {
+  background: rgb(33, 33, 33);
+  color: white;
+  height: 60px;
+  display: flex;
+  justify-content: center;
+  border-radius: 25px;
+  padding: 20px;
+  transition: border 0.3s;
+}
+
+.navbar-brand {
+  color: white;
+  margin-left: 10px;
 }
 
 .content {
@@ -22,7 +38,6 @@ i {
 .toolbar {
   position: absolute;
   z-index: 1;
-  left: 0;
   top: 80px;
   padding: 1rem;
   width: 60px;
@@ -40,17 +55,69 @@ i {
   border-radius: 50%;
   width: 40px;
   height: 40px;
-  display: flex;
+  display: inline-flex;
   text-align: center;
   justify-content: center;
   align-items: center;
   background-color: rgb(75, 75, 75);
-  transition: background-color 0.3s;
+  transition: background-color border 0.3s;
+  border: none;
+}
+
+.toolbar-btn.disabled {
+  background-color: rgb(58, 58, 58);
 }
 
 .toolbar-btn:hover {
-  background-color: rgb(118, 118, 118);
+  background-color: rgb(110, 110, 110);
+  /* border: 3px solid rgb(173, 228, 255); */
 }
+
+#user-btn {
+  border-radius: 50%;
+  width: 47px;
+  height: 47px;
+  display: flex;
+  text-align: center;
+  justify-content: center;
+  align-items: center;
+  background-color: white;
+  margin-right: 20px;
+  margin-left: auto;
+}
+
+#user-icon {
+  color: rgb(45, 45, 45);
+}
+
+i {
+  color: white;
+}
+
+#create-shape-icon {
+  color: rgb(0, 183, 255);
+}
+
+#select-shape-icon {
+  color: rgb(255, 240, 104);
+}
+
+#load-icon {
+  color: rgb(55, 254, 114);
+}
+
+#intersection-icon {
+  color: lightcoral;
+}
+
+#monte-icon {
+  color: rgb(255, 117, 237);
+}
+
+#clear-icon {
+  color: lightcoral;
+}
+
 
 #canvas-container {
   width: 100%;
