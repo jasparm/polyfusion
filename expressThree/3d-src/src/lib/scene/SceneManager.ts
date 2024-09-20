@@ -29,6 +29,9 @@ export default class SceneManager {
   controls!: OrbitControls;
   stats: any;
 
+  private width: number = 0;
+  private height: number = 0;
+
   // Lights
   ambientLight: THREE.AmbientLight | undefined;
   directionalLight: THREE.DirectionalLight | undefined;
@@ -48,17 +51,27 @@ export default class SceneManager {
 
     // Specify a canvas which is already in the HTML
     const canvas = document.getElementById(this.canvasId);
+    if (!canvas) {
+      return;
+    }
+    const parent = canvas.parentElement;
+    if (!parent) {
+      return;
+    }
 
     if (canvas === null) {
       // @TODO
       // deal with this
       return;
     }
-
+    const width = parent.parentElement?.clientWidth ?? window.innerWidth;
+    this.width = width;
+    const height = parent.parentElement?.clientHeight ?? window.innerHeight;
+    this.height = height;
     // Camera
     this.camera = new THREE.PerspectiveCamera(
       this.fov,
-      window.innerWidth / window.innerHeight,
+      width / height,
       this.nearPlane,
       this.farPlane
     );
@@ -75,8 +88,8 @@ export default class SceneManager {
     });
     
     this.renderer.shadowMap.enabled = true;
-    this.renderer.setSize(window.innerWidth, window.innerHeight);
-    document.body.appendChild(this.renderer.domElement);
+    this.renderer.setSize(width, height);
+    parent.appendChild(this.renderer.domElement);
 
     // Comment out to enable/disable performance tracker
     this.stats = new Stats();
@@ -151,9 +164,9 @@ export default class SceneManager {
 
   onWindowResize() {
     // updates window/renderer aspect ratio when the window is resized.
-    this.camera.aspect = window.innerWidth / window.innerHeight;
+    this.camera.aspect = this.width / this.height;
     this.camera.updateProjectionMatrix();
-    this.renderer.setSize(window.innerWidth, window.innerHeight);
+    this.renderer.setSize(this.width, this.height);
   }
 
   add(object: THREE.Object3D) {

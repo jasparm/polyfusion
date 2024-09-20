@@ -1,4 +1,4 @@
-import { ShapeInfoModal } from "../modals/ShapeInfoModal";
+import { ShapeInfoModal } from "../modals/ShapeInfoModal.ts";
 import { ShapeSettingsModal } from "../modals/ShapeSettingsModal.ts";
 
 // This class handles the context menu in 3D. Should behave differently depending on what is selected in the scene.

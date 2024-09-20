@@ -58,7 +58,7 @@ export function onKeyDown(event: KeyboardEvent, controller: Controller) {
   }
   // Undo
   if (event.ctrlKey && key == "KeyZ") {
-    controller.undoManager.undo();
+    // controller.undoManager.undo();
     event.preventDefault();
   }
 }
