@@ -15,7 +15,7 @@ nav {
   background-color: rgb(25, 25, 25);
 }
 
-.brand {
+.card.title-card {
   background: rgb(33, 33, 33);
   color: white;
   height: 60px;
@@ -24,6 +24,7 @@ nav {
   border-radius: 25px;
   padding: 20px;
   transition: border 0.3s;
+  border: none;
 }
 
 .navbar-brand {
@@ -71,6 +72,31 @@ nav {
 .toolbar-btn:hover {
   background-color: rgb(110, 110, 110);
   /* border: 3px solid rgb(173, 228, 255); */
+}
+
+.offcanvas.custom {
+  margin-top: 160px;
+  height: 70%;
+  background-color: rgb(33, 33, 33);
+  border-top-left-radius: 15px;
+  border-bottom-left-radius: 15px;
+
+  i, h4 {
+    color: white;
+  }
+
+
+}
+
+#close-save-btn {
+  /* border-radius: 50%;
+  width: 35px;
+  height: 35px; */
+  /* display: inline-flex;
+  justify-content: center; */
+  margin-top: 0;
+  margin-right: 1px;
+  margin-left: auto;
 }
 
 #user-btn {
@@ -170,6 +196,8 @@ i {
 .sidebar-item:last-child {
   margin-top: auto;
 }
+
+
 
 
 

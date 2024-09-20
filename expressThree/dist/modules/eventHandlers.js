@@ -32,14 +32,6 @@ export let mousePressed = () => {
         // Now checking if select shape mode is on
         else if (state.selectShapeMode) {
             selectShape();
-            for (let i = 0; i < state.shapes.length; i++) {
-                // Using ray casting to check if the user has clicked inside a shape
-                if (rayCast(mouseX, mouseY, state.shapes[i].points)) {
-                    moveShapeIndex = i;
-                    state.movingShapes.push(i);
-                    state.moveOffset = createVector(mouseX, mouseY);
-                };
-            };
         }
         // Otherwise, moving a shape
         else {
