@@ -1,5 +1,5 @@
 import { deleteShape, selectShape, deSelect, mouseInCanvas, checkConvexNew, rayCast } from "./shapeUtils.js";
-import { state } from "./setup.js";
+import { resetSelectShape, state } from "./setup.js";
 let moveShapeIndex = -1;
 // The final boss of key pressing
 export let keyPressed = () => {
@@ -12,6 +12,7 @@ export let keyPressed = () => {
 };
 // The final boss of mouse pressing
 export let mousePressed = () => {
+    let inShape = false;
     // Left click adds a point to the canvas for the moment
     if (mouseButton === LEFT) {
         // Creating a shape
@@ -26,12 +27,19 @@ export let mousePressed = () => {
             }
             else {
                 state.undoPoints = [];
-            }
-            ;
+            };
         }
         // Now checking if select shape mode is on
         else if (state.selectShapeMode) {
             selectShape();
+            for (let i = 0; i < state.shapes.length; i++) {
+                // Using ray casting to check if the user has clicked inside a shape
+                if (rayCast(mouseX, mouseY, state.shapes[i].points)) {
+                    moveShapeIndex = i;
+                    state.movingShapes.push(i);
+                    state.moveOffset = createVector(mouseX, mouseY);
+                };
+            };
         }
         // Otherwise, moving a shape
         else {
@@ -42,15 +50,10 @@ export let mousePressed = () => {
                     moveShapeIndex = i;
                     state.movingShapes.push(i);
                     state.moveOffset = createVector(mouseX, mouseY);
-                    // return;
-                }
-                ;
-            }
-            ;
-        }
-        ;
-    }
-    ;
+                };
+            };
+        };
+    };
 };
 // Resets move shape index
 export let mouseReleased = () => {

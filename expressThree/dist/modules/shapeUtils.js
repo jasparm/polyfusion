@@ -22,24 +22,28 @@ export function deleteShape() {
 ;
 // Function that handles the selection of shapes
 export function selectShape() {
+    let inShape = false
     // We need to see which shape we clicked on
     // Can just re-use ray-casting
-    //! SELECTING SHAPES
     for (let i = 0; i < state.shapes.length; i++) {
         if (rayCast(mouseX, mouseY, state.shapes[i].points)) {
             // If shape is already selected, de-select it
             if (state.shapes[i].selected) {
                 deSelect(state.shapes[i]);
+                inShape = true;
             }
             else if (!state.shapes[i].selected) {
                 state.shapes[i].isSelected = true;
                 state.selectedShapes.push(state.shapes[i]);
+                inShape = true
             }
-            ;
         }
-        ;
     }
-    ;
+    // If we didn't click on a shape, we reset and clear
+    if (!inShape && mouseInCanvas()) {
+        resetSelectShape();
+        return;
+    }
     // When we select two shapes, we have the option of using the sutherland-hodgman alg
     // When we select more than one, we can save
     const sutherlandButton = select('#sutherland-btn');
@@ -58,9 +62,7 @@ export function selectShape() {
         sutherlandButton.hide();
         saveButton.hide();
     }
-    ;
 }
-;
 // De-Selects our shape
 export function deSelect(shape) {
     // Not selected anymore
@@ -77,8 +79,24 @@ export function deSelect(shape) {
 ;
 // Checks if the user's mouse is within our canvas
 export function mouseInCanvas() {
-    //! Update this to ignore clicks on the toolbar
-    return mouseX >= 0 && mouseX <= width && mouseY >= 0 && mouseY <= height;
+    return !mouseInToolbar() && mouseX >= 0 && mouseX <= width && mouseY >= 0 && mouseY <= height;
+}
+
+// Checks if the user's mouse is within the toolbar
+function mouseInToolbar() {
+
+  const canvas = document.querySelector('canvas');
+
+  const canvasRect = canvas.getBoundingClientRect();
+
+  const clientX = mouseX + canvasRect.left;
+  const clientY = mouseY + canvasRect.top;
+
+
+  const toolbar = document.getElementById("toolbar");
+  const toolbarRect = toolbar.getBoundingClientRect();
+
+  return clientY >= toolbarRect.top && clientY <= toolbarRect.bottom && clientX >= toolbarRect.left && clientX <= toolbarRect.right;
 }
 export function checkConvexNew(points) {
     let numPoints = points.length;

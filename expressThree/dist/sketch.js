@@ -9,12 +9,13 @@ window.mouseReleased = mouseReleased;
 window.mouseDragged = mouseDragged;
 // Draw method. Handles what we see on the canvas.
 window.draw = () => {
-    // Light grey background colour
-    background(220);
+    // Background colour of the canvas
+    const backColor = getComputedStyle(document.documentElement).getPropertyValue('--background-colour');
+    background(backColor);
     // Drawing all shapes on the canvas
     for (let shape of state.shapes) {
         if (shape.selected) {
-            stroke('red');
+            stroke('white');
         }
         else {
             stroke('black');

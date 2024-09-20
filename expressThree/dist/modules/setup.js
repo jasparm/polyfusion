@@ -2,6 +2,11 @@ import { Shape } from "./Shape.js";
 import { monteCarlo } from "./monteCarlo.js";
 import { completeShape } from "./shapeUtils.js";
 import { sutherlandHodgman } from "./intersection.js";
+
+// Initialising tooltips for bootstrap
+const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]')
+const tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl));
+
 export const state = {
     canvas: null,
     shapes: [],
@@ -35,10 +40,6 @@ export let setup = () => {
         e.preventDefault();
     };
 
-    // Initialising tooltips for bootstrap
-    const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]')
-    const tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl));
-
     // Adding event listeners for our buttons
     const createShapeButton = select('#create-shape-btn');
     // Getting the icon
@@ -60,12 +61,10 @@ export let setup = () => {
             state.createShapeMode = false;
         };
 
-        // testing tooltip stuff
 
         // HTML changes to the button depending on the mode
-        // createShapeButton.html(state.createShapeMode ? "Complete Shape" : "Create Shape");
-        // createShapeButton.class(state.createShapeMode ? "btn btn-success" : "btn btn-primary");
         createShapeIcon.class(state.createShapeMode ? "fa-solid fa-check fa-xl" : "fa-solid fa-plus fa-2xl");
+        // Updating the text on the tooltip
         let tooltip = tooltipList[0];
         if (state.createShapeMode && tooltip._config.title === "Create Shape") {
             tooltip._config.title = "Complete Shape"
@@ -77,10 +76,6 @@ export let setup = () => {
     // Event listener for select button
     const selectShapeButton = select('#select-shape-btn');
     selectShapeButton.mousePressed(() => {
-        // Toggling select shape mode
-        // state.selectShapeMode = !state.selectShapeMode;
-        selectShapeButton.html(state.selectShapeMode ? "Complete Selection" : "Select Shape");
-        selectShapeButton.class(state.selectShapeMode ? "btn btn-success" : "btn btn-primary");
         resetSelectShape();
     });
     // Monte Carlo
@@ -184,6 +179,8 @@ export let setup = () => {
         // Resets our points and shapes.
         state.shapes = [];
         state.points = [];
+        resetSelectShape();
+        
     });
     // Undoing
     const undoBtn = select("#undo-btn");
@@ -202,10 +199,14 @@ export let setup = () => {
 };
 // Making a function to handle resetting our selected shape mode
 export function resetSelectShape() {
-    // Getting our html element
-    let selectButton = select("#select-shape-btn");
+    // Getting our html elements
+    let selectIcon = select("#select-shape-icon");
     let sutherlandButton = select("#sutherland-btn");
     let saveButton = select("#save-shape-btn");
+
+    // And select shape tooltips
+    let selectTip = tooltipList[1];
+
     // If toggled on we reset
     if (state.selectShapeMode) {
         // Reset selected shapes
@@ -220,14 +221,14 @@ export function resetSelectShape() {
         // Resetting intersection
         state.pointsOfIntersection = [];
         // Updating html canvas elements
-        selectButton.html("Select Shape");
-        selectButton.class("btn btn-primary");
+        selectIcon.class("fa-solid fa-hand-pointer fa-xl");
+        selectTip._config.title = "Select Shape";
         state.selectShapeMode = false;
     }
     else {
         // Updating html canvas elements
-        selectButton.html("Complete Selection");
-        selectButton.class("btn btn-success");
+        selectIcon.class("fa-solid fa-xmark fa-2xl");
+        selectTip._config.title = "Complete Selection";
         state.selectShapeMode = true;
     }
     ;

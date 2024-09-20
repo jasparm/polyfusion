@@ -1,16 +1,16 @@
 <!-- Canvas Element for p5-->
-<div class="toolbar">
+<div class="toolbar" id="toolbar">
     <div class="btn toolbar-btn" id="create-shape-btn"
          data-bs-toggle="tooltip"
          data-bs-placement="right"
          data-bs-title="Create Shape">
         <i class="fa-solid fa-plus fa-2xl" id="create-shape-icon"></i>
     </div>
-    <div class="btn toolbar-btn"
+    <div class="btn toolbar-btn" id="select-shape-btn"
          data-bs-toggle="tooltip"
          data-bs-placement="right"
          data-bs-title="Select Shape">
-        <i class="fa-solid fa-hand-pointer fa-xl"></i>
+        <i class="fa-solid fa-hand-pointer fa-xl" id="select-shape-icon"></i>
     </div>
     <div class="btn toolbar-btn"
          data-bs-toggle="tooltip"
@@ -30,26 +30,26 @@
          data-bs-title="Monte Carlo">
         <i class="fa-solid fa-braille fa-lg"></i>
     </div>
-    <div class="btn toolbar-btn"
+    <div class="btn toolbar-btn" id="undo-btn"
          data-bs-toggle="tooltip"
          data-bs-placement="right"
          data-bs-title="Undo">
         <i class="fa-solid fa-rotate-left fa-xl"></i>
     </div>
-    <div class="btn toolbar-btn"
+    <div class="btn toolbar-btn" id="redo-btn"
          data-bs-toggle="tooltip"
          data-bs-placement="right"
          data-bs-title="Redo">
         <i class="fa-solid fa-rotate-right fa-xl"></i>
     </div>
-    <div class="btn toolbar-btn"
+    <div class="btn toolbar-btn" id="clear-btn"
          data-bs-toggle="tooltip"
          data-bs-placement="right"
          data-bs-title="Clear Canvas">
         <i class="fa-solid fa-trash fa-lg"></i>
     </div>
 </div>
-<div class="" id="canvas-container">
+<div id="canvas-container">
 </div>
 
 <!-- p5.js and sketch file -->
