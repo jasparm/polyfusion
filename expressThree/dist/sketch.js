@@ -13,6 +13,19 @@ window.draw = () => {
     // Background colour of the canvas
     const backColor = getComputedStyle(document.documentElement).getPropertyValue('--background-colour');
     background(backColor);
+    // Drawing monte carlo
+    if (state.monteCarloMode) {
+        // Let's begin by projecting points randomly in our canvas
+        for (let mpoint of state.montePoints) {
+            strokeWeight(20);
+            stroke(mpoint.colour);
+            point(mpoint.x, mpoint.y);
+        }
+        ;
+        // Here is our iOU
+        let iOU = state.intersectPoints.length / state.unionPoints.length * 100;
+        console.log(`${iOU}%`);
+    }
     // Drawing all shapes on the canvas
     for (let shape of state.shapes) {
         if (shape.selected) {
@@ -28,18 +41,7 @@ window.draw = () => {
     stroke(DEFAULT_SHAPE_COLOUR);
     drawShape(state.points);
     //! Add to seperate function
-    if (state.monteCarloMode) {
-        // Let's begin by projecting points randomly in our canvas
-        for (let mpoint of state.montePoints) {
-            strokeWeight(20);
-            stroke(mpoint.colour);
-            point(mpoint.x, mpoint.y);
-        }
-        ;
-        // Here is our iOU
-        let iOU = state.intersectPoints.length / state.unionPoints.length * 100;
-        console.log(`${iOU}%`);
-    }
+    
     ;
     // //! Highlighting intersection lines in blue for testing
     // for (let lines of state.intersectLines) {

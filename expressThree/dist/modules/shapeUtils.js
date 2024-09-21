@@ -46,24 +46,26 @@ export function selectShape() {
     }
     // When we select two shapes, we have the option of using the sutherland-hodgman alg
     // When we select more than one, we can save
-    // const sutherlandButton = select('#sutherland-btn');
-    
-    const saveButton = select('#save-shape-btn');
     if (state.selectedShapes.length < 3) {
         if (state.selectedShapes.length == 1) {
-            saveButton.style("display", "inline-flex");
-            saveButton.style("justify-content", "center");
+            document.getElementById("save-shape-btn").classList.remove("disabled");
+            document.getElementById("save-icon").classList.remove("disabled");
+            document.getElementById("intersection-btn").classList.add("disabled");
         }
-        if (state.selectedShapes.length == 2) {
-            // sutherlandButton.show();
+        else if (state.selectedShapes.length == 2) {
             document.getElementById("intersection-btn").classList.remove("disabled");
-            saveButton.hide();
+            document.getElementById("save-shape-btn").classList.add("disabled");
+            document.getElementById("save-icon").classList.add("disabled");
         }
-        ;
+        else {
+            document.getElementById("save-shape-btn").classList.add("disabled");
+            document.getElementById("save-icon").classList.add("disabled");
+        }
     }
     else {
         document.getElementById("intersection-btn").classList.add("disabled");
-        saveButton.hide();
+        document.getElementById("save-shape-btn").classList.add("disabled");
+        document.getElementById("save-icon").classList.add("disabled");
     }
 }
 // De-Selects our shape

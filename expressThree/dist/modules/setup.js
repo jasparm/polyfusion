@@ -118,11 +118,11 @@ export let setup = () => {
     // Saving Shapes
     const saveButton = select('#save-shape-btn');
     // Showing button if a shape is selected
-    saveButton.hide();
+    // saveButton.hide();
     // testing
     saveButton.mousePressed(() => {
         // This means we can't delete any shapes.
-        state.selectShapeMode = false;
+        // state.selectShapeMode = false;
     });
     // Getting our form
     const saveShapeForm = document.getElementById("saveShapeForm");
@@ -205,7 +205,7 @@ export let setup = () => {
 export function resetSelectShape() {
     // Getting our html elements
     let selectIcon = select("#select-shape-icon");
-    let saveButton = select("#save-shape-btn");
+    // let saveButton = select("#save-shape-btn");
 
     // And select shape and load shape tooltips
     let selectTip = tooltipList[1];
@@ -219,9 +219,8 @@ export function resetSelectShape() {
         // Hiding buttons
         state.selectedShapes = [];
         document.getElementById("intersection-btn").classList.add("disabled");
-        saveButton.hide();
-        
-        // saveIcon.hide();
+        document.getElementById("save-shape-btn").classList.add("disabled");
+        document.getElementById("save-icon").classList.add("disabled");
         // Resetting intersection
         state.pointsOfIntersection = [];
         // Updating html canvas elements
@@ -236,11 +235,6 @@ export function resetSelectShape() {
         selectIcon.class("fa-solid fa-xmark fa-2xl");
         selectIcon.style("color", "lightcoral")
         selectTip._config.title = "Complete Selection";
-        // saveIcon.show();
-
-        // Updating load shapes button icon
-        // loadIcon.class("fa-solid fa-floppy-disk fa-xl")
-        // loadTooltip._config.title = "Save Shape";
         state.selectShapeMode = true;
     };
 };

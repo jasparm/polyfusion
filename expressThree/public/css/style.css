@@ -63,15 +63,18 @@ nav {
   background-color: rgb(75, 75, 75);
   transition: background-color border 0.3s;
   border: none;
-}
 
-.toolbar-btn.disabled {
-  background-color: rgb(58, 58, 58);
-}
+  &:hover {
+    background-color: rgb(110, 110, 110);
+  }
 
-.toolbar-btn:hover {
-  background-color: rgb(110, 110, 110);
-  /* border: 3px solid rgb(173, 228, 255); */
+  &.disabled {
+    background-color: rgb(58, 58, 58);
+    pointer-events: all;
+    &:hover {
+      cursor: not-allowed !important;
+    }
+  }
 }
 
 .offcanvas.custom {
@@ -130,6 +133,10 @@ i {
 
 #load-icon {
   color: rgb(55, 254, 114);
+}
+
+#save-icon {
+  color: rgb(196, 112, 255);
 }
 
 #intersection-icon {
