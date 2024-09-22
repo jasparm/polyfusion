@@ -37,6 +37,7 @@ export function selectShape() {
                 state.selectedShapes.push(state.shapes[i]);
                 inShape = true
                 console.log("selected shape")
+                console.log(state.shapes[i])
             }
         }
     }

@@ -48,6 +48,10 @@ app.get('/shapes', (req, res) => {
     res.json(savedShapes);
 });
 
+// For our default 2D shapes
+// import { generateDefaultShapes } from "./dist/modules/setup.js";
+// const defaultShapes = generateDefaultShapes();
+
 // Only serving home page for now.
 app.get("/", (req, res) => {
     res.render("index", { title: "Polyfusion", savedShapes: savedShapes });

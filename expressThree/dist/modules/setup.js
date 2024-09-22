@@ -77,7 +77,6 @@ export let setup = () => {
         } else {
             tooltip._config.title = "Create Shape"
         }
-        console.log(tooltip);
     });
     // Event listener for select button
     const selectShapeButton = select('#select-shape-btn');
@@ -129,9 +128,22 @@ export let setup = () => {
         if (!document.getElementById("save-shape-btn").classList.contains("disabled")) {
             console.log(state.savingMode)
             state.savingMode = !state.savingMode;
-        }
-        
+        };
     });
+
+    // Before listening for submit, we need to ensure input is valid
+    const shapeNameInput = document.getElementById("shape-name");
+    const submitBtn = document.getElementById("save-shape");
+
+    shapeNameInput.addEventListener("input", () => {
+        // If there is no input, it's disabled
+        if (shapeNameInput.value.trim() === "") {
+            submitBtn.disabled = true;
+        } else {
+            submitBtn.disabled = false;
+        }
+    })
+
     // Getting our form
     const saveShapeForm = document.getElementById("saveShapeForm");
 
@@ -167,6 +179,7 @@ export let setup = () => {
                 state.savingMode = false;
                 state.selectShapeMode = true;
                 resetSelectShape();
+                submitBtn.disabled = true
                 console.log("Saved Shape Successfully.");
             }
             else {
@@ -218,6 +231,7 @@ export let setup = () => {
         }
     });
 };
+
 // Making a function to handle resetting our selected shape mode
 export function resetSelectShape() {
     // Getting our html elements
@@ -271,30 +285,103 @@ function extractPoints(shape) {
 // And a function to update our dropdown list of saved shapes
 function updateSavedShapes() {
     fetch("/shapes")
-        .then(response => response.json())
-        .then(shapes => {
-        // Getting our dropdown menu
-        const shapeDropDown = document.getElementById("shapesDropdown");
-        // Clearing the menu
-        shapeDropDown.innerHTML = '';
-        // Now adding a dropdown element for each shape
-        shapes.forEach(shape => {
-            const listItem = document.createElement('li');
-            const link = document.createElement('a');
-            link.className = 'dropdown-item';
-            link.textContent = shape.name;
-            // And this allows us to place a shape
-            link.addEventListener('click', () => {
+    .then(response => response.json())
+    .then(shapes => {
+        // Getting our shapes list container
+        const shapesList = document.querySelector(".shapes-list");
+        // Clearing the list
+        shapesList.innerHTML = '';
+        // Now adding a list item for each shape
+        shapes.forEach((shape, index) => {
+            const shapeBox = document.createElement('div');
+            shapeBox.className = 'btn shape-box d-flex flex-row align-items-center';
+            shapeBox.id = `shape-${index}`;
+
+            const iconBox = document.createElement('div');
+            iconBox.className = 'icon-box';
+            const icon = document.createElement('i');
+            icon.className = 'fa-solid fa-cube fa-lg';
+            iconBox.appendChild(icon);
+
+            const shapeName = document.createElement('p');
+            shapeName.textContent = shape.name;
+
+            shapeBox.appendChild(iconBox);
+            shapeBox.appendChild(shapeName);
+
+            // Adding click event listener to load the shape
+            shapeBox.addEventListener('click', () => {
                 handleShapeSelection(shape);
             });
-            listItem.appendChild(link);
-            shapesDropdown.appendChild(listItem);
+
+            shapesList.appendChild(shapeBox);
         });
     }).catch(error => {
         console.error('Error fetching shapes:', error);
     });
+};
+
+// Generating our default shapes.
+function generateDefaultShapes() {
+    let defaultShapes = [];
+    // For a square
+    const squarePoints = [[300, 150],
+        [600, 150],
+        [600, 450],
+        [300, 450]];
+
+    let aSquare = new Shape(squarePoints);
+    aSquare.name = "Square";
+    defaultShapes.push(aSquare);
+
+
+    const trianglePoints = [
+        [450,150],
+        [600,450],
+        [300,450]
+    ];
+
+    let aTriangle = new Shape(trianglePoints);
+    aTriangle.name = "Triangle";
+    defaultShapes.push(aTriangle);
+
+    return defaultShapes;
 }
-;
+const defaultShapes = generateDefaultShapes();
+
+function setupDefaultShapes() {
+    // Getting our shapes list container
+    const shapesList = document.querySelector(".default-shapes-list");
+    // Clearing the list
+    shapesList.innerHTML = '';
+    // Now adding a list item for each shape
+    defaultShapes.forEach((shape, index) => {
+        const shapeBox = document.createElement('div');
+        shapeBox.className = 'btn shape-box d-flex flex-row align-items-center';
+        shapeBox.id = `shape-${index}`;
+
+        const iconBox = document.createElement('div');
+        iconBox.className = 'icon-box';
+        const icon = document.createElement('i');
+        icon.className = 'fa-solid fa-cube fa-lg';
+        iconBox.appendChild(icon);
+
+        const shapeName = document.createElement('p');
+        shapeName.textContent = shape.name;
+
+        shapeBox.appendChild(iconBox);
+        shapeBox.appendChild(shapeName);
+
+        // Adding click event listener to load the shape
+        shapeBox.addEventListener('click', () => {
+            handleShapeSelection(shape);
+        });
+
+        shapesList.appendChild(shapeBox);
+    });
+
+}
+
 // Will handle what happens when we select a saved shape
 function handleShapeSelection(shape) {
     // Need to convert points back to a p5 context
@@ -302,11 +389,14 @@ function handleShapeSelection(shape) {
     let newPoints = [];
     for (let p of shape.points) {
         newPoints.push(createVector(p[0], p[1]));
-    }
-    ;
+    };
     let selectedShape = new Shape(newPoints);
     state.shapes.push(selectedShape);
+};
+
+function loadShapes() {
+    updateSavedShapes();
+    setupDefaultShapes();
 }
-;
 // Initial load of shapes when the page loads
-document.addEventListener('DOMContentLoaded', updateSavedShapes);
+document.addEventListener('DOMContentLoaded', loadShapes());

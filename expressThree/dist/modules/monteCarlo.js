@@ -9,8 +9,8 @@ export function monteCarlo() {
         let randomY = Math.floor(Math.random() * height);
         // Now we need to check if it is in a shape
         // Let's begin with two shapes
-        let red = "red";
-        let blue = "blue";
+        let red = "lightcoral";
+        let blue = "rgb(0, 183, 255)";
         let inShapesCounter = 0;
         for (let i = 0; i < state.shapes.length; i++) {
             if (rayCast(randomX, randomY, state.shapes[i].points)) {
@@ -18,7 +18,6 @@ export function monteCarlo() {
                 //! Update this to be dynamic and to work for as many shapes
                 inShapesCounter++;
             }
-            ;
         }
         ;
         let newPoint = new MontePoint(randomX, randomY);

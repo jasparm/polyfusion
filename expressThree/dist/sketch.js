@@ -98,4 +98,4 @@ function highlightArea(shape) {
     }
     ;
     endShape(CLOSE);
-}
+};

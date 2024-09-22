@@ -77,15 +77,22 @@ nav {
   }
 }
 
-.offcanvas.custom {
-  margin-top: 160px;
-  height: 70%;
+.offcanvas {
   background-color: rgb(33, 33, 33);
   border-top-left-radius: 15px;
   border-bottom-left-radius: 15px;
+  margin-top: 160px;
 
-  i, h4, h5, input {
+  i, h4, h5 {
     color: white;
+  }
+
+  &.save-shape {
+    height: 280px;
+  }
+
+  &.load-shapes {
+    height: 70%;
   }
 }
 
@@ -96,6 +103,7 @@ nav {
 
   input {
     background-color: rgb(33, 33, 33);
+    color: white;
     border: none;
     caret-color: white;
 
@@ -116,7 +124,68 @@ nav {
   }
 }
 
+.default-shapes {
+  background-color: rgb(50, 50, 50);
+  border-radius: 15px;
+  padding: 10px;
+  height: 33%;
+}
+
+.custom-shapes {
+  background-color: rgb(50, 50, 50);
+  border-radius: 15px;
+  padding: 10px;
+  overflow-y: hidden;
+  height: 67%;
+}
+
+.offcanvas-body {
+  overflow-y: hidden;
+}
+
+.shapes-list {
+  overflow-y: scroll;
+}
+
+.default-shapes-list {
+  overflow-y: scroll;
+}
+
+.shape-box {
+  background-color: rgb(60, 60, 60);
+  margin-top: 6px;
+  padding: 5px;
+  border-radius: 10px;
+  border: none;
+  transition: background-color 0.3s;
+  overflow-y: scroll;
+
+  p {
+    margin-bottom: 0;
+    margin-left: 10px;
+    color: white;
+    font-weight: 400;
+  }
+
+  .icon-box {
+    padding-left: 5px;
+    padding-right: 10px;
+    border-right: 2px solid rgb(0, 183, 255);
+  }
+
+  &:hover {
+    background-color: rgb(75, 75, 75);
+  }
+
+}
+
 #close-save-btn {
+  margin-top: 0;
+  margin-right: 1px;
+  margin-left: auto;
+}
+
+#close-load-btn {
   margin-top: 0;
   margin-right: 1px;
   margin-left: auto;
