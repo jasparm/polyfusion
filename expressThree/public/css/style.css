@@ -72,7 +72,7 @@ nav {
     background-color: rgb(58, 58, 58);
     pointer-events: all;
     &:hover {
-      cursor: not-allowed !important;
+      cursor: not-allowed;
     }
   }
 }
@@ -84,19 +84,39 @@ nav {
   border-top-left-radius: 15px;
   border-bottom-left-radius: 15px;
 
-  i, h4 {
+  i, h4, h5, input {
     color: white;
   }
+}
 
+#saveShapeForm {
+  background-color: rgb(50, 50, 50);
+  border-radius: 15px;
+  padding: 10px;
 
+  input {
+    background-color: rgb(33, 33, 33);
+    border: none;
+    caret-color: white;
+
+    &:focus {
+      outline: 4px solid rgb(0, 183, 255);
+    }
+  }
+
+  .btn {
+    background-color: rgb(75, 75, 75);
+    color: white;
+    border-radius: 15px;
+    border: 3px solid rgb(50, 50, 50);
+
+    &:hover {
+      border: 3px solid rgb(55, 254, 114);
+    }
+  }
 }
 
 #close-save-btn {
-  /* border-radius: 50%;
-  width: 35px;
-  height: 35px; */
-  /* display: inline-flex;
-  justify-content: center; */
   margin-top: 0;
   margin-right: 1px;
   margin-left: auto;
@@ -165,6 +185,8 @@ i {
   position: relative;
   background-color: black;
 }
+
+
 
 
 .sidebar {

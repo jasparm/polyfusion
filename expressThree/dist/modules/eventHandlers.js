@@ -4,7 +4,7 @@ let moveShapeIndex = -1;
 // The final boss of key pressing
 export let keyPressed = () => {
     // Deleting shapes - keycode is 8 for delete
-    if (keyCode === 8 && state.selectShapeMode) {
+    if (keyCode === 8 && state.selectShapeMode && !state.savingMode) {
         console.log("Delete pressed.");
         deleteShape();
     }
@@ -60,14 +60,6 @@ export let mouseDragged = () => {
         let moveX = mouseX - state.moveOffset.x;
         let moveY = mouseY - state.moveOffset.y;
         // Getting the shapes we are moving
-        // if (state.movingShapes.length == 3) {
-        //     let shape = state.shapes[state.shapes.length - 1].points;
-        //     // Updating each point by the offset
-        //     for (let p of shape) {
-        //         p.x += moveX;
-        //         p.y += moveY;
-        //     };
-        // } else {
         for (let idx of state.movingShapes) {
             let shape = state.shapes[idx].points;
             // Updating each point by the offset
@@ -83,3 +75,26 @@ export let mouseDragged = () => {
     }
     ;
 };
+
+// Override method that is called whenever the mouse moves
+export let mouseMoved = () => {
+    let inShape = false
+    // Changing the cursor to indicate to the user that the shape is movable
+    for (let i = 0; i < state.shapes.length; i++) {
+        // Using ray casting to check if the user has clicked inside a shape
+        if (rayCast(mouseX, mouseY, state.shapes[i].points)) {
+            inShape = true
+        }
+    };
+    // If we have detected that the mouse is in a shape, we change the cursor to grab
+    // Otherwsie it is default
+    if (inShape) {
+        if (state.selectShapeMode) {
+            cursor("pointer")
+        } else {
+            cursor("grab");
+        }
+    } else {
+        cursor("default");
+    }
+}

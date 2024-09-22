@@ -22,7 +22,7 @@ export function deleteShape() {
 ;
 // Function that handles the selection of shapes
 export function selectShape() {
-    let inShape = false
+    let inShape = false;
     // We need to see which shape we clicked on
     // Can just re-use ray-casting
     for (let i = 0; i < state.shapes.length; i++) {
@@ -30,17 +30,19 @@ export function selectShape() {
             // If shape is already selected, de-select it
             if (state.shapes[i].selected) {
                 deSelect(state.shapes[i]);
-                inShape = true;
+                inShape = true
             }
             else if (!state.shapes[i].selected) {
                 state.shapes[i].isSelected = true;
                 state.selectedShapes.push(state.shapes[i]);
                 inShape = true
+                console.log("selected shape")
             }
         }
     }
     // If we didn't click on a shape, we reset and clear
-    if (!inShape && mouseInCanvas()) {
+    if (!state.savingMode && mouseInCanvas() && !inShape) {
+        console.log("resetting selected shapes")
         resetSelectShape();
         return;
     }

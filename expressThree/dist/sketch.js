@@ -1,5 +1,5 @@
 import { setup, state } from "./modules/setup.js";
-import { keyPressed, mousePressed, mouseReleased, mouseDragged } from "./modules/eventHandlers.js";
+import { keyPressed, mousePressed, mouseReleased, mouseDragged, mouseMoved } from "./modules/eventHandlers.js";
 
 const DEFAULT_SHAPE_COLOUR = "rgb(180, 180, 180)"
 
@@ -8,6 +8,7 @@ window.keyPressed = keyPressed;
 window.mousePressed = mousePressed;
 window.mouseReleased = mouseReleased;
 window.mouseDragged = mouseDragged;
+window.mouseMoved = mouseMoved;
 // Draw method. Handles what we see on the canvas.
 window.draw = () => {
     // Background colour of the canvas
@@ -40,24 +41,7 @@ window.draw = () => {
     // And drawing the current shape being made on the canvas
     stroke(DEFAULT_SHAPE_COLOUR);
     drawShape(state.points);
-    //! Add to seperate function
-    
-    ;
-    // //! Highlighting intersection lines in blue for testing
-    // for (let lines of state.intersectLines) {
-    //     let [line1, line2] = lines;
-    //     let [p1, p2] = line1;
-    //     let [p3, p4] = line2;
-    //     stroke("blue");
-    //     line(p1.x, p1.y, p2.x, p2.y);
-    //     line(p3.x, p3.y, p4.x, p4.y);
-    // };
-    // for (let _line of state.enclosedLines) {
-    //     let [p1, p2] = _line;
-    //     stroke("blue");
-    //     line(p1.x, p1.y, p2.x, p2.y);
-    // };
-    //! And now points of intersection
+
     highlightArea(state.pointsOfIntersection);
     // for (let _point of state.pointsOfIntersection) {
     //     stroke("yellow");
@@ -101,6 +85,7 @@ function drawShape(shape) {
 ;
 function highlightArea(shape) {
     beginShape();
+    stroke('white')
     fill(`rgba(39, 189, 245, 0.45)`);
     strokeWeight(20);
     for (let p of shape) {

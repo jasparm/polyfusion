@@ -19,6 +19,7 @@ export const state = {
     selectShapeMode: false,
     monteCarloMode: false,
     pauseMonte: false,
+    savingMode: false,
     montePoints: [],
     monteInterval: setInterval(monteCarlo, 20),
     unionPoints: [],
@@ -108,12 +109,15 @@ export let setup = () => {
     const intersectBtn = select("#intersection-btn");
     // Now we do an event listener
     intersectBtn.mousePressed(() => {
-        // We should (if I have coded correctly) have two selected shapes
-        // Let's send them to old mate sutherland
-        let [shape1, shape2] = state.selectedShapes;
-        // If button is pressed, we run sutherland now
-        sutherlandHodgman(shape1, shape2);
-        //! Leave here for now
+
+        // Need to ensure it's not disabled.
+        if (!document.getElementById("intersection-btn").classList.contains("disabled")) {
+            // We should (if I have coded correctly) have two selected shapes
+            // Let's send them to old mate sutherland
+            let [shape1, shape2] = state.selectedShapes;
+            // If button is pressed, we run sutherland now
+            sutherlandHodgman(shape1, shape2);
+        };
     });
     // Saving Shapes
     const saveButton = select('#save-shape-btn');
@@ -121,18 +125,25 @@ export let setup = () => {
     // saveButton.hide();
     // testing
     saveButton.mousePressed(() => {
-        // This means we can't delete any shapes.
-        // state.selectShapeMode = false;
+        // Need to ensure the button isn't disabled.
+        if (!document.getElementById("save-shape-btn").classList.contains("disabled")) {
+            console.log(state.savingMode)
+            state.savingMode = !state.savingMode;
+        }
+        
     });
     // Getting our form
     const saveShapeForm = document.getElementById("saveShapeForm");
+
     // And now saving the shape
     saveShapeForm.addEventListener("submit", (event) => {
         console.log("Pressed submit");
         event.preventDefault();
+        console.log(saveShapeForm.elements['shape-name'].value);
         // Getting shape name
         const shapeName = saveShapeForm.elements['shape-name'].value;
         // Now getting shape selected
+        console.log(state.selectedShapes)
         let selectedShape = state.selectedShapes[0];
         // Updating shape name
         selectedShape.name = shapeName;
@@ -140,7 +151,7 @@ export let setup = () => {
             points: extractPoints(selectedShape),
             colour: selectedShape.colour,
             isSelected: false,
-            name: selectedShape.name
+            name: shapeName
         };
         // Now we send it to the app
         fetch("/", {
@@ -153,6 +164,7 @@ export let setup = () => {
             if (data.success) {
                 updateSavedShapes();
                 // Resetting our select shape mode.
+                state.savingMode = false;
                 state.selectShapeMode = true;
                 resetSelectShape();
                 console.log("Saved Shape Successfully.");
@@ -166,6 +178,11 @@ export let setup = () => {
         console.log(`Pushed shape: ${selectedShape.name}`);
         saveShapeForm.elements['shape-name'].value = '';
     });
+
+    const closeButton = document.getElementById("close-save-btn");
+    closeButton.addEventListener("click", () => {
+        state.savingMode = false;
+    })
     // This is for clearing the canvas
     const clearCanvasBtn = select("#clear-btn");
     clearCanvasBtn.mousePressed(() => {
