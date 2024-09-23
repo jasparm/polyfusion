@@ -29,13 +29,20 @@ function getIntersections(shape1, shape2) {
                 intersections.push([line1, line2]);
                 // Now getting the exact point of intersection
                 let [px, py] = getPointOfIntersection(line1, line2);
-                // state.pointsOfIntersection.push([px, py]);
-                state.pointsOfIntersection.push(createVector(px, py));
+                const pointKey = `${px},${py}`;
+                if (!addedPoints.has(pointKey) && isValidPoint(px, py)) {
+                    // state.pointsOfIntersection.push([point.x, point.y])
+                    // state.pointsOfIntersection.push([px, py]);
+                    console.log(`Adding point: ${px}, ${py}`)
+                    state.pointsOfIntersection.push(createVector(px, py));
+                    addedPoints.add(pointKey);
+                }
             }
             else {
                 // Checking if a line is completely enclosed in a shape, as this doesn't intersect
                 // But we still want it
                 enclosed.push.apply(enclosed, (lineInPolygon(line1, line2, shape1, shape2)));
+                // console.log(`Adding point: ${px, py}`)
                 console.log("ENCLOSED!");
             }
         }
@@ -43,8 +50,12 @@ function getIntersections(shape1, shape2) {
     }
     ;
     return [intersections, enclosed];
+};
+
+
+function isValidPoint(x, y) {
+    return !isNaN(x) && !isNaN(y) && (typeof x !== 'undefined') && (typeof y !== 'undefined')
 }
-;
 // Checks if the line is entirely inside a polygon.
 function lineInPolygon(line1, line2, shape1, shape2) {
     let lines = [];
@@ -68,9 +79,10 @@ function isInsidePolygon(line, shape) {
         if (rayCast(point.x, point.y, shape.points)) {
             // Adding the point to enclosed points array for now
             const pointKey = `${point.x},${point.y}`;
-            if (!addedPoints.has(pointKey)) {
+            if (!addedPoints.has(pointKey) && isValidPoint(point.x, point.y)) {
                 // state.pointsOfIntersection.push([point.x, point.y])
                 state.pointsOfIntersection.push(createVector(point.x, point.y));
+                console.log(`Adding point: ${point.x}, ${point.yy}`)
                 addedPoints.add(pointKey);
                 return true;
             }
@@ -84,6 +96,7 @@ function isInsidePolygon(line, shape) {
 ;
 // Helper function that determines if two lines intersect
 function doesIntersect(line1, line2) {
+    console.log(line1, line2);
     // Extracting coordinates from the lines
     let [p1, p2] = line1;
     let x1 = p1.x, y1 = p1.y, x2 = p2.x, y2 = p2.y;
@@ -92,11 +105,31 @@ function doesIntersect(line1, line2) {
     // Calculatign the line equations
     let [m1, c1] = lineEquation(line1);
     let [m2, c2] = lineEquation(line2);
+
+    // Vertical line segment at line1
+    if (x1 === x2) {
+        let intersection = checkVertical(line1, line2);
+        if (intersection) {
+            return true;
+        }
+    }
+
+    // Vertical line segment at line2
+    if (x3 === x4) {
+        let intersection = checkVertical(line2, line1);
+        if (intersection) {
+            return true;
+        }
+    }
+
     // Checking if segments are parallel
     if (m1 === m2) {
         // If they are parallel, they don't intersect unless they are collinear
         if (c1 !== c2) {
             return false;
+        }
+        if (c1 === c2) {
+            return true;
         }
         ;
         // Checking for collinear overlap
@@ -116,11 +149,34 @@ function doesIntersect(line1, line2) {
         (yA >= Math.min(y3, y4) && yA <= Math.max(y3, y4))) {
         return true;
     }
-    ;
     // If all else fails, they don't intersect
     return false;
+};
+
+function checkVertical(vertLine, testLine) {
+    // Extracting coordinates from the lines
+    let [v1, v2] = vertLine;
+    let x = v1.x, vy1 = v1.y, vx2 = v2.x, vy2 = v2.y;
+    let [t3, t4] = testLine;
+    let tx3 = t3.x, ty3 = t3.y, tx4 = t4.x, ty4 = t4.y;
+
+    [vy1, vy2] = [vy1, vy2].sort((a, b) => a - b)
+
+    // Calculate the line equation for the non-vertical line
+    let [m, c] = lineEquation(testLine);
+
+    // Calculate the intersection point
+    let y = m * x + c;
+
+    // Check if the intersection point (x, y) is within the bounds of both line segments
+    if (y >= vy1 && y <= vy2 && x >= Math.min(tx3, tx4) && x <= Math.max(tx3, tx4) && y >= Math.min(ty3, ty4) && y <= Math.max(ty3, ty4)) {
+        return [x, y];
+    }
+
+    // No intersection
+    return null;
 }
-;
+
 // Returns the gradient and y-intercept
 function lineEquation(line) {
     // Extracting points from our line segment
@@ -135,10 +191,15 @@ function lineEquation(line) {
     let gradient = 0;
     if (x2 - x1 !== 0) {
         gradient = (y2 - y1) / (x2 - x1);
+    } else {
+        gradient = Infinity;
     }
     ;
     // Substituting (x2, y2) into equation to find y-intercept
     let yIntercept = y2 - (gradient * x2);
+    if (gradient === Infinity) {
+        yIntercept = null;
+    };
     return [gradient, yIntercept];
 }
 ;
@@ -146,6 +207,28 @@ function lineEquation(line) {
 // Note that this function will only be called if there is an intersection between the two.
 function getPointOfIntersection(line1, line2) {
     // Firstly getting the line equations of both lines
+    // Destructure the points from the lines
+    let [p1, p2] = line1;
+    let x1 = p1.x, y1 = p1.y, x2 = p2.x, y2 = p2.y;
+    let [p3, p4] = line2;
+    let x3 = p3.x, y3 = p3.y, x4 = p4.x, y4 = p4.y;
+    // If line1 is vertical
+    if (x1 === x2) {
+        // Calculate intersection point using line2's equation
+        let [m2, c2] = lineEquation(line2);
+        let x = x1; // x-coordinate of the vertical line
+        let y = m2 * x + c2; // y-coordinate using line2's equation
+        return [Math.round(x), Math.round(y)];
+    }
+
+    // If line2 is vertical
+    if (x3 === x4) {
+        // Calculate intersection point using line1's equation
+        let [m1, c1] = lineEquation(line1);
+        let x = x3; // x-coordinate of the vertical line
+        let y = m1 * x + c1; // y-coordinate using line1's equation
+        return [Math.round(x), Math.round(y)];
+    }
     // [gradient, y-intercept]
     let [m1, c1] = lineEquation(line1);
     let [m2, c2] = lineEquation(line2);
@@ -153,6 +236,7 @@ function getPointOfIntersection(line1, line2) {
     const x = (c2 - c1) / (m1 - m2);
     // Using the first line equation to calculate the y-value
     const y = m1 * x + c1;
+    console.log(`Intersection: ${Math.round(x), Math.round(y)}`)
     return [Math.round(x), Math.round(y)];
 }
 ;

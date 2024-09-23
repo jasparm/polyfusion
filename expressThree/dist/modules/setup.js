@@ -325,7 +325,8 @@ function updateSavedShapes() {
 function generateDefaultShapes() {
     let defaultShapes = [];
     // For a square
-    const squarePoints = [[300, 150],
+    const squarePoints = [
+        [300, 150],
         [600, 150],
         [600, 450],
         [300, 450]];
