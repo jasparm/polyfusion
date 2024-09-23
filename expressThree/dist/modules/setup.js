@@ -20,6 +20,7 @@ export const state = {
     monteCarloMode: false,
     pauseMonte: false,
     savingMode: false,
+    editMode: false,
     montePoints: [],
     monteInterval: setInterval(monteCarlo, 20),
     unionPoints: [],
@@ -30,7 +31,7 @@ export const state = {
     undoPoints: []
 };
 export let setup = () => {
-    // Canvas Setup
+    // Main Canvas Setup
     let container = document.getElementById('canvas-container');
     let containerWidth = container.offsetWidth;
     let containerHeight = container.offsetHeight;
@@ -83,6 +84,19 @@ export let setup = () => {
     selectShapeButton.mousePressed(() => {
         resetSelectShape();
     });
+
+    // Editing a shape
+    const editShapeButton = select('#edit-shape-btn');
+    editShapeButton.mousePressed(() => {
+        if (!document.getElementById("edit-shape-btn").classList.contains("disabled")) {
+            state.editMode = !state.editMode
+        }
+        if (state.editMode) {
+            let selectedShape = state.selectedShapes[0];
+        } else {
+        }
+    })
+
     // Monte Carlo
     const monteCarloButton = select('#monte-btn');
     const monteCarloIcon = select('#monte-icon')
@@ -192,7 +206,7 @@ export let setup = () => {
         saveShapeForm.elements['shape-name'].value = '';
     });
 
-    const closeButton = document.getElementById("close-save-btn");
+    const closeButton = document.getElementById("close-btn");
     closeButton.addEventListener("click", () => {
         state.savingMode = false;
     })
@@ -252,6 +266,8 @@ export function resetSelectShape() {
         document.getElementById("intersection-btn").classList.add("disabled");
         document.getElementById("save-shape-btn").classList.add("disabled");
         document.getElementById("save-icon").classList.add("disabled");
+        document.getElementById("edit-shape-btn").classList.add("disabled");
+        document.getElementById("edit-shape-icon").classList.add("disabled");
         // Resetting intersection
         state.pointsOfIntersection = [];
         // Updating html canvas elements

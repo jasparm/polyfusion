@@ -51,24 +51,32 @@ export function selectShape() {
     // When we select more than one, we can save
     if (state.selectedShapes.length < 3) {
         if (state.selectedShapes.length == 1) {
+            document.getElementById("intersection-btn").classList.add("disabled");
             document.getElementById("save-shape-btn").classList.remove("disabled");
             document.getElementById("save-icon").classList.remove("disabled");
-            document.getElementById("intersection-btn").classList.add("disabled");
+            document.getElementById("edit-shape-btn").classList.remove("disabled");
+            document.getElementById("edit-shape-icon").classList.remove("disabled");
         }
         else if (state.selectedShapes.length == 2) {
             document.getElementById("intersection-btn").classList.remove("disabled");
             document.getElementById("save-shape-btn").classList.add("disabled");
             document.getElementById("save-icon").classList.add("disabled");
+            document.getElementById("edit-shape-btn").classList.add("disabled");
+            document.getElementById("edit-shape-icon").classList.add("disabled");
         }
         else {
             document.getElementById("save-shape-btn").classList.add("disabled");
             document.getElementById("save-icon").classList.add("disabled");
+            document.getElementById("edit-shape-btn").classList.add("disabled");
+            document.getElementById("edit-shape-icon").classList.add("disabled");
         }
     }
     else {
         document.getElementById("intersection-btn").classList.add("disabled");
         document.getElementById("save-shape-btn").classList.add("disabled");
         document.getElementById("save-icon").classList.add("disabled");
+        document.getElementById("edit-shape-btn").classList.add("disabled");
+        document.getElementById("edit-shape-icon").classList.add("disabled");
     }
 }
 // De-Selects our shape

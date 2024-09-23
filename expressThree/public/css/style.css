@@ -91,9 +91,10 @@ nav {
     height: 280px;
   }
 
-  &.load-shapes {
+  &.load-shapes, &.edit-shape {
     height: 70%;
   }
+
 }
 
 #saveShapeForm {
@@ -124,19 +125,38 @@ nav {
   }
 }
 
-.default-shapes {
+.oc-body {
   background-color: rgb(50, 50, 50);
   border-radius: 15px;
   padding: 10px;
+}
+
+.default-shapes {
   height: 33%;
 }
 
 .custom-shapes {
-  background-color: rgb(50, 50, 50);
-  border-radius: 15px;
-  padding: 10px;
   overflow-y: hidden;
   height: 67%;
+}
+
+.edit-shape-name {
+  height: 20%;
+}
+
+.edit-shape-colour {
+  height: 20%;
+}
+
+.display-shape-canvas {
+  height: 60%;
+}
+
+.shape-canvas {
+  background-color: rgb(75, 75, 75);
+  border-radius: 5px;
+  padding: 10px;
+  height: 85%;
 }
 
 .offcanvas-body {
@@ -179,13 +199,7 @@ nav {
 
 }
 
-#close-save-btn {
-  margin-top: 0;
-  margin-right: 1px;
-  margin-left: auto;
-}
-
-#close-load-btn {
+#close-btn {
   margin-top: 0;
   margin-right: 1px;
   margin-left: auto;
@@ -220,6 +234,10 @@ i {
   color: rgb(255, 240, 104);
 }
 
+#edit-shape-icon {
+  color: rgb(41, 234, 255);
+}
+
 #load-icon {
   color: rgb(55, 254, 114);
 }
@@ -240,19 +258,21 @@ i {
   color: lightcoral;
 }
 
-
 #canvas-container {
   width: 100%;
   height: 100%;
   position: relative;
-  background-color: black;
 }
+
+
+/*
+3D Styling
+*/
 
 #canvas {
   width: 100%;
   height: 100%;
   position: relative;
-  background-color: black;
 }
 
 

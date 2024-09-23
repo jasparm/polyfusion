@@ -36,53 +36,45 @@ window.draw = () => {
             stroke(DEFAULT_SHAPE_COLOUR);
         }
         drawShape(shape.points);
-    }
-    ;
+    };
     // And drawing the current shape being made on the canvas
     stroke(DEFAULT_SHAPE_COLOUR);
     drawShape(state.points);
 
     highlightArea(state.pointsOfIntersection);
-    // for (let _point of state.pointsOfIntersection) {
-    //     stroke("yellow");
-    // };
 };
+
 function windowResized() {
     // Adjusting canvas size when window is resized
     let container = document.getElementById('canvas-container');
     let containerWidth = container.offsetWidth;
     let containerHeight = container.offsetHeight;
     resizeCanvas(containerWidth, containerHeight);
-}
+
+};
 // Function that draws our shapes.
 // shape is a
 function drawShape(shape) {
-    // beginShape();
     // Drawing the shapes
     strokeWeight(20);
     for (let p of shape) {
-        vertex(p.x, p.y);
+        // canvas.vertex(p.x, p.y);
         point(p.x, p.y);
-    }
-    ;
+    };
     // Drawing the lines
     strokeWeight(7);
     for (let i = 0; i < shape.length - 1; i++) {
         let p1 = shape[i];
         let p2 = shape[i + 1];
         line(p1.x, p1.y, p2.x, p2.y);
-    }
-    ;
+    };
     // Connecting last point with the first point
     if (shape.length > 2) {
         let p1 = shape[0];
         let pLast = shape[shape.length - 1];
         line(pLast.x, pLast.y, p1.x, p1.y);
-    }
-    ;
-    // endShape(CLOSE);
-}
-;
+    };
+};
 function highlightArea(shape) {
     beginShape();
     stroke('white')
