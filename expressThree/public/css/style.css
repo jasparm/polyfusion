@@ -1,0 +1,322 @@
+:root {
+  --background-colour: rgb(20, 20, 20);
+}
+
+
+body, html {
+  overflow-x: hidden;
+  /* overflow-y: hidden; */
+  width: 100%;
+  height: 100%;
+  background-color: rgb(33, 33, 33);
+}
+
+nav {
+  background-color: rgb(25, 25, 25);
+}
+
+.card.title-card {
+  background: rgb(33, 33, 33);
+  color: white;
+  height: 60px;
+  display: flex;
+  justify-content: center;
+  border-radius: 25px;
+  padding: 20px;
+  transition: border 0.3s;
+  border: none;
+}
+
+.navbar-brand {
+  color: white;
+  margin-left: 10px;
+}
+
+.content {
+  position: relative;
+}
+
+.toolbar {
+  position: absolute;
+  z-index: 1;
+  top: 80px;
+  padding: 1rem;
+  width: 60px;
+  display: flex;
+  flex-direction: column;
+  height: 70%;
+  background-color: rgb(33, 33, 33);
+  align-items: center;
+  justify-content: space-around;
+  border-top-right-radius: 15px;
+  border-bottom-right-radius: 15px;
+}
+
+.toolbar-btn {
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  display: inline-flex;
+  text-align: center;
+  justify-content: center;
+  align-items: center;
+  background-color: rgb(75, 75, 75);
+  transition: background-color border 0.3s;
+  border: none;
+
+  &:hover {
+    background-color: rgb(110, 110, 110);
+  }
+
+  &.disabled {
+    background-color: rgb(58, 58, 58);
+    pointer-events: all;
+    &:hover {
+      cursor: not-allowed;
+    }
+  }
+}
+
+.offcanvas {
+  background-color: rgb(33, 33, 33);
+  border-top-left-radius: 15px;
+  border-bottom-left-radius: 15px;
+  margin-top: 160px;
+
+  i, h4, h5 {
+    color: white;
+  }
+
+  &.save-shape {
+    height: 280px;
+  }
+
+  &.load-shapes, &.edit-shape {
+    height: 70%;
+  }
+
+}
+
+#saveShapeForm {
+  background-color: rgb(50, 50, 50);
+  border-radius: 15px;
+  padding: 10px;
+
+  input {
+    background-color: rgb(33, 33, 33);
+    color: white;
+    border: none;
+    caret-color: white;
+
+    &:focus {
+      outline: 4px solid rgb(0, 183, 255);
+    }
+  }
+
+  .btn {
+    background-color: rgb(75, 75, 75);
+    color: white;
+    border-radius: 15px;
+    border: 3px solid rgb(50, 50, 50);
+
+    &:hover {
+      border: 3px solid rgb(55, 254, 114);
+    }
+  }
+}
+
+.oc-body {
+  background-color: rgb(50, 50, 50);
+  border-radius: 15px;
+  padding: 10px;
+}
+
+.default-shapes {
+  height: 33%;
+}
+
+.custom-shapes {
+  overflow-y: hidden;
+  height: 67%;
+}
+
+.edit-shape-name {
+  height: 20%;
+}
+
+.edit-shape-colour {
+  height: 20%;
+}
+
+.display-shape-canvas {
+  height: 60%;
+}
+
+.shape-canvas {
+  background-color: rgb(75, 75, 75);
+  border-radius: 5px;
+  padding: 10px;
+  height: 85%;
+}
+
+.offcanvas-body {
+  overflow-y: hidden;
+}
+
+.shapes-list {
+  overflow-y: scroll;
+}
+
+.default-shapes-list {
+  overflow-y: scroll;
+}
+
+.shape-box {
+  background-color: rgb(60, 60, 60);
+  margin-top: 6px;
+  padding: 5px;
+  border-radius: 10px;
+  border: none;
+  transition: background-color 0.3s;
+  overflow-y: scroll;
+
+  p {
+    margin-bottom: 0;
+    margin-left: 10px;
+    color: white;
+    font-weight: 400;
+  }
+
+  .icon-box {
+    padding-left: 5px;
+    padding-right: 10px;
+    border-right: 2px solid rgb(0, 183, 255);
+  }
+
+  &:hover {
+    background-color: rgb(75, 75, 75);
+  }
+
+}
+
+#close-btn {
+  margin-top: 0;
+  margin-right: 1px;
+  margin-left: auto;
+}
+
+#user-btn {
+  border-radius: 50%;
+  width: 47px;
+  height: 47px;
+  display: flex;
+  text-align: center;
+  justify-content: center;
+  align-items: center;
+  background-color: white;
+  margin-right: 20px;
+  margin-left: auto;
+}
+
+#user-icon {
+  color: rgb(45, 45, 45);
+}
+
+i {
+  color: white;
+}
+
+#create-shape-icon {
+  color: rgb(0, 183, 255);
+}
+
+#select-shape-icon {
+  color: rgb(255, 240, 104);
+}
+
+#edit-shape-icon {
+  color: rgb(41, 234, 255);
+}
+
+#load-icon {
+  color: rgb(55, 254, 114);
+}
+
+#save-icon {
+  color: rgb(196, 112, 255);
+}
+
+#intersection-icon {
+  color: lightcoral;
+}
+
+#monte-icon {
+  color: rgb(255, 117, 237);
+}
+
+#clear-icon {
+  color: lightcoral;
+}
+
+#canvas-container {
+  width: 100%;
+  height: 100%;
+  position: relative;
+}
+
+
+/*
+3D Styling
+*/
+
+#canvas {
+  width: 100%;
+  height: 100%;
+  position: relative;
+}
+
+
+
+
+.sidebar {
+  width: 5rem;
+  height: 100vh;
+  position: absolute;
+  background-color: lightslategrey;
+  transition: width 200ms ease;
+}
+
+.sidebar-items {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  height: 100%;
+}
+
+
+.sidebar-item {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  height: 5rem;
+}
+
+.sidebar-item img {
+  min-width: 2.5rem;
+  margin: 0 1rem;
+  color: aliceblue;
+}
+
+
+.sidebar-item:last-child {
+  margin-top: auto;
+}
+
+
+
+
+
+
