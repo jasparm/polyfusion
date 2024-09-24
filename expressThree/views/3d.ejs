@@ -1,21 +1,66 @@
 <div class="App" style="position: relative;">
   <!-- Side bar -->
-    <nav class="sidebar">
-      <ul class="sidebar-items">
-        <li class="sidebar-item" id="sceneSettings">
-          <img src="./assets/gear-solid.svg">
-          <!-- <span class="sidebar-label">Info</span> -->
-        </li>
-        <li class="sidebar-item" id="insertShapes">
-          <img src="./assets/cube-solid.svg">
-          <!-- <span class="sidebar-label">Insert</span> -->
-        </li>
-        <li class="sidebar-item" id="saveScene">
-          <img src="./assets/floppy-disk-regular.svg">
-          <!-- <span class="sidebar-label">Save</span> -->
-        </li>
-      </ul>
-    </nav>
+  <div class="toolbar" id="toolbar">
+    <div class="btn toolbar-btn" id="create-shape-btn"
+         data-bs-toggle="tooltip"
+         data-bs-placement="right"
+         data-bs-title="Create Shape">
+        <i class="fa-solid fa-plus fa-2xl" id="create-shape-icon"></i>
+    </div>
+    <div class="btn toolbar-btn disabled" id="save-shape-btn"
+         data-bs-toggle="tooltip"
+         data-bs-placement="right"
+         data-bs-title="Save Scene">
+        <i class="fa-solid fa-floppy-disk fa-xl disabled"
+           id="save-icon"
+           data-bs-toggle="offcanvas"
+           data-bs-placement="right"
+           data-bs-title="Save Scene"
+           data-bs-target="#offcanvasSave"
+           aria-controls="offcanvasRight"></i>
+    </div>
+    <div class="btn toolbar-btn disabled" id="intersection-btn"
+         data-bs-toggle="tooltip"
+         data-bs-placement="right"
+         data-bs-title="Intersection">
+        <i class="fa-solid fa-object-group fa-xl" id="intersection-icon"></i>
+    </div>
+    <div class="btn toolbar-btn" id="monte-btn"
+         data-bs-toggle="tooltip"
+         data-bs-placement="right"
+         data-bs-title="Monte Carlo">
+        <i class="fa-solid fa-braille fa-lg" id="monte-icon"></i>
+    </div>
+    <div class="btn toolbar-btn" id="clear-btn"
+         data-bs-toggle="tooltip"
+         data-bs-placement="right"
+         data-bs-title="Clear Canvas">
+        <i class="fa-solid fa-trash fa-lg" id="clear-icon"></i>
+    </div>
+</div>
+
+<!-- Offcanvas for Loading shapes -->
+<div class="offcanvas offcanvas-end load-shapes" data-bs-backdrop="false" tabindex="-1" id="offcanvasLoad" aria-labelledby="offcanvasRightLabel">
+  <div class="offcanvas-header">
+      <h4>Add Shapes</h4>
+      <button type="button" class="btn" id="close-btn" data-bs-dismiss="offcanvas">
+          <i class="fa-solid fa-xmark fa-xl" style="color: lightcoral"></i>
+      </button>
+  </div>
+  <div class="offcanvas-body d-flex flex-column">
+      <div class="oc-body custom-shapes pb-5">
+          <h4>Custom</h4>
+          <div class="shapes-list" style="max-height: 100%;">
+          </div>
+      </div>
+      <div class="oc-body default-shapes pb-5 mt-2">
+          <h4>Default</h4>
+          <div class="default-shapes-list" style="max-height: 100%;">
+          </div>
+      </div>
+  </div>
+</div>
+
     <!-- ThreeJS Canvas -->
     <canvas id="threeJsCanvas"></canvas>
     <!-- Context menu -->

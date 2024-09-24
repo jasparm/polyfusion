@@ -36,6 +36,8 @@ export default class SceneManager {
   ambientLight: THREE.AmbientLight | undefined;
   directionalLight: THREE.DirectionalLight | undefined;
 
+  private parent!: HTMLElement
+
   shapeManager!: ShapeManager; // this manages shapes for this scene
 
   constructor(canvasId: string) {
@@ -58,6 +60,8 @@ export default class SceneManager {
     if (!parent) {
       return;
     }
+
+    this.parent = parent;
 
     if (canvas === null) {
       // @TODO
@@ -163,6 +167,10 @@ export default class SceneManager {
   }
 
   onWindowResize() {
+    const width = this.parent.parentElement?.clientWidth ?? window.innerWidth;
+    this.width = width;
+    const height = this.parent.parentElement?.clientHeight ?? window.innerHeight;
+    this.height = height
     // updates window/renderer aspect ratio when the window is resized.
     this.camera.aspect = this.width / this.height;
     this.camera.updateProjectionMatrix();
