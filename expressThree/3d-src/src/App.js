@@ -18,19 +18,6 @@ const test = new SceneManager("threeJsCanvas");
 test.init();
 
 
-test.scene.background = new THREE.Color(0x2e3359);
-
-// set up ground
-const groundGeometry = new THREE.BoxGeometry(8, 0.5, 8);
-const groundMaterial = new THREE.MeshPhongMaterial({ color: 0xfafafa });
-
-// phone material
-const groundMesh = new THREE.Mesh(groundGeometry, groundMaterial);
-groundMesh.receiveShadow = true;
-groundMesh.position.y = -2;
-
-test.scene.add(groundMesh);
-
 // Box
 const boxTexture = new THREE.TextureLoader().load("./assets/texture01.png"); // creates texture and loads them in
 

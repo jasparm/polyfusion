@@ -36,6 +36,8 @@ export default class SceneManager {
   ambientLight: THREE.AmbientLight | undefined;
   directionalLight: THREE.DirectionalLight | undefined;
 
+  private parent!: HTMLElement
+
   shapeManager!: ShapeManager; // this manages shapes for this scene
 
   constructor(canvasId: string) {
@@ -49,6 +51,12 @@ export default class SceneManager {
   init() {
     this.scene = new THREE.Scene();
 
+    const backColor = getComputedStyle(document.documentElement).getPropertyValue('--background-colour');
+    this.scene.background = new THREE.Color(backColor.trim());
+
+    const gridHelper = new THREE.GridHelper(100, 50);
+    this.scene.add(gridHelper);
+
     // Specify a canvas which is already in the HTML
     const canvas = document.getElementById(this.canvasId);
     if (!canvas) {
@@ -59,6 +67,8 @@ export default class SceneManager {
       return;
     }
 
+    this.parent = parent;
+
     if (canvas === null) {
       // @TODO
       // deal with this
@@ -66,7 +76,7 @@ export default class SceneManager {
     }
     const width = parent.parentElement?.clientWidth ?? window.innerWidth;
     this.width = width;
-    const height = parent.parentElement?.clientHeight ?? window.innerHeight;
+    const height = window.innerHeight - parent.offsetHeight  || window.innerHeight;
     this.height = height;
     // Camera
     this.camera = new THREE.PerspectiveCamera(
@@ -163,6 +173,10 @@ export default class SceneManager {
   }
 
   onWindowResize() {
+    const width = this.parent.parentElement?.clientWidth ?? window.innerWidth;
+    this.width = width;
+    const height = this.parent.parentElement?.clientHeight ?? window.innerHeight;
+    this.height = height
     // updates window/renderer aspect ratio when the window is resized.
     this.camera.aspect = this.width / this.height;
     this.camera.updateProjectionMatrix();
