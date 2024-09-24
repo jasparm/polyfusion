@@ -23,6 +23,7 @@ export class CustomShape {
   vertexSize: number = 0.05; // radius of sphere to be added on vertices
   id: string; // this is used to uniquely identify a given custom shape.
   opacity: number;
+  name: string = "";
 
   vertexManager: VertexManager;
 
@@ -192,5 +193,25 @@ export class CustomShape {
     this.group.remove(...this.group.children);
     this.group.matrixAutoUpdate = true; // no idea what this does but three.js docs says its a good thing.
     this.init();
+  }
+
+  /**
+   * Creates a clone of the current CustomShape.
+   * @returns A new CustomShape instance that is a copy of the current shape.
+   */
+  clone(): CustomShape {
+    const clonedVertices = this.vertexManager.getVerticesInfo().map(vertex => vertex.clone());
+    const clonedShape = new CustomShape(
+      clonedVertices.flatMap(vertex => [vertex.x, vertex.y, vertex.z]),
+      this.wireframe,
+      this.drawBalls,
+      this.colour.clone(),
+      this.scale,
+      this.lineColour.clone()
+    );
+    clonedShape.vertexSize = this.vertexSize;
+    clonedShape.opacity = this.opacity;
+    clonedShape.name = this.name;
+    return clonedShape;
   }
 }

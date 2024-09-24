@@ -77,6 +77,12 @@ nav {
       cursor: not-allowed;
     }
   }
+
+  &.toggled {
+    background-color: rgb(50, 50, 50);
+    border: 2px solid rgb(0, 183, 255);
+    
+  }
 }
 
 .offcanvas {
@@ -278,6 +284,121 @@ i {
   overflow-y: hidden;
 }
 
+/* The Modal (background) */
+.modal {
+  display: none; /* Hidden by default */
+  position: fixed; /* Stay in place */
+  z-index: 100; /* Sit on top */
+  left: 0;
+  top: 0;
+  width: 100%; /* Full width */
+  height: 100%; /* Full height */
+  background-color: rgba(0,0,0,0.5); /* Black w/ opacity */
+
+}
+
+/* Modal Content */
+.modal-content {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background-color: rgb(50, 50, 50);
+  border-radius: 15px;
+  padding: 10px;
+  margin: 15% auto;
+  width: 20rem;
+  border-radius: 8px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+
+  h2 {
+    color: white;
+    border: none;
+    caret-color: white;
+    align-self: center;
+    margin-top: 10px;
+  }
+
+  label, p {
+    color: rgb(206, 206, 206);
+    margin-bottom: 10px;
+  }
+}
+
+/* Close button */
+.close {
+  color: #aaa;
+  font-size: 28px;
+  font-weight: bold;
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  color: lightcoral;
+}
+
+.close:hover, .close:focus {
+  color: black;
+  cursor: pointer;
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+  gap: 0px;
+  width: 100%; 
+  align-items: center; 
+}
+
+
+.form-group {
+  display: flex;
+  align-items: center;
+  gap: 5px; /* Space between label and input */
+}
+
+/* Style input elements */
+input[type="color"] {
+  width: 40px;
+  height: 40px;
+  border: none;
+  background-color: transparent;
+  cursor: pointer;
+}
+
+input[type="checkbox"] {
+  width: 20px;
+  height: 20px;
+  cursor: pointer;
+}
+
+input[type="range"] {
+  width: 100%;
+  cursor: pointer;
+  width: 75%;
+}
+
+
+/* Button styling */
+button#applySettings {
+  padding: 10px 15px;
+  background-color: #3a3a3a;
+  border: 1px solid #aaa;
+  border-radius: 5px;
+  color: white;
+  cursor: pointer;
+  font-size: 1rem;
+  align-self: flex-end;
+}
+
+button#applySettings:hover {
+  background-color: #5a5a5a;
+}
+
+/* Align opacity label and value */
+#opacityValue {
+  font-weight: bold;
+  color: white;
+}
 
 
 

@@ -21,19 +21,16 @@ export function onKeyDown(event: KeyboardEvent, controller: Controller) {
   }
 
   // Changing between transform and rotate when selected.
-  if (key === "KeyR" && controller.state === ControllerState.ShapeSelected) {
-    controller.movementState = MovementState.Rotate;
-    controller.transformControls.setMode("rotate");
+  if (key === "KeyE" && controller.state === ControllerState.ShapeSelected) {
+    controller.setMovementState(MovementState.Rotate);
   }
   // If T is pressed, change the mode to translation
-  if (key === "KeyT" && controller.state === ControllerState.ShapeSelected) {
-    controller.movementState = MovementState.Transform;
-    controller.transformControls.setMode("translate");
+  if (key === "KeyW" && controller.state === ControllerState.ShapeSelected) {
+    controller.setMovementState(MovementState.Transform)
   }
   // If S is pressed, change the mode to scale
-  if (key === "KeyS" && controller.state === ControllerState.ShapeSelected) {
-    controller.movementState = MovementState.Scale;
-    controller.transformControls.setMode("scale");
+  if (key === "KeyR" && controller.state === ControllerState.ShapeSelected) {
+    controller.setMovementState(MovementState.Scale);
   }
   // If I is pressed, we begin trying to insert a new vertex
   if (key === "KeyI" && controller.state === ControllerState.ShapeSelected) {

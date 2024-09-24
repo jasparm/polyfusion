@@ -4,6 +4,7 @@ import { ControllerState, MovementState } from "./ControllerStates.ts";
 import { ShapeManager } from "../shapes/CustomShapeManager.ts";
 import { CustomShape } from "../shapes/CustomShape.ts";
 import { ContextMenu } from "../context-menu/contextmenu.js";
+import { ButtonHandler } from "../sidebar/ButtonHandler.ts";
 
 /**
  * Controller class looks after all player controls including their interaction with other objects.
@@ -12,7 +13,7 @@ export class Controller {
   scene: THREE.Scene;
   camera: THREE.Camera;
   mouse: THREE.Vector2;
-  selectedGroup: THREE.Group |undefined;
+  selectedGroup: THREE.Group | undefined;
   selectedVertex: THREE.Mesh | null;
   renderer: THREE.WebGLRenderer;
 
@@ -32,13 +33,13 @@ export class Controller {
 
   shapeManager: ShapeManager;
   contextMenu: ContextMenu;
-
+  buttonHandler: ButtonHandler | null = null;
 
   constructor(
     scene: THREE.Scene,
     camera: THREE.Camera,
     renderer: THREE.WebGLRenderer,
-    shapeManager: ShapeManager,
+    shapeManager: ShapeManager
   ) {
     this.scene = scene;
     this.camera = camera;
@@ -59,6 +60,8 @@ export class Controller {
     this.raycaster.layers.enable(2); // this is the layer that vertex spheres live on
 
     this.checkForShapes = true;
+
+    
   }
 
   private initControls() {
@@ -73,9 +76,10 @@ export class Controller {
     );
 
     this.scene.add(this.transformControls);
-    this.transformControls.addEventListener('mouseUp', (event: THREE.Event) => {
-    })
-
+    this.transformControls.addEventListener(
+      "mouseUp",
+      (event: THREE.Event) => {}
+    );
   }
 
   /**
@@ -116,11 +120,8 @@ export class Controller {
     if (this.selectedGroup) {
       this.transformControls.attach(this.selectedGroup);
     }
-    if (state === MovementState.Transform) {
-      this.transformControls.setMode("translate");
-    } else if (state === MovementState.Rotate) {
-      this.transformControls.setMode("rotate");
-    }
+
+    this.setMovementState(state);
 
     this.state = ControllerState.ShapeSelected;
   }
@@ -133,7 +134,11 @@ export class Controller {
     this.transformControls.detach();
     this.orbitControls.enabled = true;
 
-     this.state = ControllerState.Normal;
+    if (this.buttonHandler) {
+      this.buttonHandler.onChange(null);
+    }
+
+    this.state = ControllerState.Normal;
   }
 
   /**
@@ -149,8 +154,12 @@ export class Controller {
     const canvasBounds = renderer.domElement.getBoundingClientRect();
 
     const mouse = new THREE.Vector2();
-    mouse.setX(((event.clientX - canvasBounds.left) / canvasBounds.width) * 2 - 1);
-    mouse.setY(-((event.clientY - canvasBounds.top) / canvasBounds.height) * 2 + 1);
+    mouse.setX(
+      ((event.clientX - canvasBounds.left) / canvasBounds.width) * 2 - 1
+    );
+    mouse.setY(
+      -((event.clientY - canvasBounds.top) / canvasBounds.height) * 2 + 1
+    );
 
     this.mouse = mouse;
   }
@@ -169,7 +178,7 @@ export class Controller {
     let foundGroup = false;
     let selectedVertex = false;
     var parentGroup;
-    for (let i = 0; i < intersects.length; i ++){
+    for (let i = 0; i < intersects.length; i++) {
       const intersect = intersects[i];
       if (!intersect) continue; // if there are no intersects, skip this iteration
       const object: THREE.Object3D = intersect.object;
@@ -183,9 +192,12 @@ export class Controller {
         object instanceof THREE.Mesh &&
         !selectedVertex &&
         object.geometry instanceof THREE.SphereGeometry &&
-        parentGroup && performSelection
+        parentGroup &&
+        performSelection
       ) {
-        if (!performSelection) { return parentGroup; }
+        if (!performSelection) {
+          return parentGroup;
+        }
         selectedVertex = true;
         this.selectedVertex = object;
         this.selectedGroup = parentGroup;
@@ -195,7 +207,9 @@ export class Controller {
 
       // We have selected a custom shape
       if (parentGroup && !foundGroup) {
-        if (!performSelection) { return parentGroup; }
+        if (!performSelection) {
+          return parentGroup;
+        }
         this.selectedGroup = parentGroup;
         this.orbitControls.enabled = false;
         this.selectShape();
@@ -203,7 +217,6 @@ export class Controller {
         return;
       }
     }
-    
   }
 
   /**
@@ -305,14 +318,36 @@ export class Controller {
     }
     const shapeID = customShape.mesh.name;
     // with above information, we can get the information of the correct vertex.
-    const shape: CustomShape | undefined = this.shapeManager.getShapeFromID(shapeID);
-    if (!shape) { return ;}
+    const shape: CustomShape | undefined =
+      this.shapeManager.getShapeFromID(shapeID);
+    if (!shape) {
+      return;
+    }
     const vertex = shape.vertexManager.getVertexFromID(id); // this is the vertex instance.
 
     shape.vertexManager.selectVertex(id);
     shape.vertexManager.colourSelectedVertices();
-    // console.log(object.material.color = new THREE.Color(100, 100, 100));
+  }
 
-    // console.log(vertex);
+  // Sets the movement state of this controller
+  public setMovementState(state: MovementState) {
+    this.movementState = state;
+    switch (state) {
+      case MovementState.Rotate:
+        this.transformControls.setMode("rotate");
+        break;
+      case MovementState.Transform:
+        this.transformControls.setMode("translate");
+        break;
+      case MovementState.Scale:
+        this.transformControls.setMode("scale");
+        break;
+      default:
+        break;
+    }
+
+    if (this.buttonHandler) {
+      this.buttonHandler.onChange(state);
+    }
   }
 }

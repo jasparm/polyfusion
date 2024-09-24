@@ -14,6 +14,8 @@ import {
 import { ShapeManager } from "../shapes/CustomShapeManager.ts";
 import { CustomShape } from "../shapes/CustomShape.ts";
 import { OrbitControls } from "three/examples/jsm/Addons.js";
+import { ButtonHandler } from "../sidebar/ButtonHandler.ts";
+
 
 export default class SceneManager {
   // NOTE: Core components to initialize Three.js app.
@@ -28,6 +30,10 @@ export default class SceneManager {
 
   controls!: OrbitControls;
   stats: any;
+
+  controller!: Controller;
+
+  buttonHandler!: ButtonHandler;
 
   private width: number = 0;
   private height: number = 0;
@@ -44,8 +50,11 @@ export default class SceneManager {
     // NOTE: Camera params;
     this.fov = 45;
     this.nearPlane = 1;
-    this.farPlane = 1000;
+    this.farPlane = 10000;
     this.canvasId = canvasId;
+
+    this.buttonHandler = new ButtonHandler(this);
+
   }
 
   init() {
@@ -55,6 +64,7 @@ export default class SceneManager {
     this.scene.background = new THREE.Color(backColor.trim());
 
     const gridHelper = new THREE.GridHelper(100, 50);
+    gridHelper.layers.set(3); // make this object visible, but not found by ray casts
     this.scene.add(gridHelper);
 
     // Specify a canvas which is already in the HTML
@@ -86,10 +96,12 @@ export default class SceneManager {
       this.farPlane
     );
 
-    this.camera.position.set(0, 10, 0);
+    this.camera.position.set(10, 5, -10);
     this.camera.layers.enable(0); // default layer for meshes
     this.camera.layers.enable(1); // this is the layer for lines on meshes
     this.camera.layers.enable(2); // this is the layer for balls on vertices
+    this.camera.layers.enable(3); // this is the layer for everything that should be visible in the scene but not intractable
+    this.camera.lookAt(0, 0, 0);
 
     // Renderer
     this.renderer = new THREE.WebGLRenderer({
@@ -102,8 +114,8 @@ export default class SceneManager {
     parent.appendChild(this.renderer.domElement);
 
     // Comment out to enable/disable performance tracker
-    this.stats = new Stats();
-    document.body.appendChild(this.stats.dom);
+    // this.stats = new Stats();
+    // document.body.appendChild(this.stats.dom);
 
     this.shapeManager = new ShapeManager(this.scene);
     const controller = new Controller(
@@ -112,6 +124,10 @@ export default class SceneManager {
       this.renderer,
       this.shapeManager
     );
+
+    controller.buttonHandler = this.buttonHandler;
+
+    this.controller = controller;
 
     // Lights
     const al = new THREE.AmbientLight(0xffffff, 0.7); // ambient light
@@ -164,7 +180,7 @@ export default class SceneManager {
   animate() {
     window.requestAnimationFrame(this.animate.bind(this));
     this.render();
-    this.stats.update();
+    // this.stats.update();
   }
 
   render() {
@@ -183,11 +199,11 @@ export default class SceneManager {
     this.renderer.setSize(this.width, this.height);
   }
 
-  add(object: THREE.Object3D) {
+  add(object: THREE.Object3D | CustomShape) {
     if (object instanceof CustomShape) {
       this.shapeManager.insert(object);
       return;
     }
     this.scene.add(object);
-  }
+  } 
 }
