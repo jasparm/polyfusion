@@ -33,13 +33,14 @@ export class Controller {
 
   shapeManager: ShapeManager;
   contextMenu: ContextMenu;
-  buttonHandler: ButtonHandler | null = null;
+  buttonHandler: ButtonHandler;
 
   constructor(
     scene: THREE.Scene,
     camera: THREE.Camera,
     renderer: THREE.WebGLRenderer,
-    shapeManager: ShapeManager
+    shapeManager: ShapeManager,
+    buttonHandler: ButtonHandler
   ) {
     this.scene = scene;
     this.camera = camera;
@@ -60,6 +61,7 @@ export class Controller {
     this.raycaster.layers.enable(2); // this is the layer that vertex spheres live on
 
     this.checkForShapes = true;
+    this.buttonHandler = buttonHandler;
 
     
   }

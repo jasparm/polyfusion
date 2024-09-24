@@ -53,8 +53,6 @@ export default class SceneManager {
     this.farPlane = 10000;
     this.canvasId = canvasId;
 
-    this.buttonHandler = new ButtonHandler(this);
-
   }
 
   init() {
@@ -116,18 +114,21 @@ export default class SceneManager {
     // Comment out to enable/disable performance tracker
     // this.stats = new Stats();
     // document.body.appendChild(this.stats.dom);
-
+    this.buttonHandler = new ButtonHandler(this);
     this.shapeManager = new ShapeManager(this.scene);
+
     const controller = new Controller(
       this.scene,
       this.camera,
       this.renderer,
-      this.shapeManager
+      this.shapeManager,
+      this.buttonHandler
     );
-
-    controller.buttonHandler = this.buttonHandler;
+    
+    this.buttonHandler.controller = controller;
 
     this.controller = controller;
+
 
     // Lights
     const al = new THREE.AmbientLight(0xffffff, 0.7); // ambient light

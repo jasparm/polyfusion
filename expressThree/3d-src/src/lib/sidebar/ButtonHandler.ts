@@ -16,7 +16,6 @@ export class ButtonHandler {
     constructor(scene: SceneManager) {
         const controller = scene.controller;
         this.scene = scene;
-
         this.controller = controller;
         this.movementButtons = new Map();
 
@@ -38,34 +37,34 @@ export class ButtonHandler {
         this.movementButtons.set(MovementState.Scale, scaleButton);
 
         transformButton.addEventListener("click", () => {
-            if (controller.state === ControllerState.Normal) { return; }
+            if (this.controller.state === ControllerState.Normal) { return; }
 
-            if (controller.movementState === MovementState.Transform) {
-                controller.unselectShapes();
+            if (this.controller.movementState === MovementState.Transform) {
+                this.controller.unselectShapes();
                 transformButton.classList.remove('toggled')
                 return;
             }
 
-            controller.setMovementState(MovementState.Transform);
+            this.controller.setMovementState(MovementState.Transform);
             
         })
 
         rotateButton.addEventListener("click", () => {
-            if (controller.movementState === MovementState.Rotate) {
+            if (this.controller.movementState === MovementState.Rotate) {
                 transformButton.classList.remove('toggled')
-                controller.unselectShapes();
+                this.controller.unselectShapes();
                 return;
             }
-            controller.setMovementState(MovementState.Rotate);
+            this.controller.setMovementState(MovementState.Rotate);
         })
 
         scaleButton.addEventListener("click", () => {
-            if (controller.movementState === MovementState.Scale) {
+            if (this.controller.movementState === MovementState.Scale) {
                 transformButton.classList.remove('toggled')
-                controller.unselectShapes();
+                this.controller.unselectShapes();
                 return;
             }
-            controller.setMovementState(MovementState.Scale);
+            this.controller.setMovementState(MovementState.Scale);
         })
 
         loadButton?.addEventListener("click", () => {
@@ -119,7 +118,8 @@ export class ButtonHandler {
     
             shapeBox.appendChild(iconBox);
             shapeBox.appendChild(shapeName);
-                    // Adding click event listener to load the shape
+            
+            // Event listener that adds the shape to the scene if it is clicked.
             shapeBox.addEventListener('click', () => {
                 this.scene.add(shape.clone());
                 
