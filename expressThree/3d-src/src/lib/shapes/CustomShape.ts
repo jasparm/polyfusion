@@ -32,7 +32,7 @@ export class CustomShape {
     drawBalls: boolean = true,
     colour: THREE.Color = new THREE.Color(0xff00ff),
     scale: number = 1,
-    lineColour: THREE.Color = new THREE.Color(0x000000)
+    lineColour: THREE.Color = new THREE.Color(getComputedStyle(document.documentElement).getPropertyValue('--line-colour').trim()) 
   ) {
     const time = `${Date.now()}`;
     this.group = new THREE.Group();
@@ -113,7 +113,7 @@ export class CustomShape {
    */
   addSpheresToVertices(
     radius: number = 0.1,
-    colour: THREE.Color = new THREE.Color(0x000000)
+    colour: THREE.Color = this.lineColour
   ) {
     const vertices = this.vertexManager.vertexMap;
     // Create a new ball and place it at the position of each vertex.
