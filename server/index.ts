@@ -174,4 +174,34 @@ app.get("/shape:name", async (req, res) => {
     }
 });
 
+
+app.put("/updateshape:name", async (req, res) => {
+    const authHeader = req.headers["authorization"];
+    const token = authHeader && authHeader.split(" ")[1];
+
+    let auth;
+    if (!token) return res.status(401).send("Token required");
+
+    jwt.verify(token, secret_key, (err, username) => {
+        if (err) return res.status(403).send("Invalid or expired token");
+        auth = username;
+    });
+
+    const shapename = req.params.name.slice(1)
+    const shape = req.body
+    if (auth && typeof auth == "object" && "user" in auth) {
+        const user = (auth as { user?: string }).user ?? "defaultUser";
+        try {
+            await db_api.updateShape(shapename, user, shape);
+            res.status(200).send("Updated succesfully");
+        } catch (error) {
+            if (error instanceof Error) {
+                res.status(400).send(error.message);
+            } else {
+                res.status(400).send(String(error));
+            }
+        }
+    }
+});
+
 startServer();

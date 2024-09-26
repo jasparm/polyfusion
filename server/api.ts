@@ -4,6 +4,8 @@ import { Shape, Point } from "./types";
 
 require("dotenv").config();
 
+
+
 export class DBApi {
     db: Db;
 
@@ -94,8 +96,7 @@ export class DBApi {
         */
         try {
             const result = await this.db.collection(username).find().toArray();
-            //console.log(result);
-            return result;
+            return result.map((shape) => {return shape.name});
         } catch (error) {
             console.error(error);
             throw error;
@@ -118,6 +119,29 @@ export class DBApi {
                 //console.log(result);
                 return result;
             }
+        } catch (error) {
+            console.error(error);
+            throw error;
+        }
+    }
+
+    async updateShape(this: DBApi, shapeName: string, username: string, shape: Shape) {
+        /*
+        Updates a shape associated with a user based on shape name
+        */
+       if (shapeName != shape.name) {
+        throw new Error("Invalid shape name provided")
+       }
+        const existingShape = await this.db
+            .collection(username)
+            .findOne({ name: shape.name });
+
+        if (!existingShape) {
+            throw new Error("A shape with this name doesn't exist");
+        }
+        try {
+            const result = await this.db.collection(username).replaceOne({name: shapeName }, shape);
+            console.log(result);
         } catch (error) {
             console.error(error);
             throw error;

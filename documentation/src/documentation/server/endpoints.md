@@ -114,3 +114,26 @@ GET /shape:<name>
 
 - `200 OK` Return the shape
 - `400 <Error Msg>` if the request is invalid
+
+### Endpoint
+
+```http
+GET /updateshape:<name>
+```
+
+### Request Headers
+
+- `Authorization` : `Bearer <token>`
+
+### Request Body
+
+```json
+{
+  "name": String,
+  "points" : List<Points>
+}
+```
+### Responses
+
+- `200 OK` Shape successfully updated
+- `400 <Error Msg>` if the request is invalid
