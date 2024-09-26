@@ -17,7 +17,7 @@ const client = new MongoClient(uri as string, {
     },
 });
 
-const app = express();
+export const app = express();
 const port = process.env.PORT || 3000;
 let db;
 let db_api: DBApi;
@@ -169,6 +169,64 @@ app.get("/shape:name", async (req, res) => {
         try {
             const shape = await db_api.getShape(user, shapename);
             res.status(200).json(shape);
+        } catch (error) {
+            if (error instanceof Error) {
+                res.status(400).send(error.message);
+            } else {
+                res.status(400).send(String(error));
+            }
+        }
+    }
+});
+
+
+app.put("/updateshape:name", async (req, res) => {
+    const authHeader = req.headers["authorization"];
+    const token = authHeader && authHeader.split(" ")[1];
+
+    let auth;
+    if (!token) return res.status(401).send("Token required");
+
+    jwt.verify(token, secret_key, (err, username) => {
+        if (err) return res.status(403).send("Invalid or expired token");
+        auth = username;
+    });
+
+    const shapename = req.params.name.slice(1)
+    const shape = req.body
+    if (auth && typeof auth == "object" && "user" in auth) {
+        const user = (auth as { user?: string }).user ?? "defaultUser";
+        try {
+            await db_api.updateShape(shapename, user, shape);
+            res.status(200).send("Updated succesfully");
+        } catch (error) {
+            if (error instanceof Error) {
+                res.status(400).send(error.message);
+            } else {
+                res.status(400).send(String(error));
+            }
+        }
+    }
+});
+
+app.post("/deleteshape:name", async (req, res) => {
+    const authHeader = req.headers["authorization"];
+    const token = authHeader && authHeader.split(" ")[1];
+
+    let auth;
+    if (!token) return res.status(401).send("Token required");
+
+    jwt.verify(token, secret_key, (err, username) => {
+        if (err) return res.status(403).send("Invalid or expired token");
+        auth = username;
+    });
+
+    const shapename = req.params.name.slice(1)
+    if (auth && typeof auth == "object" && "user" in auth) {
+        const user = (auth as { user?: string }).user ?? "defaultUser";
+        try {
+            await db_api.deleteShape(shapename, user);
+            res.status(200).send("Deleted succesfully");
         } catch (error) {
             if (error instanceof Error) {
                 res.status(400).send(error.message);
