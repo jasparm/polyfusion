@@ -253,6 +253,8 @@ export class Controller {
     });
     this.scene.add(sphere);
     sphere.castShadow = true;
+    // sphere size should always remain constant
+    sphere.scale.set(1, 1, 1);
     this.insertingSphere = sphere;
   }
 
@@ -274,7 +276,7 @@ export class Controller {
     var distance = this.insertDistance;
     var pos = camera_pos.clone().add(dir.multiplyScalar(distance));
 
-    if (this.insertingSphere) {
+    if (this.insertingSphere && this.selectedGroup !== undefined) {
       this.insertingSphere.position.set(pos.x, pos.y, pos.z);
     }
   }

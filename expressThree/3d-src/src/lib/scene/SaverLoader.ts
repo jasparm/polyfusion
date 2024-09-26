@@ -40,7 +40,6 @@ export class SaverLoader {
   static async saveShape(shape: CustomShape, token: string, customID?: string | null) {
     const id = customID ? customID : shape.id;
     const data = this.serializeShape(shape);
-
     const shapeData = {
       name: id,
       data: data,
@@ -77,6 +76,36 @@ export class SaverLoader {
     }
   }
 
+  static async getShapeData(token: string, name: string) {
+    try {
+      const url = `http://127.0.0.1:3000/shape:${name}`;
+      const headers = {
+          "Content-Type": "application/json",
+          authorization: `Bearer ${token}`,
+      };
+
+      const response = await axios.get(url, { headers });
+      return response.data;
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
+  static async deleteShape(token: string, name: string) {
+    try {
+      const url = `http://127.0.0.1:3000/deleteshape:${name}`;
+      const headers = {
+          "Content-Type": "application/json",
+          authorization: `Bearer ${token}`,
+      };
+
+      const response = await axios.post(url, {}, { headers });
+      return response.data;
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
   private static serializeShape(shape: CustomShape) {
     const position = shape.group.position
     const vertices = shape.vertexManager.getVerticesInfo();
@@ -84,12 +113,13 @@ export class SaverLoader {
         position,
         vertices,
         colour: shape.colour,
-        scale: shape.scale,
+        scale: shape.group.scale,
+        rotation: shape.group.rotation,
         lineColour: shape.lineColour,
         vertexSize: shape.vertexSize,
-        id: shape.id,
         drawBalls: shape.drawBalls,
         wireframe: shape.wireframe,
+        opacity: shape.opacity,
     };
     return properties;
   }

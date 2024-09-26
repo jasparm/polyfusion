@@ -447,4 +447,9 @@ input[type="text"]:focus {
   color: lightcoral;
 }
 
+#no-sign-in {
+  color: whitesmoke;
+  text-align: center;
+}
+
 

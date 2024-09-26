@@ -63,9 +63,8 @@ const login = async (user , pass) => {
 async function execute() {
     // await signup("shannon", "test")
     const token = await login("shannon", "test");
-    console.log(token)
-    test.token = token;
     localStorage.setItem('authToken', token);
+    // localStorage.removeItem('authToken')
 }
 
 execute();

@@ -217,6 +217,12 @@ export class CustomShape {
     clonedShape.vertexSize = this.vertexSize;
     clonedShape.opacity = this.opacity;
     clonedShape.name = this.name;
+
+    clonedShape.group.scale.copy(this.group.scale);
+    clonedShape.group.rotation.copy(this.group.rotation);
+
+    clonedShape.update();
+
     return clonedShape;
   }
 
@@ -243,6 +249,9 @@ export class CustomShape {
     
     // Set shape's position
     shape.group.position.set(data.position.x, data.position.y, data.position.z);
+    shape.group.rotation.set(data.rotation._x, data.rotation._y, data.rotation._z, data.rotation._order);
+    shape.group.scale.copy(data.scale);
+    
 
     shape.opacity = data.opacity;
 

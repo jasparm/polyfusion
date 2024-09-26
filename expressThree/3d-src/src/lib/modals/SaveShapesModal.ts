@@ -33,24 +33,35 @@ export class SaveShapesModal implements Modal {
     }
 
     openModal(shape: CustomShape): void {
+        // remove all event listeners on the button.
+        // if we don't do this then every time we open the modal, a new EL is added
+        const newApplyButton = this.applyButton.cloneNode(true) as HTMLElement;
+        this.applyButton.parentNode?.replaceChild(newApplyButton, this.applyButton);
+        this.applyButton = newApplyButton;
+
         // Event listener for the apply button
-        this.applyButton.addEventListener("click", () => {          
-            const name = document.getElementById("savedName");
-            const nameString = (name as HTMLInputElement).value;
-            const savedName = name ? nameString : null;
-
-            // Save shape and close window
-            this.saveShape(shape, savedName);
-            this.modalElement.style.display = "none";
-        });
-
-        this.modalElement.style.display = "block";
-        console.log(this.modalElement);
-    }
-
-    saveShape(shape: CustomShape, name: string | null): void {
         const token = localStorage.getItem('authToken');
         if (token) {
+            this.applyButton.addEventListener("click", (event) => {      
+                const name = document.getElementById("savedName");
+                const nameString = (name as HTMLInputElement).value;
+                const savedName = name ? nameString : null;
+
+                this.saveShape(shape, savedName, token);
+                this.modalElement.style.display = "none";
+                
+            });
+            this.modalElement.style.display = "block";
+        }
+        else {
+            window.alert("Please sign in to save shapes.");
+        }
+    }
+
+    saveShape(shape: CustomShape, name: string | null, token: string): void {
+        const names = SaverLoader.loadShapes(token);
+
+        if (name && !(name in names)) {
             SaverLoader.saveShape(shape, token, name);
         }
         

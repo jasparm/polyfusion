@@ -13,7 +13,7 @@ import { CustomTetrahedron } from "../shapes/prefabs/Tetrahedron.ts";
 type shapeData = {
     shape: CustomShape,
     name: string,
-    db_id: string | null,
+    custom: boolean
 }
 
 export class ButtonHandler {
@@ -70,7 +70,7 @@ export class ButtonHandler {
 
         scaleButton.addEventListener("click", () => {
             if (this.controller.state === ControllerState.Normal) { return; }
-            
+
             if (this.controller.movementState === MovementState.Scale) {
                 transformButton.classList.remove('toggled')
                 this.controller.unselectShapes();
@@ -80,12 +80,15 @@ export class ButtonHandler {
         })
 
         loadButton?.addEventListener("click", () => {
-            loadButton.classList.toggle("toggled");
-            this.populateSavedShapes();
+            const status = loadButton.classList.toggle("toggled");
+            if (status) {
+                this.populateSavedShapes();
+            }
+            
         })
 
         closeButton?.addEventListener("click", () => {
-            loadButton?.classList.toggle("toggled");
+            loadButton?.classList.toggle("toggled", false);
         })
     }
 
@@ -115,34 +118,30 @@ export class ButtonHandler {
         const shapeDataArray: shapeData[] = shapes.map((shape, index) => ({
             shape: shape,
             name: shape.name,
-            db_id: null, // not part of the database, cannot be deleted
+            custom: false,
         }));
         this.populateShapeList(shapesList, shapeDataArray);
     }
 
     async populateSavedShapes() {
         const token = localStorage.getItem('authToken');
+        console.log(token);
 
-        if (!token) {
+        if (token === null) {
             this.notLoggedIn();
             return;
         }
 
         try {
-            const loadedShapes: shapeData[] = []
             const shapes: any[] = await SaverLoader.loadShapes(token);
-            shapes.forEach(element => {
-                const data = element.data;
-                const name = element.name;
-                const id = element._id;
-
-                const shape = CustomShape.fromJSON(data);
-                loadedShapes.push({
-                    shape: shape,
+            // this gets all the shape data need from the backend
+            const loadedShapes: shapeData[] = await Promise.all(
+            shapes.map(async (name) => ({
+                    shape: CustomShape.fromJSON((await SaverLoader.getShapeData(token,name)).data),
                     name: name,
-                    db_id: id
-                });
-            });
+                    custom: true
+                }))
+        );
 
             const shapesList = document.querySelector(".shapes-list");
             if (!shapesList) {
@@ -153,7 +152,8 @@ export class ButtonHandler {
 
         }
         // if error from logging in, just display not logged in information.
-        catch {
+        catch(e){
+            console.error(e);
             this.notLoggedIn();
         }
         
@@ -167,7 +167,7 @@ export class ButtonHandler {
     private populateShapeList(shapesList: Element, shapes: shapeData[]) {
         shapesList.innerHTML = "";
 
-        shapes.forEach((shape, index) => {
+        shapes.forEach((element, index) => {
             const shapeBox = document.createElement('div');
             shapeBox.className = 'btn shape-box d-flex flex-row align-items-center';
             shapeBox.id = `shape-${index}`;
@@ -180,14 +180,14 @@ export class ButtonHandler {
             iconBox.appendChild(icon);
 
             const shapeName = document.createElement('p');
-            shapeName.textContent = shape.name;
+            shapeName.textContent = element.name;
 
             shapeBox.appendChild(iconBox);
             shapeBox.appendChild(shapeName);
 
             // Stuff that is unique to custom shapes
-            if (shape.db_id) {
-                iconBox.style.borderRightColor = shape.shape.colour.getStyle();
+            if (element.custom) {
+                iconBox.style.borderRightColor = element.shape.colour.getStyle();
                 const deleteShapeBtn = document.createElement('i');
                 deleteShapeBtn.className = "fa-solid fa-trash-can ml-auto p-2";
                 deleteShapeBtn.id = "trash-icon"
@@ -195,16 +195,13 @@ export class ButtonHandler {
 
                 deleteShapeBtn.addEventListener("click", (event) => {
                     event.stopPropagation(); // prevent the shapeBox click event from firing
-                    if (shape.db_id) {
-                        this.deleteShape(shapeBox, shape.db_id);
-                        return;
-                    }
+                    this.deleteShape(shapeBox, element.name);
                 });
             }
 
             // Event listener that adds the shape to the scene if it is clicked.
             shapeBox.addEventListener('click', () => {
-                this.scene.add(shape.shape.clone());
+                this.scene.add(element.shape.clone());
             });
 
             shapesList.appendChild(shapeBox);
@@ -213,11 +210,18 @@ export class ButtonHandler {
 
     // this changes the saved shapes menu to be different when there is no logged in user.
     notLoggedIn() {
-
+        console.log("not logged in");
     }
 
-    deleteShape(shapeBox: HTMLDivElement, id: string) {
+    deleteShape(shapeBox: HTMLDivElement, name: string) {
+        const token = localStorage.getItem('authToken');
+
+        if (!token) {
+            return;
+        }
+        
         shapeBox.remove();
-        // deal with removing shape from database
+        SaverLoader.deleteShape(token, name);
+        return;
     }
 }

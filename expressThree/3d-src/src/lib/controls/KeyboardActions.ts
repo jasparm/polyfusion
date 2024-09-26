@@ -53,11 +53,16 @@ export function onKeyDown(event: KeyboardEvent, controller: Controller) {
     inserting = false;
     controller.state = ControllerState.Normal;
   }
-  // Undo
-  if (event.ctrlKey && key == "KeyZ") {
-    // controller.undoManager.undo();
-    event.preventDefault();
+  // Delete selected shape from scene
+  if (key === "Delete" && controller.state === ControllerState.ShapeSelected) {
+    const shape = controller.getCustomShape()
+    if (!shape) { return; }
+    controller.shapeManager.remove(shape.id);
+
+    controller.unselectShapes();
   }
+
+
 }
 
 /**
