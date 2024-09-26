@@ -147,4 +147,25 @@ export class DBApi {
             throw error;
         }
     }
+
+    async deleteShape(this: DBApi, shapeName: string, username: string) {
+        /*
+        Deletes a shape based on shape name
+        */
+       
+        const existingShape = await this.db
+            .collection(username)
+            .findOne({ name: shapeName });
+
+        if (!existingShape) {
+            throw new Error("A shape with this name doesn't exist");
+        }
+        try {
+            const result = await this.db.collection(username).deleteOne({ name: shapeName});
+            console.log(result);
+        } catch (error) {
+            console.error(error);
+            throw error;
+        }
+    }
 }

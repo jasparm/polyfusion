@@ -133,7 +133,24 @@ GET /updateshape:<name>
   "points" : List<Points>
 }
 ```
+
 ### Responses
 
 - `200 OK` Shape successfully updated
+- `400 <Error Msg>` if the request is invalid
+
+
+### Endpoint
+
+```http
+GET /deleteshape:<name>
+```
+
+### Request Headers
+
+- `Authorization` : `Bearer <token>`
+
+### Responses
+
+- `200 OK` Shape successfully deleted
 - `400 <Error Msg>` if the request is invalid
