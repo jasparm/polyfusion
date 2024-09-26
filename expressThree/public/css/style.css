@@ -404,6 +404,8 @@ button#applySettings:hover {
   color: rgb(92, 92, 92);
   transition: color 0.3s ease;
   cursor: pointer;
+  margin-right: 0;
+  margin-left: auto;
 }
 
 #trash-icon:hover {

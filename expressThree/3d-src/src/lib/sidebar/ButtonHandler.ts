@@ -181,7 +181,9 @@ export class ButtonHandler {
             shapeBox.appendChild(iconBox);
             shapeBox.appendChild(shapeName);
 
+            // Stuff that is unique to custom shapes
             if (shape.db_id) {
+                iconBox.style.borderRightColor = shape.shape.colour.getStyle();
                 const deleteShapeBtn = document.createElement('i');
                 deleteShapeBtn.className = "fa-solid fa-trash-can ml-auto p-2";
                 deleteShapeBtn.id = "trash-icon"
