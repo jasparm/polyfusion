@@ -7,7 +7,7 @@ require("dotenv").config();
 
 const uri = process.env.DB_URI;
 const secret_key: string = process.env.SECRET_KEY!;
-
+const cors = require('cors');
 
 const client = new MongoClient(uri as string, {
     serverApi: {
@@ -25,6 +25,11 @@ let db_api: DBApi;
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use(cors({
+    origin:'http://localhost:8000',
+    methods: ['GET', 'POST'],
+    allowedHeaders: ['Content-Type', 'Authorization']
+}));
 
 async function startServer() {
     try {
