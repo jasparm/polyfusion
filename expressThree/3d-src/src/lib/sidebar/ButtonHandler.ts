@@ -58,6 +58,8 @@ export class ButtonHandler {
         })
 
         rotateButton.addEventListener("click", () => {
+            if (this.controller.state === ControllerState.Normal) { return; }
+
             if (this.controller.movementState === MovementState.Rotate) {
                 transformButton.classList.remove('toggled')
                 this.controller.unselectShapes();
@@ -67,6 +69,8 @@ export class ButtonHandler {
         })
 
         scaleButton.addEventListener("click", () => {
+            if (this.controller.state === ControllerState.Normal) { return; }
+            
             if (this.controller.movementState === MovementState.Scale) {
                 transformButton.classList.remove('toggled')
                 this.controller.unselectShapes();

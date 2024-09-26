@@ -394,6 +394,41 @@ button#applySettings:hover {
   background-color: #5a5a5a;
 }
 
+button#applySave {
+  padding: 10px 15px;
+  background-color: #3a3a3a;
+  border: 1px solid #aaa;
+  border-radius: 5px;
+  color: white;
+  cursor: pointer;
+  font-size: 1rem;
+  align-self: flex-end;
+}
+
+button#applySave:hover {
+  background-color: #5a5a5a;
+}
+
+/* Text Input */
+input[type="text"] {
+  width: 100%;
+  padding: 10px;
+  margin: 8px 0;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 16px;
+  box-sizing: border-box; /* Makes padding and border part of the width */
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+  background-color: rgb(36, 36, 36);
+  color: rgb(206, 206, 206);
+}
+
+input[type="text"]:focus {
+  border-color: #007bff; /* Change border color on focus */
+  box-shadow: 0 0 5px rgba(0,123,255,0.5); /* Light blue shadow on focus */
+  outline: none; /* Remove default outline */
+}
+
 /* Align opacity label and value */
 #opacityValue {
   font-weight: bold;
