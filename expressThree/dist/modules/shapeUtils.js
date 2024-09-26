@@ -69,6 +69,7 @@ export function selectShape() {
             document.getElementById("save-icon").classList.add("disabled");
             document.getElementById("edit-shape-btn").classList.add("disabled");
             document.getElementById("edit-shape-icon").classList.add("disabled");
+            document.getElementById("intersection-btn").classList.add("disabled");
         }
     }
     else {

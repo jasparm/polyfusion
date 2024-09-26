@@ -7,15 +7,25 @@ import { Shape } from "./Shape.js";
 let addedPoints = new Set();
 // Responsible for our sutherland hodgman algorithm
 export function sutherlandHodgman(shape1, shape2) {
+    // Resetting addedPoints.
+    addedPoints = new Set();
     // Starting with one shape, let's see which lines intersect
     // Getting the intersections between both shapes
     [state.intersectLines, state.enclosedLines] = getIntersections(shape1, shape2);
     let intersectionShape = new Shape(sortPoints(state.pointsOfIntersection));
-    state.shapes.push(intersectionShape);
-    console.log(intersectionShape);
-    console.log(areaOfPolygon(intersectionShape.points));
+    // Checking to see if the intersection shape is the same as one of the shapes.
+    if (`${intersectionShape.points}` === `${sortPoints(shape1.points)}`) {
+        return
+    } else if (`${intersectionShape.points}` === `${sortPoints(shape2.points)}`) {
+        return
+    } else {
+        // If not the same, we add to shapes.
+        state.shapes.push(intersectionShape);
+        console.log(intersectionShape);
+        console.log(areaOfPolygon(intersectionShape.points));
+    }
 }
-;
+
 function getIntersections(shape1, shape2) {
     let intersections = [];
     let enclosed = [];

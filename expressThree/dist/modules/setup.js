@@ -216,6 +216,13 @@ export let setup = () => {
         // Resets our points and shapes.
         state.shapes = [];
         state.points = [];
+        state.pointsOfIntersection = []
+        state.unionPoints = []
+        state.intersectPoints = []
+        state.intersectLines = []
+        state.enclosedLines = []
+        state.undoPoints = []
+        state.movingShapes = []
         if (state.selectShapeMode) {
             resetSelectShape();
         };
@@ -269,6 +276,7 @@ export function resetSelectShape() {
         document.getElementById("edit-shape-btn").classList.add("disabled");
         document.getElementById("edit-shape-icon").classList.add("disabled");
         // Resetting intersection
+        console.log("Resetting points of intersection")
         state.pointsOfIntersection = [];
         // Updating html canvas elements
         selectIcon.class("fa-solid fa-hand-pointer fa-xl");
