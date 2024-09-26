@@ -9,6 +9,13 @@ import { CustomIcosahedron } from "../shapes/prefabs/Icosahedron.ts";
 import { CustomOctahedron } from "../shapes/prefabs/Octahedron.ts";
 import { CustomTetrahedron } from "../shapes/prefabs/Tetrahedron.ts";
 
+// type expected adding shapes to menu
+type shapeData = {
+    shape: CustomShape,
+    name: string,
+    db_id: string | null,
+}
+
 export class ButtonHandler {
     movementButtons: Map<MovementState, HTMLElement>;
     controller: Controller;
@@ -101,10 +108,15 @@ export class ButtonHandler {
 
         if (!shapesList) { return; }
 
-        this.populateShapeList(shapesList, shapes);
+        const shapeDataArray: shapeData[] = shapes.map((shape, index) => ({
+            shape: shape,
+            name: shape.name,
+            db_id: null, // not part of the database, cannot be deleted
+        }));
+        this.populateShapeList(shapesList, shapeDataArray);
     }
 
-    populateSavedShapes() {
+    async populateSavedShapes() {
         const token = localStorage.getItem('authToken');
 
         if (!token) {
@@ -113,7 +125,28 @@ export class ButtonHandler {
         }
 
         try {
-            SaverLoader.loadShapes(token)
+            const loadedShapes: shapeData[] = []
+            const shapes: any[] = await SaverLoader.loadShapes(token);
+            shapes.forEach(element => {
+                const data = element.data;
+                const name = element.name;
+                const id = element._id;
+
+                const shape = CustomShape.fromJSON(data);
+                loadedShapes.push({
+                    shape: shape,
+                    name: name,
+                    db_id: id
+                });
+            });
+
+            const shapesList = document.querySelector(".shapes-list");
+            if (!shapesList) {
+                return;
+            }
+
+            this.populateShapeList(shapesList, loadedShapes);
+
         }
         // if error from logging in, just display not logged in information.
         catch {
@@ -127,7 +160,7 @@ export class ButtonHandler {
      * @param shapesList HTML element where the shapes should be added.
      * @param shapes List of shapes to be added to the list.
      */
-    private populateShapeList(shapesList: Element, shapes: CustomShape[]) {
+    private populateShapeList(shapesList: Element, shapes: shapeData[]) {
         shapesList.innerHTML = "";
 
         shapes.forEach((shape, index) => {
@@ -148,10 +181,24 @@ export class ButtonHandler {
             shapeBox.appendChild(iconBox);
             shapeBox.appendChild(shapeName);
 
+            if (shape.db_id) {
+                const deleteShapeBtn = document.createElement('i');
+                deleteShapeBtn.className = "fa-solid fa-trash-can ml-auto p-2";
+                deleteShapeBtn.id = "trash-icon"
+                shapeBox.appendChild(deleteShapeBtn);
+
+                deleteShapeBtn.addEventListener("click", (event) => {
+                    event.stopPropagation(); // prevent the shapeBox click event from firing
+                    if (shape.db_id) {
+                        this.deleteShape(shapeBox, shape.db_id);
+                        return;
+                    }
+                });
+            }
+
             // Event listener that adds the shape to the scene if it is clicked.
             shapeBox.addEventListener('click', () => {
-                this.scene.add(shape.clone());
-
+                this.scene.add(shape.shape.clone());
             });
 
             shapesList.appendChild(shapeBox);
@@ -161,5 +208,10 @@ export class ButtonHandler {
     // this changes the saved shapes menu to be different when there is no logged in user.
     notLoggedIn() {
 
+    }
+
+    deleteShape(shapeBox: HTMLDivElement, id: string) {
+        shapeBox.remove();
+        // deal with removing shape from database
     }
 }

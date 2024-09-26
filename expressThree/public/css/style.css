@@ -400,5 +400,14 @@ button#applySettings:hover {
   color: white;
 }
 
+#trash-icon {
+  color: rgb(92, 92, 92);
+  transition: color 0.3s ease;
+  cursor: pointer;
+}
+
+#trash-icon:hover {
+  color: lightcoral;
+}
 
 

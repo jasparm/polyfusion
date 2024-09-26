@@ -33,7 +33,11 @@ export class CustomShape {
     drawBalls: boolean = true,
     colour: THREE.Color = new THREE.Color(0xff00ff),
     scale: number = 1,
-    lineColour: THREE.Color = new THREE.Color(getComputedStyle(document.documentElement).getPropertyValue('--line-colour').trim()) 
+    lineColour: THREE.Color = new THREE.Color(
+      getComputedStyle(document.documentElement)
+        .getPropertyValue("--line-colour")
+        .trim()
+    )
   ) {
     const time = `${Date.now()}`;
     this.group = new THREE.Group();
@@ -177,7 +181,7 @@ export class CustomShape {
 
   /**
    * Updates the wireframe status and re-draws the shape.
-   * @param state 
+   * @param state
    */
   setWireFrame(state: boolean) {
     this.group.remove(...this.group.children);
@@ -199,9 +203,11 @@ export class CustomShape {
    * @returns A new CustomShape instance that is a copy of the current shape.
    */
   clone(): CustomShape {
-    const clonedVertices = this.vertexManager.getVerticesInfo().map(vertex => vertex.clone());
+    const clonedVertices = this.vertexManager
+      .getVerticesInfo()
+      .map((vertex) => vertex.clone());
     const clonedShape = new CustomShape(
-      clonedVertices.flatMap(vertex => [vertex.x, vertex.y, vertex.z]),
+      clonedVertices.flatMap((vertex) => [vertex.x, vertex.y, vertex.z]),
       this.wireframe,
       this.drawBalls,
       this.colour.clone(),
@@ -212,5 +218,34 @@ export class CustomShape {
     clonedShape.opacity = this.opacity;
     clonedShape.name = this.name;
     return clonedShape;
+  }
+
+  static fromJSON(data: any): CustomShape {
+    // convert vertices into flat array
+    const vertices = data.vertices.flatMap((vertex: THREE.Vector3) => [
+      vertex.x,
+      vertex.y,
+      vertex.z,
+    ]);
+    
+    // create new CustomShape instance
+    const shape = new CustomShape(
+      vertices,
+      data.wireframe,
+      data.drawBalls,
+      new THREE.Color(data.colour),
+      data.scale,
+      new THREE.Color(data.lineColour)
+    );
+
+    shape.id = data.id;
+    shape.vertexSize = data.vertexSize;
+    
+    // Set shape's position
+    shape.group.position.set(data.position.x, data.position.y, data.position.z);
+
+    shape.opacity = data.opacity;
+
+    return shape;
   }
 }
