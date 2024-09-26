@@ -1,0 +1,113 @@
+<div class="App" style="position: relative;">
+  <!-- Side bar -->
+  <div class="toolbar" id="toolbar">
+    <div class="btn toolbar-btn" id="create-shape-btn"
+         data-bs-toggle="tooltip"
+         data-bs-placement="right"
+         data-bs-title="Create Shape">
+        <i class="fa-solid fa-plus fa-2xl" id="create-shape-icon"></i>
+    </div>
+    <div class="btn toolbar-btn disabled" id="save-shape-btn"
+         data-bs-toggle="tooltip"
+         data-bs-placement="right"
+         data-bs-title="Save Scene">
+        <i class="fa-solid fa-floppy-disk fa-xl disabled"
+           id="save-icon"
+           data-bs-toggle="offcanvas"
+           data-bs-placement="right"
+           data-bs-title="Save Scene"
+           data-bs-target="#offcanvasSave"
+           aria-controls="offcanvasRight"></i>
+    </div>
+    <div class="btn toolbar-btn disabled" id="intersection-btn"
+         data-bs-toggle="tooltip"
+         data-bs-placement="right"
+         data-bs-title="Intersection">
+        <i class="fa-solid fa-object-group fa-xl" id="intersection-icon"></i>
+    </div>
+    <div class="btn toolbar-btn" id="monte-btn"
+         data-bs-toggle="tooltip"
+         data-bs-placement="right"
+         data-bs-title="Monte Carlo">
+        <i class="fa-solid fa-braille fa-lg" id="monte-icon"></i>
+    </div>
+    <div class="btn toolbar-btn" id="clear-btn"
+         data-bs-toggle="tooltip"
+         data-bs-placement="right"
+         data-bs-title="Clear Canvas">
+        <i class="fa-solid fa-trash fa-lg" id="clear-icon"></i>
+    </div>
+</div>
+
+<!-- Offcanvas for Loading shapes -->
+<div class="offcanvas offcanvas-end load-shapes" data-bs-backdrop="false" tabindex="-1" id="offcanvasLoad" aria-labelledby="offcanvasRightLabel">
+  <div class="offcanvas-header">
+      <h4>Add Shapes</h4>
+      <button type="button" class="btn" id="close-btn" data-bs-dismiss="offcanvas">
+          <i class="fa-solid fa-xmark fa-xl" style="color: lightcoral"></i>
+      </button>
+  </div>
+  <div class="offcanvas-body d-flex flex-column">
+      <div class="oc-body custom-shapes pb-5">
+          <h4>Custom</h4>
+          <div class="shapes-list" style="max-height: 100%;">
+          </div>
+      </div>
+      <div class="oc-body default-shapes pb-5 mt-2">
+          <h4>Default</h4>
+          <div class="default-shapes-list" style="max-height: 100%;">
+          </div>
+      </div>
+  </div>
+</div>
+
+    <!-- ThreeJS Canvas -->
+    <canvas id="threeJsCanvas"></canvas>
+    <!-- Context menu -->
+    <ul class="context" id="contextMenu">
+      <li class="context-link" id="shapeSettings">
+        <ion-icon name="settings-outline"></ion-icon>
+        <span class="context-label">Shape Settings</span>
+      </li>
+      <li class="context-link" id="saveShape">
+        <ion-icon name="save-outline"></ion-icon>
+        <span class="context-label">Save Shape</span>
+      </li>
+      <li class="context-link" id="shapeProperties">
+        <ion-icon name="information-circle-outline"></ion-icon>
+        <span class="context-label">Shape Info</span>
+      </li>
+    </ul>
+
+   <!-- Modal for Shape Settings -->
+  <div id="shapeSettingsProperties" class="modal">
+    <div class="modal-content">
+      <span class="close">&times;</span>
+      <h2>Shape Information</h2>
+        <p id="infoID">ID</p>
+        <p id="infoNumVertices">Vertices</p>
+        <p id="infoNumFaces">Faces</p>
+  </div>
+  </div>
+
+  <div id="shapeSettingsModal" class="modal">
+    <div class="modal-content">
+      <span class="close" id="closeSettings">&times;</span>
+      <h2>Shape Settings</h2>
+      <form>
+        <input type="color" value="#652802" id="colourPicker"/>
+        <label for="colourPicker">Shape colour</label>
+        <br/>
+        <input type="checkbox" id="wireframe">
+        <label for="checkbox">Wireframe</label>
+        <br>
+        <input type="range" max="1" min="0.05" step="0.05" id="opacity">
+        <label for="opacity">Opacity: <output id="opacityValue"></output></label>
+        <br>
+        <button type="button" id="applySettings">Apply</button>
+      </form>
+    </div>
+  </div>
+
+  <script type="module" src="dist/3d/assets/index.js"></script>
+  <script src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
