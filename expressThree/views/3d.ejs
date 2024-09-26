@@ -123,7 +123,7 @@
         <label for="colourPicker">Shape colour</label>
         <br/>
         <input type="checkbox" id="wireframe">
-        <label for="checkbox">Wireframe</label>
+        <label for="wireframe">Wireframe</label>
         <br>
         <input type="range" max="1" min="0.05" step="0.05" id="opacity">
         <label for="opacity">Opacity: <output id="opacityValue"></output></label>
@@ -132,6 +132,18 @@
       </form>
     </div>
   </div>
+
+     <!-- Modal for Shape Settings -->
+     <div id="saveShapeModal" class="modal">
+      <div class="modal-content">
+        <span class="close" id="closeSave">&times;</span>
+        <h2>Save Shape</h2>
+          <input type="text" id="savedName"/>
+          <label for="savedName">Shape name</label>
+          <button type="button" id="cancelSave">Cancel</button>
+          <button type="button" id="applySave">Apply</button>
+    </div>
+    </div>
 
   <script type="module" src="dist/3d/assets/index.js"></script>
   <script src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>

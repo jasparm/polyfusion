@@ -1,6 +1,7 @@
 import { Controller } from "../controls/Controller.ts";
 import { ControllerState, MovementState } from "../controls/ControllerStates.ts";
 import SceneManager from "../scene/SceneManager.ts";
+import { SaverLoader } from "../scene/SaverLoader.ts";
 import { CustomShape } from "../shapes/CustomShape.ts";
 import { CustomBox } from '../shapes/prefabs/CustomBox.ts';
 import { CustomDodecahedron } from "../shapes/prefabs/Dodecahedron.ts";
@@ -69,6 +70,7 @@ export class ButtonHandler {
 
         loadButton?.addEventListener("click", () => {
             loadButton.classList.toggle("toggled");
+            this.populateSavedShapes();
         })
 
         closeButton?.addEventListener("click", () => {
@@ -99,33 +101,65 @@ export class ButtonHandler {
 
         if (!shapesList) { return; }
 
+        this.populateShapeList(shapesList, shapes);
+    }
+
+    populateSavedShapes() {
+        const token = localStorage.getItem('authToken');
+
+        if (!token) {
+            this.notLoggedIn();
+            return;
+        }
+
+        try {
+            SaverLoader.loadShapes(token)
+        }
+        // if error from logging in, just display not logged in information.
+        catch {
+            this.notLoggedIn();
+        }
+        
+    }
+
+    /**
+     * Populates a shapes list element with shapes provided in the shapes array.
+     * @param shapesList HTML element where the shapes should be added.
+     * @param shapes List of shapes to be added to the list.
+     */
+    private populateShapeList(shapesList: Element, shapes: CustomShape[]) {
         shapesList.innerHTML = "";
 
         shapes.forEach((shape, index) => {
             const shapeBox = document.createElement('div');
             shapeBox.className = 'btn shape-box d-flex flex-row align-items-center';
             shapeBox.id = `shape-${index}`;
-    
+
             const iconBox = document.createElement('div');
             iconBox.className = 'icon-box';
             // eventually change this to be png of the shape (if ever possible)
             const icon = document.createElement('i');
             icon.className = 'fa-solid fa-cube fa-lg';
             iconBox.appendChild(icon);
-    
+
             const shapeName = document.createElement('p');
             shapeName.textContent = shape.name;
-    
+
             shapeBox.appendChild(iconBox);
             shapeBox.appendChild(shapeName);
-            
+
             // Event listener that adds the shape to the scene if it is clicked.
             shapeBox.addEventListener('click', () => {
                 this.scene.add(shape.clone());
-                
+
             });
 
             shapesList.appendChild(shapeBox);
-        })
+        });
+    }
+
+    // this changes the saved shapes menu to be different when there is no logged in user.
+    notLoggedIn() {
+
     }
 }

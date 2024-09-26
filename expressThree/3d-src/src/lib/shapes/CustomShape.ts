@@ -57,7 +57,6 @@ export class CustomShape {
    * Initialises the current shape.
    */
   init() {
-    console.log(this.opacity);
     const vertices = this.vertexManager.getVerticesInfo();
     const geometry = new ConvexGeometry(vertices); // This ensures a shape is always convex
     this.geometry = geometry;
