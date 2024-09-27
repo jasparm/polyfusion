@@ -232,27 +232,33 @@ export class MonteCarloManager {
   /**
    * Gets the bounding ranges for the MonteBox (CustomBox).
    *
-   * @returns {Object} The ranges for x, y, and z.
+   * @returns {any} The ranges for x, y, and z.
    */
   getMonteBoxBounds() {
-    const boxSize = this.box.getSize(); // Assuming CustomBox has getSize() method or use default dimensions
-    const boxPosition = this.box.position; // Box's position in the scene
+    const boxSize = new THREE.Vector3(
+        this.box.width,
+        this.box.height,
+        this.box.length
+    ); 
+    const boxPosition = this.box.group.position; // Box's position in the scene
+    const scales = this.box.group.scale;
 
     const halfWidth = boxSize.x / 2;
     const halfHeight = boxSize.y / 2;
     const halfDepth = boxSize.z / 2;
 
+
     const xRange = {
-      min: boxPosition.x - halfWidth,
-      max: boxPosition.x + halfWidth,
+      min: boxPosition.x - halfWidth * scales.x,
+      max: boxPosition.x + halfWidth * scales.x,
     };
     const yRange = {
-      min: boxPosition.y - halfHeight,
-      max: boxPosition.y + halfHeight,
+      min: boxPosition.y - halfHeight * scales.y,
+      max: boxPosition.y + halfHeight * scales.y,
     };
     const zRange = {
-      min: boxPosition.z - halfDepth,
-      max: boxPosition.z + halfDepth,
+      min: boxPosition.z - halfDepth * scales.z,
+      max: boxPosition.z + halfDepth * scales.z,
     };
 
     return { xRange, yRange, zRange };

@@ -183,28 +183,7 @@ export default class MonteMenu {
   }
 
   startMonteCarlo() {
-    const scale = this.monteManager.box.group.scale;
-    const size = new THREE.Vector3(
-      this.monteManager.box.width,
-      this.monteManager.box.height,
-      this.monteManager.box.length
-    );
-
-    const scaledSize = new THREE.Vector3().multiplyVectors(scale, size);
-
-    // calculate ranges given box size
-    const xRange = {
-      min: -scaledSize.x / 2,
-      max: scaledSize.x / 2,
-    };
-    const yRange = {
-      min: -scaledSize.y / 2,
-      max: scaledSize.y / 2,
-    };
-    const zRange = {
-      min: -scaledSize.z / 2,
-      max: scaledSize.z / 2,
-    };
+    const { xRange, yRange, zRange } = this.monteManager.getMonteBoxBounds();
 
     console.log('Monte Carlo Sampling Ranges:', { xRange, yRange, zRange })
     this.monteManager.max_balls = this.maxMonteCarloBalls;
