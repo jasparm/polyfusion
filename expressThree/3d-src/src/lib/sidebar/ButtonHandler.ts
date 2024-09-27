@@ -112,7 +112,12 @@ export class ButtonHandler {
             }
         })
 
-        this.loadAlgorithms(scene);
+        const insertMonteBtn = document.getElementById("insert-monte-btn");
+        insertMonteBtn?.addEventListener("click", () => {
+            this.loadAlgorithms(scene);
+        })
+
+        
     }
 
     onChange(state: MovementState | null) {

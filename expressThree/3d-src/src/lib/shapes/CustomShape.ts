@@ -100,7 +100,10 @@ export class CustomShape {
     this.mesh.layers.set(this.layer);
     this.group.children.forEach((child) => {
       if (child instanceof THREE.Line) {
-        child.layers.set(1);
+        if (this.layer === 0) {child.layers.set(1);}
+        else {
+          child.layers.set(this.layer);
+        }
       }
     });
 
