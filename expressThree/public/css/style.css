@@ -103,6 +103,10 @@ nav {
     height: 70%;
   }
 
+  &.algorithms {
+    height: 70%;
+  }
+
 }
 
 #saveShapeForm {

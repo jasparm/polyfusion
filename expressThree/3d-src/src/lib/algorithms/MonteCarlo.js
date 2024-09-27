@@ -1,5 +1,7 @@
 import * as THREE from 'three';
 import { isInsideObjects } from '../Collision.ts';
+import SceneManager from '../scene/SceneManager.ts';
+import { CustomBox } from '../shapes/prefabs/CustomBox.ts';
 
 
 /**
@@ -38,11 +40,10 @@ export class MonteCarloManager {
      * Represents a Monte Carlo algorithm for calculating volume.
      * @constructor
      * @param {Array} objects - The array of objects to find IOU of.
-     * @param {THREE.Scene} scene - The scene where objects are stored inside.
+     * @param {SceneManager} scene - The scene where objects are stored inside.
      */
-    constructor(objects, scene) {
-        this.scene = scene; // scene where objects are stored inside
-        this.objects = objects; // this is array of objects to find IOU of
+    constructor(scene) {
+        this.scene = scene.getScene(); // scene where objects are stored inside
 
         this.running = false;
         this.interval = undefined;
@@ -55,8 +56,24 @@ export class MonteCarloManager {
         // This is the object that will be used for calculating volume.
         // Can adjust the radius at any time to change calculations.
         this.radius = 1;
-        this.inside_mat = new THREE.MeshBasicMaterial({color: 0x0000ff});
-        this.outside_mat = new THREE.MeshBasicMaterial({color: 0xff0000});
+        this.inside_mat = new THREE.MeshBasicMaterial({color: 0x00b7ff});
+        this.outside_mat = new THREE.MeshBasicMaterial({color: 0xf08080});
+
+        const monteBox = new CustomBox(10, 10, 10);
+        monteBox.setWireFrame(true);
+        // make it uniquely a monte box
+        monteBox.id = "MonteBox";
+        monteBox.drawBalls = false;
+
+        scene.add(monteBox);
+
+        monteBox.layer = 0;
+
+        monteBox.update();
+
+
+        this.box = monteBox;
+
     }
 
 
@@ -75,7 +92,8 @@ export class MonteCarloManager {
      * @param {number} zRange.max - The maximum z value.
      * @returns {void}
      */
-    start(interval = 500, xRange={min: -5, max:5}, yRange={min: 0, max:5}, zRange={min: -5, max:5}) {
+    start(objects, interval = 500, xRange={min: -5, max:5}, yRange={min: 0, max:5}, zRange={min: -5, max:5}) {
+        this.objects = objects
         if (this.running) {
             // if we are already running, can't start running again
             console.error("MonteCarloManager is already running")
@@ -94,7 +112,7 @@ export class MonteCarloManager {
     /**
      * Stops the MonteCarloManager if it is currently running.
      * 
-     * @returns {void}
+     * @returns {number}
      */
     stop() {
         if (!this.running) {
@@ -106,6 +124,7 @@ export class MonteCarloManager {
         this.running = false;
 
         console.log(this.estimateVolume())
+        return this.estimateVolume();
     }
 
     /**
@@ -195,6 +214,19 @@ export class MonteCarloManager {
                 this.scene.remove(object);
             }
         }
+    }
+
+    toggleMonteBox() {
+        const currentLayer = this.box.layer;
+
+        if (this.box.layer) {
+            this.box.layer = 0;
+        }
+        else {
+            this.box.layer = 4;
+        }
+        
+        this.box.update();
     }
 
 }

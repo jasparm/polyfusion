@@ -34,6 +34,10 @@ export function onKeyDown(event: KeyboardEvent, controller: Controller) {
   }
   // If I is pressed, we begin trying to insert a new vertex
   if (key === "KeyI" && controller.state === ControllerState.ShapeSelected) {
+    const customShape = controller.getCustomShape();
+    if (!customShape || customShape.id === "MonteBox") {
+      return; // if we are selecting monte box, do not allow for vertexes to be inserted
+    }
     controller.insertDistance = 1;
     controller.insertVertex();
   }

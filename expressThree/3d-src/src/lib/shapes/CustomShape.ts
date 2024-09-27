@@ -16,6 +16,8 @@ export class CustomShape {
   wireframe: boolean; // If the shape should be drawn as a wire frame.
   drawBalls: boolean; // If shape should have spheres on each vertex.
 
+  layer: number = 0;
+
   colour: THREE.Color; // Colour of all faces in the custom shape.
   scale: number; // Scale of the shape
   lineColour: THREE.Color; // colour of the line
@@ -95,7 +97,7 @@ export class CustomShape {
 
     this.addLinesToEdges();
 
-    this.mesh.layers.set(0);
+    this.mesh.layers.set(this.layer);
     this.group.children.forEach((child) => {
       if (child instanceof THREE.Line) {
         child.layers.set(1);

@@ -31,29 +31,16 @@
         data-bs-title="Load Shape"
         data-bs-placement="right"></i>
     </div>
-    <div class="btn toolbar-btn disabled" id="save-shape-btn"
+    <div class="btn toolbar-btn" id="algorithm-btn"
          data-bs-toggle="tooltip"
          data-bs-placement="right"
-         data-bs-title="Save Scene">
-        <i class="fa-solid fa-floppy-disk fa-xl disabled"
-           id="save-icon"
-           data-bs-toggle="offcanvas"
-           data-bs-placement="right"
-           data-bs-title="Save Scene"
-           data-bs-target="#offcanvasSave"
-           aria-controls="offcanvasRight"></i>
-    </div>
-    <div class="btn toolbar-btn disabled" id="intersection-btn"
-         data-bs-toggle="tooltip"
-         data-bs-placement="right"
-         data-bs-title="Intersection">
-        <i class="fa-solid fa-object-group fa-xl" id="intersection-icon"></i>
-    </div>
-    <div class="btn toolbar-btn" id="monte-btn"
-         data-bs-toggle="tooltip"
-         data-bs-placement="right"
-         data-bs-title="Monte Carlo">
-        <i class="fa-solid fa-braille fa-lg" id="monte-icon"></i>
+         data-bs-title="Algorithms">
+         <i class="fa-solid fa-calculator fa-xl" id="algorithm-icon"
+         aria-controls="canvasRight"
+         data-bs-toggle="offcanvas"
+         data-bs-target="#offcanvasAlgo"
+         data-bs-title="Algorithms"
+         data-bs-placement="right"></i>
     </div>
     <div class="btn toolbar-btn" id="clear-btn"
          data-bs-toggle="tooltip"
@@ -80,6 +67,29 @@
       </div>
       <div class="oc-body default-shapes pb-5 mt-2">
           <h4>Default</h4>
+          <div class="default-shapes-list" style="max-height: 100%;">
+          </div>
+      </div>
+  </div>
+</div>
+
+<!-- Offcanvas for algorithms -->
+<div class="offcanvas offcanvas-end algorithms show" data-bs-backdrop="false" tabindex="-1" id="offcanvasAlgo" aria-labelledby="offcanvasRightLabel">
+  <div class="offcanvas-header">
+      <h4>Algorithms</h4>
+      <button type="button" class="btn" id="close-btn" data-bs-dismiss="offcanvas">
+          <i class="fa-solid fa-xmark fa-xl" style="color: lightcoral"></i>
+      </button>
+  </div>
+  <div class="offcanvas-body d-flex flex-column">
+      <div class="oc-body monte-carlo pb-5" style="max-height: 60%;">
+          <h4>Estimate</h4>
+          <div class="monte-area" style="max-height: 100%;">
+            <button type="button" class="btn btn-primary" id="insert-monte-btn">Setup Monte Carlo</button>
+          </div>
+      </div>
+      <div class="oc-body default-shapes pb-5 mt-2">
+          <h4>Exact</h4>
           <div class="default-shapes-list" style="max-height: 100%;">
           </div>
       </div>

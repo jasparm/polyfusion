@@ -8,6 +8,7 @@ import { CustomDodecahedron } from "../shapes/prefabs/Dodecahedron.ts";
 import { CustomIcosahedron } from "../shapes/prefabs/Icosahedron.ts";
 import { CustomOctahedron } from "../shapes/prefabs/Octahedron.ts";
 import { CustomTetrahedron } from "../shapes/prefabs/Tetrahedron.ts";
+import MonteMenu from "./MonteMenu.ts";
 
 // type expected adding shapes to menu
 type shapeData = {
@@ -33,6 +34,8 @@ export class ButtonHandler {
 
         const loadButton = document.getElementById("create-shape-btn");
         const closeButton = document.getElementById("close-btn");
+
+        const algorithmsButton = document.getElementById("algorithm-btn");
 
         this.populateDefaultShapes();
 
@@ -81,15 +84,35 @@ export class ButtonHandler {
 
         loadButton?.addEventListener("click", () => {
             const status = loadButton.classList.toggle("toggled");
+            algorithmsButton?.classList.toggle("toggled", false)
             if (status) {
                 this.populateSavedShapes();
+                document.getElementById("offcanvasLoad")?.classList.add("show");
+            }
+            else {
+                document.getElementById("offcanvasLoad")?.classList.remove("show");
             }
             
         })
 
         closeButton?.addEventListener("click", () => {
             loadButton?.classList.toggle("toggled", false);
+            document.getElementById("offcanvasAlgo")?.classList.remove("show");
         })
+
+        algorithmsButton?.addEventListener("click", () => {
+            const status = algorithmsButton.classList.toggle("toggled");
+            loadButton?.classList.toggle("toggled", false)
+            if (status) {
+                this.populateSavedShapes();
+                document.getElementById("offcanvasAlgo")?.classList.add("show");
+            }
+            else {
+                document.getElementById("offcanvasAlgo")?.classList.remove("show");
+            }
+        })
+
+        this.loadAlgorithms(scene);
     }
 
     onChange(state: MovementState | null) {
@@ -125,7 +148,6 @@ export class ButtonHandler {
 
     async populateSavedShapes() {
         const token = localStorage.getItem('authToken');
-        console.log(token);
 
         if (token === null) {
             this.notLoggedIn();
@@ -223,5 +245,9 @@ export class ButtonHandler {
         shapeBox.remove();
         SaverLoader.deleteShape(token, name);
         return;
+    }
+
+    loadAlgorithms(scene: SceneManager) {
+        const monteCarlo = new MonteMenu(scene);
     }
 }

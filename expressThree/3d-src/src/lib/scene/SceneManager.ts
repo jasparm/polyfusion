@@ -99,6 +99,7 @@ export default class SceneManager {
     this.camera.layers.enable(1); // this is the layer for lines on meshes
     this.camera.layers.enable(2); // this is the layer for balls on vertices
     this.camera.layers.enable(3); // this is the layer for everything that should be visible in the scene but not intractable
+    this.camera.layers.enable(4); // this is the layer for everything monte carlo related;
     this.camera.lookAt(0, 0, 0);
 
     // Renderer
@@ -207,4 +208,10 @@ export default class SceneManager {
     }
     this.scene.add(object);
   } 
+
+  // Returns the private scene element.
+  getScene() : THREE.Scene {
+    return this.scene
+  }
+  
 }

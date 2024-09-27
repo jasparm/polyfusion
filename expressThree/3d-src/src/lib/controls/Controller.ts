@@ -59,6 +59,7 @@ export class Controller {
     this.raycaster = new THREE.Raycaster();
     this.raycaster.layers.enable(0); // this is the layer that custom shape meshes live on.
     this.raycaster.layers.enable(2); // this is the layer that vertex spheres live on
+    
 
     this.checkForShapes = true;
     this.buttonHandler = buttonHandler;
@@ -122,6 +123,8 @@ export class Controller {
     if (this.selectedGroup) {
       this.transformControls.attach(this.selectedGroup);
     }
+
+    console.log(this.selectedGroup?.layers);
 
     this.setMovementState(state);
 
