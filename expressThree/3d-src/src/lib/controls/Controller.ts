@@ -78,7 +78,9 @@ export class Controller {
       this.renderer.domElement
     );
 
-    this.scene.add(this.transformControls);
+    this.transformControls.enabled = true;
+    this.scene.add(this.transformControls.getHelper());
+
     this.transformControls.addEventListener(
       "mouseUp",
       (event: THREE.Event) => {}
@@ -123,8 +125,6 @@ export class Controller {
     if (this.selectedGroup) {
       this.transformControls.attach(this.selectedGroup);
     }
-
-    console.log(this.selectedGroup?.layers);
 
     this.setMovementState(state);
 
