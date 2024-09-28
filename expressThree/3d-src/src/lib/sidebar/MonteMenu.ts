@@ -14,6 +14,7 @@ export default class MonteMenu {
 
   define: boolean = true;
   maxMonteCarloBalls: number = 100;
+  result: string = "0";
 
   constructor(scene: SceneManager) {
     this.scene = scene;
@@ -96,6 +97,20 @@ export default class MonteMenu {
     startMonteCarloBtn.onclick = () => this.startMonteCarlo();
     this.div.appendChild(startMonteCarloBtn);
 
+    const result = document.createElement("h5");
+    result.innerHTML = `IoU estimate = ${this.result}`;
+    this.div.appendChild(result);
+
+    const resetBtn = document.createElement("button");
+    resetBtn.className = "btn btn-primary mr-2"
+    resetBtn.innerHTML = "Reset"
+    resetBtn.setAttribute("style", "margin-top: 10px");
+    resetBtn.onclick = (ev: MouseEvent) =>  {
+      this.monteManager.reset();
+      this.enabled = true;
+      this.updateSelectButtonState();
+    }
+    this.div.appendChild(resetBtn);
 
 
   }
@@ -189,5 +204,8 @@ export default class MonteMenu {
     this.monteManager.max_balls = this.maxMonteCarloBalls;
     const interval = 5000 / this.maxMonteCarloBalls
     this.monteManager.start(this.selectedShapes, interval, xRange, yRange, zRange);
+
+    this.result = this.monteManager.storeResult;
+    this.monteManager.menu = this;
   }
 }

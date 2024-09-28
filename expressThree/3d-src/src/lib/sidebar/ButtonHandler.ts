@@ -8,7 +8,9 @@ import { CustomDodecahedron } from "../shapes/prefabs/Dodecahedron.ts";
 import { CustomIcosahedron } from "../shapes/prefabs/Icosahedron.ts";
 import { CustomOctahedron } from "../shapes/prefabs/Octahedron.ts";
 import { CustomTetrahedron } from "../shapes/prefabs/Tetrahedron.ts";
+
 import MonteMenu from "./MonteMenu.ts";
+import CSGMenu from "./CSGMenu.ts";
 
 // type expected adding shapes to menu
 type shapeData = {
@@ -114,7 +116,12 @@ export class ButtonHandler {
 
         const insertMonteBtn = document.getElementById("insert-monte-btn");
         insertMonteBtn?.addEventListener("click", () => {
-            this.loadAlgorithms(scene);
+            this.loadAlgorithms(scene, true);
+        })
+
+        const insertCsgBtn = document.getElementById("insert-csg-btn");
+        insertCsgBtn?.addEventListener("click", () => {
+            this.loadAlgorithms(scene, false);
         })
 
         
@@ -252,7 +259,13 @@ export class ButtonHandler {
         return;
     }
 
-    loadAlgorithms(scene: SceneManager) {
-        const monteCarlo = new MonteMenu(scene);
+    loadAlgorithms(scene: SceneManager, monte: boolean) {
+        if (monte) {
+            const monteCarlo = new MonteMenu(scene);
+        }
+        else {
+            const csg = new CSGMenu(scene);
+        }
+        
     }
 }

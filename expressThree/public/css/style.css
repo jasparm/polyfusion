@@ -464,6 +464,14 @@ input[type="text"]:focus {
   flex-direction: column;
 }
 
+.csg-area {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  height: 100%;
+  flex-direction: column;
+}
+
 .selected-shapes-box {
   background-color: rgb(75, 75, 75);
   margin-top: 6px;
@@ -496,9 +504,5 @@ input[type="text"]:focus {
   h5 {
     align-self: flex-start;
   }
-
-
-
-
 
 }

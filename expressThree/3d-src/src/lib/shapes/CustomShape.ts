@@ -2,6 +2,7 @@ import * as THREE from "three";
 import { ConvexGeometry } from "three/examples/jsm/geometries/ConvexGeometry.js";
 
 import { VertexManager } from "./VertexManager.ts";
+import { calculateVolume } from "./ShapeHelpers.ts";
 
 /**
  * This class handles all aspects of CustomShape creation.
@@ -261,5 +262,17 @@ export class CustomShape {
     shape.opacity = data.opacity;
 
     return shape;
+  }
+
+  /**
+   * Calculates the exact volume of a custom shape.
+   * Based on the Divergence Theorem: https://en.wikipedia.org/wiki/Divergence_theorem
+   * For meshes, this basically just simplifies to calculating the signed volume of each triangle in the mesh.
+   * 
+   * @returns volume of the shape.
+   *
+   */
+  calculateVolume() {
+    return calculateVolume(this.mesh, this.group.scale);
   }
 }

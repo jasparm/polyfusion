@@ -2,6 +2,7 @@ import * as THREE from "three";
 import { isInsideObjects } from "../Collision.ts";
 import SceneManager from "../scene/SceneManager.ts";
 import { CustomBox } from "../shapes/prefabs/CustomBox.ts";
+import { calculateVolume } from "../shapes/ShapeHelpers.ts";
 
 /**
  * Generates a random point within a given volume.
@@ -103,6 +104,9 @@ export class MonteCarloManager {
     this.spawning_area = [xRange, yRange, zRange];
     this.running = true;
 
+    this.storeResult = null;
+    this.menu = null;
+
     // Will execute method once every interval (ms)
     this.interval = setInterval(() => {
       this.performCalculation();
@@ -158,6 +162,9 @@ export class MonteCarloManager {
       material = this.outside_mat;
     }
 
+    this.menu.result = this.estimateVolume();
+    this.menu.populateDiv();
+
     this.spawnObject(material, spawnPosition);
   }
 
@@ -185,7 +192,7 @@ export class MonteCarloManager {
    * @returns {number} The estimated volume.
    */
   estimateVolume() {
-    return (((this.inside / this.total) * 4) / 3) * Math.PI * this.radius ** 3;
+    return ((this.inside / this.total) * this.box.calculateVolume()).toFixed(6);
   }
 
   /**

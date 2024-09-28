@@ -74,7 +74,7 @@
 </div>
 
 <!-- Offcanvas for algorithms -->
-<div class="offcanvas offcanvas-end algorithms" data-bs-backdrop="false" tabindex="-1" id="offcanvasAlgo" aria-labelledby="offcanvasRightLabel">
+<div class="offcanvas offcanvas-end algorithms show" data-bs-backdrop="false" tabindex="-1" id="offcanvasAlgo" aria-labelledby="offcanvasRightLabel">
   <div class="offcanvas-header">
       <h4>Algorithms</h4>
       <button type="button" class="btn" id="close-btn" data-bs-dismiss="offcanvas">
@@ -88,9 +88,10 @@
             <button type="button" class="btn btn-primary" id="insert-monte-btn">Setup Monte Carlo</button>
           </div>
       </div>
-      <div class="oc-body default-shapes pb-5 mt-2">
+      <div class="oc-body csg pb-5 mt-2">
           <h4>Exact</h4>
-          <div class="default-shapes-list" style="max-height: 100%;">
+          <div class="csg-area" style="max-height: 100%;">
+            <button type="button" class="btn btn-primary" id="insert-csg-btn">Setup exact calculation</button>
           </div>
       </div>
   </div>
