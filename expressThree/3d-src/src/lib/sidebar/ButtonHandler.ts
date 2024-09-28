@@ -36,6 +36,7 @@ export class ButtonHandler {
 
         const loadButton = document.getElementById("create-shape-btn");
         const closeButton = document.getElementById("close-btn");
+        const algoClose = document.getElementById("close-btn-algo");
 
         const algorithmsButton = document.getElementById("algorithm-btn");
 
@@ -89,6 +90,7 @@ export class ButtonHandler {
             algorithmsButton?.classList.toggle("toggled", false)
             if (status) {
                 this.populateSavedShapes();
+                document.getElementById("offcanvasAlgo")?.classList.remove("show");
                 document.getElementById("offcanvasLoad")?.classList.add("show");
             }
             else {
@@ -99,6 +101,11 @@ export class ButtonHandler {
 
         closeButton?.addEventListener("click", () => {
             loadButton?.classList.toggle("toggled", false);
+            document.getElementById("offcanvasLoad")?.classList.remove("show");
+        })
+
+        algoClose?.addEventListener("click", () => {
+            algorithmsButton?.classList.toggle("toggled", false);
             document.getElementById("offcanvasAlgo")?.classList.remove("show");
         })
 
@@ -107,6 +114,7 @@ export class ButtonHandler {
             loadButton?.classList.toggle("toggled", false)
             if (status) {
                 this.populateSavedShapes();
+                document.getElementById("offcanvasLoad")?.classList.remove("show");
                 document.getElementById("offcanvasAlgo")?.classList.add("show");
             }
             else {

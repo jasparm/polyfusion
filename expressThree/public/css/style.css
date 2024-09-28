@@ -217,6 +217,12 @@ nav {
   margin-left: auto;
 }
 
+#close-btn-algo {
+  margin-top: 0;
+  margin-right: 1px;
+  margin-left: auto;
+}
+
 #user-btn {
   border-radius: 50%;
   width: 47px;
@@ -505,4 +511,8 @@ input[type="text"]:focus {
     align-self: flex-start;
   }
 
+}
+
+#algorithms-body {
+  overflow-y: scroll;
 }
