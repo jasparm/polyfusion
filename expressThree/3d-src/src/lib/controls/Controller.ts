@@ -241,9 +241,6 @@ export class Controller {
    * Sets the control start to insert and instantiates the sphere.
    */
   insertVertex() {
-    this.unselectShapes();
-    this.state = ControllerState.Insert;
-    this.orbitControls.enabled = false;
 
     var sphere: any;
     this.selectedGroup?.children.forEach((child) => {
@@ -255,6 +252,13 @@ export class Controller {
         sphere = child.clone();
       }
     });
+    const selectedGroup = this.selectedGroup;
+
+    this.unselectShapes();
+    this.state = ControllerState.Insert;
+    this.orbitControls.enabled = false;
+    this.selectedGroup = selectedGroup;
+
     this.scene.add(sphere);
     sphere.castShadow = true;
     // sphere size should always remain constant

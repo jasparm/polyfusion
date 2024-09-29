@@ -15,7 +15,9 @@ export function onKeyDown(event: KeyboardEvent, controller: Controller) {
   // When shift is pressed and a shape is selected, we want to temporarily disable the selection in order to move the camera
   if (key === "ShiftLeft" && controller.state === ControllerState.ShapeSelected) {
     // This means we currently have a shape selected
+    const temp = controller.selectedGroup;
     controller.unselectShapes();
+    controller.selectedGroup = temp;
     controller.checkForShapes = false;
     shapeSelected = true;
   }
