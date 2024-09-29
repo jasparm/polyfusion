@@ -35,16 +35,13 @@ export default class SceneManager {
 
   buttonHandler!: ButtonHandler;
 
-  private width: number = 0;
-  private height: number = 0;
-
   // Lights
   ambientLight: THREE.AmbientLight | undefined;
   directionalLight: THREE.DirectionalLight | undefined;
 
-  private parent!: HTMLElement
 
   shapeManager!: ShapeManager; // this manages shapes for this scene
+  canvas!: HTMLElement;
 
   constructor(canvasId: string) {
     // NOTE: Camera params;
@@ -70,22 +67,29 @@ export default class SceneManager {
     if (!canvas) {
       return;
     }
+    this.canvas = canvas;
     const parent = canvas.parentElement;
+
     if (!parent) {
       return;
     }
-
-    this.parent = parent;
 
     if (canvas === null) {
       // @TODO
       // deal with this
       return;
     }
-    const width = parent.parentElement?.clientWidth ?? window.innerWidth;
-    this.width = width;
-    const height = window.innerHeight - parent.offsetHeight  || window.innerHeight;
-    this.height = height;
+
+    const width = window.innerWidth;
+    const height = window.innerHeight;
+
+    // Ensure that there is no scrolling at all!
+    const body = document.querySelector("body");
+    if (body) {
+      body.style.height = "100%";
+      body.style.overflowY = "hidden";
+    }
+
     // Camera
     this.camera = new THREE.PerspectiveCamera(
       this.fov,
@@ -111,6 +115,8 @@ export default class SceneManager {
     this.renderer.shadowMap.enabled = true;
     this.renderer.setSize(width, height);
     parent.appendChild(this.renderer.domElement);
+
+    this.onWindowResize()
 
     // Comment out to enable/disable performance tracker
     // this.stats = new Stats();
@@ -191,14 +197,29 @@ export default class SceneManager {
   }
 
   onWindowResize() {
-    const width = this.parent.parentElement?.clientWidth ?? window.innerWidth;
-    this.width = width;
-    const height = this.parent.parentElement?.clientHeight ?? window.innerHeight;
-    this.height = height
-    // updates window/renderer aspect ratio when the window is resized.
-    this.camera.aspect = this.width / this.height;
+    const navbar = document.querySelector('.navbar');
+    const container = document.querySelector('.container-fluid');
+    const appClass = document.getElementsByClassName("App")[0]
+    const navbarHeight =  navbar ? (navbar as HTMLElement).offsetHeight - 2 : 0;
+    
+
+    const canvasHeight = window.innerHeight - navbarHeight;
+    const canvasWidth = window.innerWidth;
+
+    this.canvas.style.width = `${canvasWidth}px`;
+    this.canvas.style.height = `${canvasHeight}px`;
+
+    // Update container and app to ensure that fits entirely inside.
+    (container as HTMLElement).style.width = `${canvasWidth}px`;
+    (container as HTMLElement).style.height = `${canvasHeight}px`;
+
+    (appClass as HTMLElement).style.width = `${canvasWidth}px`;
+    (appClass as HTMLElement).style.height = `${canvasHeight}px`;
+
+    this.renderer.setSize(canvasWidth, canvasHeight);
+
+    this.camera.aspect = canvasWidth / canvasHeight;
     this.camera.updateProjectionMatrix();
-    this.renderer.setSize(this.width, this.height);
   }
 
   add(object: THREE.Object3D | CustomShape) {
