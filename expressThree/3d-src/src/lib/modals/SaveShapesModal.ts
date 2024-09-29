@@ -23,7 +23,7 @@ export class SaveShapesModal implements Modal {
 
         this.closeModalButton.addEventListener("click", () => {
             this.modalElement.style.display = "none";
-          });
+        });
 
         window.addEventListener("click", (event) => {
             if (event.target === this.modalElement) {

@@ -516,3 +516,17 @@ input[type="text"]:focus {
 #algorithms-body {
   overflow-y: scroll;
 }
+
+#clear-buttons {
+  display: flex;
+  padding: 15px;
+}
+
+#cancelClear {
+  width: 75px;
+  margin-right: 30px;
+}
+
+#applyClear { 
+  width: 75px;
+}

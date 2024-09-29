@@ -8,6 +8,7 @@ import { CustomDodecahedron } from "../shapes/prefabs/Dodecahedron.ts";
 import { CustomIcosahedron } from "../shapes/prefabs/Icosahedron.ts";
 import { CustomOctahedron } from "../shapes/prefabs/Octahedron.ts";
 import { CustomTetrahedron } from "../shapes/prefabs/Tetrahedron.ts";
+import { ConfirmClearModal } from "../modals/ConfirmClearModal.ts";
 
 import MonteMenu from "./MonteMenu.ts";
 import CSGMenu from "./CSGMenu.ts";
@@ -39,6 +40,8 @@ export class ButtonHandler {
         const algoClose = document.getElementById("close-btn-algo");
 
         const algorithmsButton = document.getElementById("algorithm-btn");
+
+        const clearButton = document.getElementById("clear-btn");
 
         this.populateDefaultShapes();
 
@@ -130,6 +133,13 @@ export class ButtonHandler {
         const insertCsgBtn = document.getElementById("insert-csg-btn");
         insertCsgBtn?.addEventListener("click", () => {
             this.loadAlgorithms(scene, false);
+        })
+
+        clearButton?.addEventListener("click", () => {
+            const modal = new ConfirmClearModal(this.scene);
+
+            modal.openModal();
+
         })
 
         

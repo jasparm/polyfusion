@@ -213,5 +213,9 @@ export default class SceneManager {
   getScene() : THREE.Scene {
     return this.scene
   }
+
+  clear() {
+    this.shapeManager.clearAllShapes();
+  }
   
 }

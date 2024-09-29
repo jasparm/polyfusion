@@ -1,129 +1,179 @@
-<div class="App" style="position: relative;">
+<div class="App" style="position: relative">
   <!-- Side bar -->
   <div class="toolbar" id="toolbar">
-    <div class="btn toolbar-btn" id="transform-btn"
+    <div
+      class="btn toolbar-btn"
+      id="transform-btn"
       data-bs-toggle="tooltip"
       data-bs-placement="right"
-      data-bs-title="Transform">
+      data-bs-title="Transform"
+    >
       <i class="fa-solid fa-up-down-left-right" id="transform-icon"></i>
     </div>
-    <div class="btn toolbar-btn" id="rotate-btn"
+    <div
+      class="btn toolbar-btn"
+      id="rotate-btn"
       data-bs-toggle="tooltip"
       data-bs-placement="right"
-      data-bs-title="Rotate">
+      data-bs-title="Rotate"
+    >
       <i class="fa-solid fa-rotate"></i>
     </div>
-    <div class="btn toolbar-btn" id="scale-btn"
+    <div
+      class="btn toolbar-btn"
+      id="scale-btn"
       data-bs-toggle="tooltip"
       data-bs-placement="right"
-      data-bs-title="Scale">
+      data-bs-title="Scale"
+    >
       <i class="fa-solid fa-up-right-and-down-left-from-center"></i>
     </div>
-    <div class="btn toolbar-btn" id="create-shape-btn"
-         data-bs-toggle="tooltip"
-         data-bs-placement="right"
-         data-bs-title="Create Shape"
-        >
-        <i class="fa-solid fa-plus fa-2xl" id="create-shape-icon"
+    <div
+      class="btn toolbar-btn"
+      id="create-shape-btn"
+      data-bs-toggle="tooltip"
+      data-bs-placement="right"
+      data-bs-title="Create Shape"
+    >
+      <i
+        class="fa-solid fa-plus fa-2xl"
+        id="create-shape-icon"
         aria-controls="canvasRight"
         data-bs-target="#offcanvasLoad"
         data-bs-toggle="offcanvas"
         data-bs-title="Load Shape"
-        data-bs-placement="right"></i>
+        data-bs-placement="right"
+      ></i>
     </div>
-    <div class="btn toolbar-btn" id="algorithm-btn"
-         data-bs-toggle="tooltip"
-         data-bs-placement="right"
-         data-bs-title="Algorithms">
-         <i class="fa-solid fa-calculator fa-xl" id="algorithm-icon"
-         aria-controls="canvasRight"
-         data-bs-toggle="offcanvas"
-         data-bs-target="#offcanvasAlgo"
-         data-bs-title="Algorithms"
-         data-bs-placement="right"></i>
+    <div
+      class="btn toolbar-btn"
+      id="algorithm-btn"
+      data-bs-toggle="tooltip"
+      data-bs-placement="right"
+      data-bs-title="Algorithms"
+    >
+      <i
+        class="fa-solid fa-calculator fa-xl"
+        id="algorithm-icon"
+        aria-controls="canvasRight"
+        data-bs-toggle="offcanvas"
+        data-bs-target="#offcanvasAlgo"
+        data-bs-title="Algorithms"
+        data-bs-placement="right"
+      ></i>
     </div>
-    <div class="btn toolbar-btn" id="clear-btn"
-         data-bs-toggle="tooltip"
-         data-bs-placement="right"
-         data-bs-title="Clear Canvas">
-        <i class="fa-solid fa-trash fa-lg" id="clear-icon"></i>
+    <div
+      class="btn toolbar-btn"
+      id="clear-btn"
+      data-bs-toggle="tooltip"
+      data-bs-placement="right"
+      data-bs-title="Clear Canvas"
+    >
+      <i class="fa-solid fa-trash fa-lg" id="clear-icon"></i>
     </div>
-</div>
-
-<!-- Offcanvas for Loading shapes -->
-<div class="offcanvas offcanvas-end load-shapes" data-bs-backdrop="false" tabindex="-1" id="offcanvasLoad" aria-labelledby="offcanvasRightLabel">
-  <div class="offcanvas-header">
-      <h4>Add Shapes</h4>
-      <button type="button" class="btn" id="close-btn" data-bs-dismiss="offcanvas">
-          <i class="fa-solid fa-xmark fa-xl" style="color: lightcoral"></i>
-      </button>
   </div>
-  <div class="offcanvas-body d-flex flex-column">
+
+  <!-- Offcanvas for Loading shapes -->
+  <div
+    class="offcanvas offcanvas-end load-shapes"
+    data-bs-backdrop="false"
+    tabindex="-1"
+    id="offcanvasLoad"
+    aria-labelledby="offcanvasRightLabel"
+    style="z-index: 99"
+  >
+    <div class="offcanvas-header">
+      <h4>Add Shapes</h4>
+      <button
+        type="button"
+        class="btn"
+        id="close-btn"
+        data-bs-dismiss="offcanvas"
+      >
+        <i class="fa-solid fa-xmark fa-xl" style="color: lightcoral"></i>
+      </button>
+    </div>
+    <div class="offcanvas-body d-flex flex-column">
       <div class="oc-body custom-shapes pb-5">
-          <h4>Custom</h4>
-          <div class="shapes-list" style="max-height: 100%;">
-            <p id="no-sign-in">Please sign in to load custom shapes.</p>
-          </div>
+        <h4>Custom</h4>
+        <div class="shapes-list" style="max-height: 100%">
+          <p id="no-sign-in">Please sign in to load custom shapes.</p>
+        </div>
       </div>
       <div class="oc-body default-shapes pb-5 mt-2">
-          <h4>Default</h4>
-          <div class="default-shapes-list" style="max-height: 100%;">
-          </div>
+        <h4>Default</h4>
+        <div class="default-shapes-list" style="max-height: 100%"></div>
       </div>
+    </div>
   </div>
-</div>
 
-<!-- Offcanvas for algorithms -->
-<div class="offcanvas offcanvas-end algorithms" data-bs-backdrop="false" tabindex="-1" id="offcanvasAlgo" aria-labelledby="offcanvasRightLabel">
-  <div class="offcanvas-header">
+  <!-- Offcanvas for algorithms -->
+  <div
+    class="offcanvas offcanvas-end algorithms"
+    data-bs-backdrop="false"
+    tabindex="-1"
+    id="offcanvasAlgo"
+    aria-labelledby="offcanvasRightLabel"
+    style="z-index: 99"
+  >
+    <div class="offcanvas-header">
       <h4>Algorithms</h4>
-      <button type="button" class="btn" id="close-btn-algo" data-bs-dismiss="offcanvas">
-          <i class="fa-solid fa-xmark fa-xl" style="color: lightcoral"></i>
+      <button
+        type="button"
+        class="btn"
+        id="close-btn-algo"
+        data-bs-dismiss="offcanvas"
+      >
+        <i class="fa-solid fa-xmark fa-xl" style="color: lightcoral"></i>
       </button>
-  </div>
-  <div class="offcanvas-body d-flex flex-column" id="algorithms-body">
-      <div class="oc-body monte-carlo pb-5" style="max-height: 60%;">
-          <h4>Estimate</h4>
-          <div class="monte-area" style="max-height: 100%;">
-            <button type="button" class="btn btn-primary" id="insert-monte-btn">Setup Monte Carlo</button>
-          </div>
+    </div>
+    <div class="offcanvas-body d-flex flex-column" id="algorithms-body">
+      <div class="oc-body monte-carlo pb-5" style="max-height: 60%">
+        <h4>Estimate</h4>
+        <div class="monte-area" style="max-height: 100%">
+          <button type="button" class="btn btn-primary" id="insert-monte-btn">
+            Setup Monte Carlo
+          </button>
+        </div>
       </div>
       <div class="oc-body csg pb-5 mt-2">
-          <h4>Exact</h4>
-          <div class="csg-area" style="max-height: 100%;">
-            <button type="button" class="btn btn-primary" id="insert-csg-btn">Setup exact calculation</button>
-          </div>
+        <h4>Exact</h4>
+        <div class="csg-area" style="max-height: 100%">
+          <button type="button" class="btn btn-primary" id="insert-csg-btn">
+            Setup exact calculation
+          </button>
+        </div>
       </div>
+    </div>
   </div>
-</div>
 
-    <!-- ThreeJS Canvas -->
-    <canvas id="threeJsCanvas"></canvas>
-    <!-- Context menu -->
-    <ul class="context" id="contextMenu">
-      <li class="context-link" id="shapeSettings">
-        <ion-icon name="settings-outline"></ion-icon>
-        <span class="context-label">Shape Settings</span>
-      </li>
-      <li class="context-link" id="saveShape">
-        <ion-icon name="save-outline"></ion-icon>
-        <span class="context-label">Save Shape</span>
-      </li>
-      <li class="context-link" id="shapeProperties">
-        <ion-icon name="information-circle-outline"></ion-icon>
-        <span class="context-label">Shape Info</span>
-      </li>
-    </ul>
+  <!-- ThreeJS Canvas -->
+  <canvas id="threeJsCanvas"></canvas>
+  <!-- Context menu -->
+  <ul class="context" id="contextMenu">
+    <li class="context-link" id="shapeSettings">
+      <ion-icon name="settings-outline"></ion-icon>
+      <span class="context-label">Shape Settings</span>
+    </li>
+    <li class="context-link" id="saveShape">
+      <ion-icon name="save-outline"></ion-icon>
+      <span class="context-label">Save Shape</span>
+    </li>
+    <li class="context-link" id="shapeProperties">
+      <ion-icon name="information-circle-outline"></ion-icon>
+      <span class="context-label">Shape Info</span>
+    </li>
+  </ul>
 
-   <!-- Modal for Shape Settings -->
+  <!-- Modal for Shape Settings -->
   <div id="shapeSettingsProperties" class="modal">
     <div class="modal-content">
       <span class="close">&times;</span>
       <h2>Shape Information</h2>
-        <p id="infoID">ID</p>
-        <p id="infoNumVertices">Vertices</p>
-        <p id="infoNumFaces">Faces</p>
-  </div>
+      <p id="infoID">ID</p>
+      <p id="infoNumVertices">Vertices</p>
+      <p id="infoNumFaces">Faces</p>
+    </div>
   </div>
 
   <div id="shapeSettingsModal" class="modal">
@@ -131,31 +181,44 @@
       <span class="close" id="closeSettings">&times;</span>
       <h2>Shape Settings</h2>
       <form>
-        <input type="color" value="#652802" id="colourPicker"/>
+        <input type="color" value="#652802" id="colourPicker" />
         <label for="colourPicker">Shape colour</label>
-        <br/>
-        <input type="checkbox" id="wireframe">
+        <br />
+        <input type="checkbox" id="wireframe" />
         <label for="wireframe">Wireframe</label>
-        <br>
-        <input type="range" max="1" min="0.05" step="0.05" id="opacity">
-        <label for="opacity">Opacity: <output id="opacityValue"></output></label>
-        <br>
+        <br />
+        <input type="range" max="1" min="0.05" step="0.05" id="opacity" />
+        <label for="opacity"
+          >Opacity: <output id="opacityValue"></output
+        ></label>
+        <br />
         <button type="button" id="applySettings">Apply</button>
       </form>
     </div>
   </div>
 
-     <!-- Modal for Shape Settings -->
-    <div id="saveShapeModal" class="modal">
-      <div class="modal-content">
-        <span class="close" id="closeSave">&times;</span>
-        <h2>Save Shape</h2>
-          <label for="savedName" style="margin-bottom: 0px;">Shape name</label>
-          <input type="text" id="savedName"/>
-          <button type="button" id="applySave">Apply</button>
+  <!-- Modal for Saving Shape -->
+  <div id="saveShapeModal" class="modal">
+    <div class="modal-content">
+      <span class="close" id="closeSave">&times;</span>
+      <h2>Save Shape</h2>
+      <label for="savedName" style="margin-bottom: 0px">Shape name</label>
+      <input type="text" id="savedName" />
+      <button type="button" id="applySave">Apply</button>
+    </div>
+  </div>
+
+  <div id="clearSceneWarning" class="modal">
+    <div class="modal-content">
+      <h2>Clear scene?</h2>
+      <div id="clear-buttons">
+        <button type="button" id="cancelClear" class="btn btn-secondary">Cancel</button>
+        <button type="button" id="applyClear" class="btn btn-primary" >Clear</button>
       </div>
     </div>
+  </div>
 
   <script type="module" src="dist/3d/assets/index.js"></script>
   <script src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+</div>

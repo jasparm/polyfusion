@@ -58,4 +58,14 @@ export class ShapeManager {
     });
     return shapes;
   }
+
+  /**
+   * Clears all shapes from the shape manager and the scene.
+   */
+  clearAllShapes() {
+    this.shapesMap.forEach((shape) => {
+      this.scene.remove(shape.group);
+    });
+    this.shapesMap.clear();
+  }
 }
