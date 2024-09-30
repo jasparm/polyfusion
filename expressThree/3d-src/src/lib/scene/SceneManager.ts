@@ -50,6 +50,10 @@ export default class SceneManager {
     this.farPlane = 10000;
     this.canvasId = canvasId;
 
+    const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]')
+    // @ts-ignore bootstrap is imported in layout ejs
+    const tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl));
+
   }
 
   init() {
