@@ -1,7 +1,9 @@
 import { Shape } from "./Shape.js";
 import { monteCarlo } from "./monteCarlo.js";
-import { completeShape } from "./shapeUtils.js";
+import { completeShape, rgbToHex, hexToRgb } from "./shapeUtils.js";
 import { sutherlandHodgman } from "./intersection.js";
+
+const DEFAULT_SHAPE_COLOUR = "rgb(180, 180, 180)"
 
 // Initialising tooltips for bootstrap
 const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]')
@@ -85,17 +87,36 @@ export let setup = () => {
         resetSelectShape();
     });
 
+    //!!!!!! HELLO HELLO HELLO
     // Editing a shape
     const editShapeButton = select('#edit-shape-btn');
     editShapeButton.mousePressed(() => {
+        // Toggling edit mode
         if (!document.getElementById("edit-shape-btn").classList.contains("disabled")) {
             state.editMode = !state.editMode
+            console.log(state.editMode)
         }
+        // Now, we need to flesh out the offcanvas element with our selected shape
         if (state.editMode) {
+            // If I have coded correctly, we should only have 1 selected shape when we are able to edit.
             let selectedShape = state.selectedShapes[0];
-        } else {
+            // Populating our offcanvas with the details:
+            document.getElementById('shape-name-input').value = selectedShape.name || '';
+            document.getElementById('shape-colour-input').value = rgbToHex(selectedShape.colour) || '#000000';
+            document.getElementById('shape-points').textContent = `Points: ${selectedShape.points.map(p => `(${p.x}, ${p.y})`).join(', ')}`;
+            document.getElementById('shape-vertices').textContent = `Vertices: ${selectedShape.numVertices}`;
+            document.getElementById('shape-area').textContent = `Area: ${selectedShape.area}`;
+
         }
     })
+
+    // Event listeners for the edit shape mode
+    document.getElementById('shape-colour-input').addEventListener('input', (event) => {
+        // We need to find what shape it is.
+        let selectedShape = state.selectedShapes[0];
+        // Now changing colour of the shape
+        selectedShape.colour = hexToRgb(event.target.value);
+    });
 
     // Monte Carlo
     const monteCarloButton = select('#monte-btn');
@@ -216,6 +237,11 @@ export let setup = () => {
         // Resets our points and shapes.
         state.shapes = [];
         state.points = [];
+        state.pointsOfIntersection = []
+        state.intersectLines = []
+        state.enclosedLines = []
+        state.undoPoints = []
+        state.movingShapes = []
         if (state.selectShapeMode) {
             resetSelectShape();
         };
@@ -269,6 +295,7 @@ export function resetSelectShape() {
         document.getElementById("edit-shape-btn").classList.add("disabled");
         document.getElementById("edit-shape-icon").classList.add("disabled");
         // Resetting intersection
+        console.log("Resetting points of intersection")
         state.pointsOfIntersection = [];
         // Updating html canvas elements
         selectIcon.class("fa-solid fa-hand-pointer fa-xl");
@@ -276,6 +303,7 @@ export function resetSelectShape() {
         selectTip._config.title = "Select Shape";
 
         state.selectShapeMode = false;
+        state.editMode = false;
     }
     else {
         // Updating html canvas elements
@@ -347,7 +375,7 @@ function generateDefaultShapes() {
         [600, 450],
         [300, 450]];
 
-    let aSquare = new Shape(squarePoints);
+    let aSquare = new Shape(squarePoints, DEFAULT_SHAPE_COLOUR);
     aSquare.name = "Square";
     defaultShapes.push(aSquare);
 
@@ -358,7 +386,7 @@ function generateDefaultShapes() {
         [300,450]
     ];
 
-    let aTriangle = new Shape(trianglePoints);
+    let aTriangle = new Shape(trianglePoints, DEFAULT_SHAPE_COLOUR);
     aTriangle.name = "Triangle";
     defaultShapes.push(aTriangle);
 
@@ -407,7 +435,7 @@ function handleShapeSelection(shape) {
     for (let p of shape.points) {
         newPoints.push(createVector(p[0], p[1]));
     };
-    let selectedShape = new Shape(newPoints);
+    let selectedShape = new Shape(newPoints, shape.colour);
     state.shapes.push(selectedShape);
 };
 

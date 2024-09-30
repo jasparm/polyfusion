@@ -16,7 +16,7 @@
          data-bs-toggle="tooltip"
          data-bs-placement="right"
          data-bs-title="Edit Shape">
-        <i class="fa-solid fa-gear fa-xl"
+        <i class="fa-solid fa-gear fa-xl disabled"
            id="edit-shape-icon"
            data-bs-toggle="offcanvas"
            data-bs-placement="right"
@@ -24,7 +24,7 @@
            data-bs-target="#offcanvasEdit"
            aria-controls="offCanvasRight"></i>
     </div>
-    <div class="btn toolbar-btn dropdown" id="load-shape-btn"
+    <div class="btn toolbar-btn" id="load-shape-btn"
         data-bs-toggle="tooltip"
         data-bs-placement="right"
         data-bs-title="Load Shapes">
@@ -138,16 +138,21 @@
     <div class="offcanvas-body d-flex flex-column">
         <div class="oc-body edit-shape-name">
             <h5>Shape Name</h5>
+            <input type="text" id="shape-name-input" class="form-control" placeholder="Enter shape name">
         </div>
         <div class="oc-body edit-shape-colour mt-2">
             <h5>Shape Colour</h5>
+            <input type="color" id="shape-colour-input" class="form-control-color">
         </div>
-        <div class="oc-body display-shape-canvas mt-2">
-            <h5>Canvas</h5>
-            <div class="shape-canvas" id="display-canvas-container">
-
-            </div>
+        <div class="oc-body shape-data mt-2 mb-2">
+            <h5>Info</h5>
+            <p id="shape-points">Points: </p>
+            <p id="shape-vertices">Vertices: </p>
+            <p id="shape-area">Area: </p>
         </div>
+        <button id="update-shape" type="submit" class="btn" data-bs-dismiss="offcanvas">
+            Update Shape
+        </button>
     </div>
 </div>
 

@@ -12,7 +12,7 @@ window.mouseMoved = mouseMoved;
 // Draw method. Handles what we see on the canvas.
 window.draw = () => {
     // Background colour of the canvas
-    const backColor = getComputedStyle(document.documentElement).getPropertyValue('--background-colour');
+    const backColor = getComputedStyle(document.documentElement).getPropertyValue('--canvas-colour');
     background(backColor);
     // Drawing monte carlo
     if (state.monteCarloMode) {
@@ -29,11 +29,11 @@ window.draw = () => {
     }
     // Drawing all shapes on the canvas
     for (let shape of state.shapes) {
-        if (shape.selected) {
+        if (shape.selected && !state.editMode) {
             stroke('white');
         }
         else {
-            stroke(DEFAULT_SHAPE_COLOUR);
+            stroke(shape.colour);
         }
         drawShape(shape.points);
     };

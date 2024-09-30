@@ -17,6 +17,7 @@ export class CustomBox extends CustomShape {
     this.height = height;
     this.colour = colour;
     this.vertexManager.init(this.createVertices())
+    this.name = "Cube";
 
     this.init();
 
