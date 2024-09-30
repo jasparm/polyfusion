@@ -86,12 +86,12 @@ app.get("/landing", (req, res) => {
     res.render("landing", { title: "Polyfusion", savedShapes: savedShapes });
 })
 
-app.get("/login", (req, res) => {
-    res.render("login", { title: "Polyfusion", savedShapes: savedShapes });
+app.get("/log_in", (req, res) => {
+    res.render("log_in", { title: "Polyfusion", savedShapes: savedShapes });
 })
 
-app.get("/signup", (req, res) => {
-    res.render("signup", { title: "Polyfusion", savedShapes: savedShapes });
+app.get("/sign_up", (req, res) => {
+    res.render("sign_up", { title: "Polyfusion", savedShapes: savedShapes });
 })
 
 const signup = async (user, pass) => {
@@ -142,7 +142,7 @@ app.post("/signup", async (req, res) => {
     const { user, pass } = req.body;
     try {
         await signup(user, pass);
-        res.redirect("/login");
+        res.redirect("/log_in");
     } catch (error) {
         res.status(400).send("Signup failed: " + error.message);
     }
