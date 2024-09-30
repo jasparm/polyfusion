@@ -12,7 +12,7 @@ window.mouseMoved = mouseMoved;
 // Draw method. Handles what we see on the canvas.
 window.draw = () => {
     // Background colour of the canvas
-    const backColor = getComputedStyle(document.documentElement).getPropertyValue('--background-colour');
+    const backColor = getComputedStyle(document.documentElement).getPropertyValue('--canvas-colour');
     background(backColor);
     // Drawing monte carlo
     if (state.monteCarloMode) {
