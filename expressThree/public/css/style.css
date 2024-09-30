@@ -142,14 +142,54 @@ nav {
 
 .edit-shape-name {
   height: 20%;
+  background-color: rgb(50, 50, 50);
+
+  input {
+    background-color: rgb(33, 33, 33);
+    color: white;
+    border: none;
+    caret-color: white;
+
+    &::placeholder {
+      color: rgb(135, 135, 135);
+    }
+
+    &:focus {
+      outline: 4px solid rgb(0, 183, 255);
+      background-color: rgb(33, 33, 33);
+
+
+    }
+  }
+}
+
+#update-shape {
+  background-color: rgb(50, 50, 50);
+  color: white;
+  border-radius: 10px;
+  border: 3px solid rgb(33, 33, 33);
+  width: 40%;
+
+  &:hover {
+    border: 3px solid rgb(55, 254, 114);
+  }
+
 }
 
 .edit-shape-colour {
   height: 20%;
+
+  input {
+    width: 100%;
+    border-radius: 10px;
+    background-color: rgb(50, 50, 50);
+    border: none;
+  }
 }
 
 .shape-data {
-  height: 60%;
+  height: 40%;
+  color: white;
 }
 
 .offcanvas-body {
