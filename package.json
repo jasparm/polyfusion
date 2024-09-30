@@ -8,7 +8,7 @@
     "client-dependencies": "npm install --prefix client",
     "install-all-deps": "concurrently \"npm run server-dependencies\" \"npm run client-dependencies\"",
     "server": "node server/index.js",
-    "client": "npm start --prefix client",
+    "client": "npm start --prefix expressThree",
     "dev": "concurrently \"npm run server\" \"npm run client\"",
     "test": "mocha --recursive 'test/**/*.test.js'"
   },
@@ -16,12 +16,15 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "axios": "^1.7.7",
     "concurrently": "^8.2.2",
     "cross-env": "^7.0.3",
     "dat.gui": "^0.7.9",
     "express": "^4.19.2",
+    "express-ejs-layouts": "^2.5.1",
     "three": "^0.165.0",
-    "ts-node": "^10.9.2"
+    "ts-node": "^10.9.2",
+    "vite": "^5.4.8"
   },
   "devDependencies": {
     "chai": "^5.1.1",
