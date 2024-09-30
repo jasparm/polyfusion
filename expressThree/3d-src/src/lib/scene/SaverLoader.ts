@@ -43,14 +43,14 @@ export class SaverLoader {
     imageSaver.shape = shape;
     const image = imageSaver.exportImage();
 
-    const id = customID ? customID : shape.id;
+    const id = customID ? customID.trim() : shape.id;
     const data = this.serializeShape(shape);
     const shapeData = {
       name: id,
       image: image,
       data: data,
     }
-    
+
 
     try {
       const url = "http://127.0.0.1:3000/storeshape";

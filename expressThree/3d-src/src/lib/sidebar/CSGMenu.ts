@@ -102,7 +102,6 @@ export default class CSGMenu {
     if (!this.selectBtn.classList.contains("disabled")) {
       const selectedShape = this.scene.controller.getCustomShape();
       if (selectedShape && !this.selectedShapes.includes(selectedShape)) {
-        console.log("hello");
         this.selectedShapes.push(selectedShape);
         this.populateDiv();
       }

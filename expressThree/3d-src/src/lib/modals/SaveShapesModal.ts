@@ -39,7 +39,7 @@ export class SaveShapesModal implements Modal {
         this.applyButton.parentNode?.replaceChild(newApplyButton, this.applyButton);
         this.applyButton = newApplyButton;
         const nameForm = document.getElementById("savedName");
-        (nameForm as HTMLInputElement).value = "";
+        (nameForm as HTMLInputElement).value = "Shape";
 
         setTimeout(() => {
             nameForm?.focus();

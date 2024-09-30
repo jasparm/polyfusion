@@ -187,13 +187,19 @@ export class ButtonHandler {
         }
 
         try {
-            const shapes: any[] = await SaverLoader.loadShapes(token);
+            let shapes: string[] = await SaverLoader.loadShapes(token);
+            // shapes = shapes.map(shape => shape.trim());
             // this gets all the shape data need from the backend
             const loadedShapes: shapeData[] = (await Promise.all(
                 shapes.map(async (name) => {
                     // internal try-catch to deal with null returns from undefined names
                     // this way it will populate other shapes even if one is undefined.
                     try {
+                        // modify name if it ends with a white space - shouldn't be able to be set but just in case
+                        if (name.trim() !== name) {
+                            name = name.trim();
+                            name = `${name}%20`
+                        }
                         const shapeData = await SaverLoader.getShapeData(token, name);
                         return {
                             shape: CustomShape.fromJSON(shapeData.data),
@@ -254,7 +260,6 @@ export class ButtonHandler {
                 iconBox.appendChild(icon);
             }
             
-
             const shapeName = document.createElement('p');
             shapeName.textContent = element.name;
 
@@ -277,7 +282,10 @@ export class ButtonHandler {
 
             // Event listener that adds the shape to the scene if it is clicked.
             shapeBox.addEventListener('click', () => {
-                this.scene.add(element.shape.clone());
+                const clonedShape = element.shape.clone();
+                clonedShape.name = element.name;
+
+                this.scene.add(clonedShape);
             });
 
             shapesList.appendChild(shapeBox);

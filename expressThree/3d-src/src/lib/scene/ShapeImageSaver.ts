@@ -17,7 +17,7 @@ export default class ShapeImageShaver {
         this.scene = new THREE.Scene();
         this.rendererExport = new THREE.WebGLRenderer( {antialias: true, alpha: true} );
         this.imageSize = imageSize;
-        this.camera = new THREE.PerspectiveCamera(45, imageSize.width / imageSize.height, 0.01, 100);
+        this.camera = new THREE.PerspectiveCamera(45, imageSize.width / imageSize.height, 0.01, 10000);
         this.camera.layers.enable(1); // this is the layer for lines on meshes
         this.camera.layers.enable(2); // this is the layer for balls on vertices
 
