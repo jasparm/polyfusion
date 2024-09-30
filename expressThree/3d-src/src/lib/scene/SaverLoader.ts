@@ -2,6 +2,7 @@ import axios from "axios";
 
 import { CustomShape } from "../shapes/CustomShape.ts";
 import SceneManager from "./SceneManager.js";
+import ShapeImageShaver from "./ShapeImageSaver.ts";
 
 
 export class SaverLoader {
@@ -38,12 +39,18 @@ export class SaverLoader {
   }
 
   static async saveShape(shape: CustomShape, token: string, customID?: string | null) {
+    const imageSaver = new ShapeImageShaver({width: 50, height: 50});
+    imageSaver.shape = shape;
+    const image = imageSaver.exportImage();
+
     const id = customID ? customID : shape.id;
     const data = this.serializeShape(shape);
     const shapeData = {
       name: id,
+      image: image,
       data: data,
     }
+    
 
     try {
       const url = "http://127.0.0.1:3000/storeshape";
