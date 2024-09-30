@@ -17,6 +17,7 @@ import CSGMenu from "./CSGMenu.ts";
 type shapeData = {
     shape: CustomShape,
     name: string,
+    image: string | null, 
     custom: boolean
 }
 
@@ -171,6 +172,7 @@ export class ButtonHandler {
         const shapeDataArray: shapeData[] = shapes.map((shape, index) => ({
             shape: shape,
             name: shape.name,
+            image: null,
             custom: false,
         }));
         this.populateShapeList(shapesList, shapeDataArray);
@@ -187,13 +189,24 @@ export class ButtonHandler {
         try {
             const shapes: any[] = await SaverLoader.loadShapes(token);
             // this gets all the shape data need from the backend
-            const loadedShapes: shapeData[] = await Promise.all(
-            shapes.map(async (name) => ({
-                    shape: CustomShape.fromJSON((await SaverLoader.getShapeData(token,name)).data),
-                    name: name,
-                    custom: true
-                }))
-        );
+            const loadedShapes: shapeData[] = (await Promise.all(
+                shapes.map(async (name) => {
+                    // internal try-catch to deal with null returns from undefined names
+                    // this way it will populate other shapes even if one is undefined.
+                    try {
+                        const shapeData = await SaverLoader.getShapeData(token, name);
+                        return {
+                            shape: CustomShape.fromJSON(shapeData.data),
+                            name: name,
+                            image: shapeData.image,
+                            custom: true
+                        };
+                    } catch (error) {
+                        console.warn(`Could not fetch shape: ${name}`, error);
+                        return null; // Return null to filter it out later
+                    }
+                })
+            )).filter((shape): shape is shapeData => shape !== null);
 
             const shapesList = document.querySelector(".shapes-list");
             if (!shapesList) {
@@ -227,9 +240,20 @@ export class ButtonHandler {
             const iconBox = document.createElement('div');
             iconBox.className = 'icon-box';
             // eventually change this to be png of the shape (if ever possible)
-            const icon = document.createElement('i');
-            icon.className = 'fa-solid fa-cube fa-lg';
-            iconBox.appendChild(icon);
+            if (element.image != null) {
+                const img = document.createElement('img');
+                img.src = element.image as string;
+                img.alt = `Shape ${index}`;
+                img.className = 'shape-icon';
+
+                iconBox.appendChild(img);
+            } else {
+                // if no image, just use generic icon
+                const icon = document.createElement('i');
+                icon.className = 'fa-solid fa-cube fa-lg';
+                iconBox.appendChild(icon);
+            }
+            
 
             const shapeName = document.createElement('p');
             shapeName.textContent = element.name;
