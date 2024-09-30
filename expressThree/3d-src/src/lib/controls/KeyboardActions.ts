@@ -15,28 +15,31 @@ export function onKeyDown(event: KeyboardEvent, controller: Controller) {
   // When shift is pressed and a shape is selected, we want to temporarily disable the selection in order to move the camera
   if (key === "ShiftLeft" && controller.state === ControllerState.ShapeSelected) {
     // This means we currently have a shape selected
+    const temp = controller.selectedGroup;
     controller.unselectShapes();
+    controller.selectedGroup = temp;
     controller.checkForShapes = false;
     shapeSelected = true;
   }
 
   // Changing between transform and rotate when selected.
-  if (key === "KeyR" && controller.state === ControllerState.ShapeSelected) {
-    controller.movementState = MovementState.Rotate;
-    controller.transformControls.setMode("rotate");
+  if (key === "KeyE" && controller.state === ControllerState.ShapeSelected) {
+    controller.setMovementState(MovementState.Rotate);
   }
   // If T is pressed, change the mode to translation
-  if (key === "KeyT" && controller.state === ControllerState.ShapeSelected) {
-    controller.movementState = MovementState.Transform;
-    controller.transformControls.setMode("translate");
+  if (key === "KeyW" && controller.state === ControllerState.ShapeSelected) {
+    controller.setMovementState(MovementState.Transform)
   }
   // If S is pressed, change the mode to scale
-  if (key === "KeyS" && controller.state === ControllerState.ShapeSelected) {
-    controller.movementState = MovementState.Scale;
-    controller.transformControls.setMode("scale");
+  if (key === "KeyR" && controller.state === ControllerState.ShapeSelected) {
+    controller.setMovementState(MovementState.Scale);
   }
   // If I is pressed, we begin trying to insert a new vertex
   if (key === "KeyI" && controller.state === ControllerState.ShapeSelected) {
+    const customShape = controller.getCustomShape();
+    if (!customShape || customShape.id === "MonteBox") {
+      return; // if we are selecting monte box, do not allow for vertexes to be inserted
+    }
     controller.insertDistance = 1;
     controller.insertVertex();
   }
@@ -56,11 +59,16 @@ export function onKeyDown(event: KeyboardEvent, controller: Controller) {
     inserting = false;
     controller.state = ControllerState.Normal;
   }
-  // Undo
-  if (event.ctrlKey && key == "KeyZ") {
-    // controller.undoManager.undo();
-    event.preventDefault();
+  // Delete selected shape from scene
+  if (key === "Delete" && controller.state === ControllerState.ShapeSelected) {
+    const shape = controller.getCustomShape()
+    if (!shape) { return; }
+    controller.shapeManager.remove(shape.id);
+
+    controller.unselectShapes();
   }
+
+
 }
 
 /**

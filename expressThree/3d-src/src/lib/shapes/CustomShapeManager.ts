@@ -24,6 +24,20 @@ export class ShapeManager {
   }
 
   /**
+   * Removes a shape from the shape manager and the scene.
+   * @param id
+   */
+  remove(id: string): boolean {
+    const shape = this.shapesMap.get(id);
+    if (shape) {
+      this.scene.remove(shape.group);
+      this.shapesMap.delete(id);
+      return true;
+    }
+    return false;
+  }
+
+  /**
    * Given an ID, returns the instance of that shape in the scene.
    * If the shape is not in the scene, returns undefined.
    * @param id
@@ -43,5 +57,15 @@ export class ShapeManager {
       shapes.push(value)
     });
     return shapes;
+  }
+
+  /**
+   * Clears all shapes from the shape manager and the scene.
+   */
+  clearAllShapes() {
+    this.shapesMap.forEach((shape) => {
+      this.scene.remove(shape.group);
+    });
+    this.shapesMap.clear();
   }
 }
