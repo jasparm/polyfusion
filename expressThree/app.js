@@ -96,7 +96,7 @@ app.get("/signup", (req, res) => {
 
 const signup = async (user, pass) => {
     try {
-        const url = "http://127.0.0.1:3000/signup";
+        const url = "http://127.0.0.1:3001/signup";
 
         const data = {
             user: user,
@@ -117,7 +117,7 @@ const signup = async (user, pass) => {
 
 const login = async (user , pass) => {
     try {
-        const url = "http://127.0.0.1:3000/login";
+        const url = "http://127.0.0.1:3001/login";
 
         const data = {
             user: user,

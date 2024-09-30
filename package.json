@@ -8,7 +8,7 @@
     "client-dependencies": "npm install --prefix client",
     "install-all-deps": "concurrently \"npm run server-dependencies\" \"npm run client-dependencies\"",
     "server": "node server/index.js",
-    "client": "npm start --prefix client",
+    "client": "npm start --prefix expressThree",
     "dev": "concurrently \"npm run server\" \"npm run client\"",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
