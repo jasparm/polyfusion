@@ -338,7 +338,7 @@ i {
 .modal {
   display: none; /* Hidden by default */
   position: fixed; /* Stay in place */
-  z-index: 100; /* Sit on top */
+  z-index: 1050; /* Sit on top */
   left: 0;
   top: 0;
   width: 100%; /* Full width */
@@ -353,6 +353,7 @@ i {
   display: flex;
   flex-direction: column;
   align-items: center;
+  z-index: 1051; /* Sit on top */
   background-color: rgb(50, 50, 50);
   border-radius: 15px;
   padding: 10px;

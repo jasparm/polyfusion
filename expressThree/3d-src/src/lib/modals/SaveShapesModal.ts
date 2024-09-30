@@ -38,14 +38,20 @@ export class SaveShapesModal implements Modal {
         const newApplyButton = this.applyButton.cloneNode(true) as HTMLElement;
         this.applyButton.parentNode?.replaceChild(newApplyButton, this.applyButton);
         this.applyButton = newApplyButton;
+        const nameForm = document.getElementById("savedName");
+        (nameForm as HTMLInputElement).value = "";
+
+        setTimeout(() => {
+            nameForm?.focus();
+        }, 200) // delay slightly to ensure that modal is fully visible
+
 
         // Event listener for the apply button
         const token = localStorage.getItem('authToken');
         if (token) {
             this.applyButton.addEventListener("click", (event) => {      
-                const name = document.getElementById("savedName");
-                const nameString = (name as HTMLInputElement).value;
-                const savedName = name ? nameString : null;
+                const nameString = (nameForm as HTMLInputElement).value;
+                const savedName = nameForm ? nameString : null;
 
                 this.saveShape(shape, savedName, token);
                 this.modalElement.style.display = "none";
