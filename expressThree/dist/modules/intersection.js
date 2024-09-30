@@ -64,7 +64,7 @@ function getIntersections(shape1, shape2) {
 
 
 function isValidPoint(x, y) {
-    return !isNaN(x) && !isNaN(y) && (typeof x !== 'undefined') && (typeof y !== 'undefined')
+    return isFinite(x) && isFinite(y) && (typeof x !== 'undefined') && (typeof y !== 'undefined')
 }
 // Checks if the line is entirely inside a polygon.
 function lineInPolygon(line1, line2, shape1, shape2) {

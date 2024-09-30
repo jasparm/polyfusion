@@ -217,8 +217,6 @@ export let setup = () => {
         state.shapes = [];
         state.points = [];
         state.pointsOfIntersection = []
-        state.unionPoints = []
-        state.intersectPoints = []
         state.intersectLines = []
         state.enclosedLines = []
         state.undoPoints = []

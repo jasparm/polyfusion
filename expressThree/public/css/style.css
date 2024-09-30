@@ -127,7 +127,7 @@ nav {
 
 .oc-body {
   background-color: rgb(50, 50, 50);
-  border-radius: 15px;
+  border-radius: 10px;
   padding: 10px;
 }
 
@@ -148,15 +148,8 @@ nav {
   height: 20%;
 }
 
-.display-shape-canvas {
+.shape-data {
   height: 60%;
-}
-
-.shape-canvas {
-  background-color: rgb(75, 75, 75);
-  border-radius: 5px;
-  padding: 10px;
-  height: 85%;
 }
 
 .offcanvas-body {
