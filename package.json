@@ -7,7 +7,7 @@
     "server-dependencies": "npm install",
     "client-dependencies": "npm install --prefix client",
     "install-all-deps": "concurrently \"npm run server-dependencies\" \"npm run client-dependencies\"",
-    "server": "node server/index.js",
+    "server": "cd server && npx ts-node index.ts",
     "client": "npm start --prefix expressThree",
     "dev": "concurrently \"npm run server\" \"npm run client\"",
     "test": "mocha --recursive 'test/**/*.test.js'"
