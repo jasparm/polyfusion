@@ -20,7 +20,9 @@
     "cross-env": "^7.0.3",
     "dat.gui": "^0.7.9",
     "express": "^4.19.2",
+    "express-ejs-layouts": "^2.5.1",
     "express-session": "^1.18.0",
+    "react-scripts": "^5.0.1",
     "three": "^0.165.0"
   }
 }

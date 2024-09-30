@@ -54,7 +54,7 @@ app.get('/shapes', (req, res) => {
 
 // Only serving home page for now.
 app.get("/", (req, res) => {
-    res.render("index", { title: "Polyfusion", savedShapes: savedShapes });
+    res.redirect("/landing");
 });
 
 // Using a post request to save shapes for now
@@ -80,3 +80,16 @@ app.get("/3d", (req, res) => {
 app.get("/2d", (req, res) => {
     res.render("2d", { title: "Polyfusion", savedShapes: savedShapes });
 })
+
+app.get("/landing", (req, res) => {
+    res.render("landing", { title: "Polyfusion", savedShapes: savedShapes });
+})
+
+app.get("/login", (req, res) => {
+    res.render("login", { title: "Polyfusion", savedShapes: savedShapes });
+})
+
+app.get("/signup", (req, res) => {
+    res.render("signup", { title: "Polyfusion", savedShapes: savedShapes });
+})
+
