@@ -1,4 +1,12 @@
 :root {
+  --canvas-colour: rgb(20, 20, 20);
+  --nav-colour: rgb(25, 25, 25);
+  --layer-1: rgb(33, 33, 33);
+  --layer-2: rgb(50, 50, 50);
+  --layer-3: rgb(60, 60, 60);
+  --layer-4: rgb(75, 75, 75);
+  --layer-5: rgb(110, 110, 110);
+
   --background-colour: rgb(20, 20, 20);
   --line-color: rgb(180, 180, 180);
 }
@@ -10,15 +18,15 @@ body, html {
   overflow-y: scroll;
   width: 100%;
   height: 100%;
-  background-color: rgb(33, 33, 33);
+  background-color: var(--layer-1);
 }
 
 nav {
-  background-color: rgb(25, 25, 25);
+  background-color: var(--nav-colour);
 }
 
 .card.title-card {
-  background: rgb(33, 33, 33);
+  background: var(--layer-1);
   color: white;
   height: 60px;
   display: flex;
@@ -47,7 +55,7 @@ nav {
   display: flex;
   flex-direction: column;
   height: 70%;
-  background-color: rgb(33, 33, 33);
+  background-color: var(--layer-1);
   align-items: center;
   justify-content: space-around;
   border-top-right-radius: 15px;
@@ -62,16 +70,16 @@ nav {
   text-align: center;
   justify-content: center;
   align-items: center;
-  background-color: rgb(75, 75, 75);
+  background-color: var(--layer-4);
   transition: background-color border 0.3s;
   border: none;
 
   &:hover {
-    background-color: rgb(110, 110, 110);
+    background-color: var(--layer-5);
   }
 
   &.disabled {
-    background-color: rgb(58, 58, 58);
+    background-color: var(--layer-3);
     pointer-events: all;
     &:hover {
       cursor: not-allowed;
@@ -86,7 +94,7 @@ nav {
 }
 
 .offcanvas {
-  background-color: rgb(33, 33, 33);
+  background-color: var(--layer-1);
   border-top-left-radius: 15px;
   border-bottom-left-radius: 15px;
   margin-top: 160px;
@@ -110,12 +118,12 @@ nav {
 }
 
 #saveShapeForm {
-  background-color: rgb(50, 50, 50);
+  background-color: var(--layer-2);
   border-radius: 15px;
   padding: 10px;
 
   input {
-    background-color: rgb(33, 33, 33);
+    background-color: var(--layer-1);
     color: white;
     border: none;
     caret-color: white;
@@ -126,10 +134,10 @@ nav {
   }
 
   .btn {
-    background-color: rgb(75, 75, 75);
+    background-color: var(--layer-4);
     color: white;
     border-radius: 15px;
-    border: 3px solid rgb(50, 50, 50);
+    border: 3px solid var(--layer-2);
 
     &:hover {
       border: 3px solid rgb(55, 254, 114);
@@ -138,8 +146,8 @@ nav {
 }
 
 .oc-body {
-  background-color: rgb(50, 50, 50);
-  border-radius: 15px;
+  background-color: var(--layer-2);
+  border-radius: 10px;
   padding: 10px;
 }
 
@@ -154,21 +162,54 @@ nav {
 
 .edit-shape-name {
   height: 20%;
+  background-color: var(--layer-2);
+
+  input {
+    background-color: var(--layer-1);
+    color: white;
+    border: none;
+    caret-color: white;
+
+    &::placeholder {
+      color: var(--layer-5);
+    }
+
+    &:focus {
+      outline: 4px solid rgb(0, 183, 255);
+      background-color: var(--layer-1);
+
+
+    }
+  }
+}
+
+#update-shape {
+  background-color: var(--layer-2);
+  color: white;
+  border-radius: 10px;
+  border: 3px solid var(--layer-1);
+  width: 40%;
+
+  &:hover {
+    border: 3px solid rgb(55, 254, 114);
+  }
+
 }
 
 .edit-shape-colour {
   height: 20%;
+
+  input {
+    width: 100%;
+    border-radius: 10px;
+    background-color: var(--layer-2);
+    border: none;
+  }
 }
 
-.display-shape-canvas {
-  height: 60%;
-}
-
-.shape-canvas {
-  background-color: rgb(75, 75, 75);
-  border-radius: 5px;
-  padding: 10px;
-  height: 85%;
+.shape-data {
+  height: 40%;
+  color: white;
 }
 
 .offcanvas-body {
@@ -184,7 +225,7 @@ nav {
 }
 
 .shape-box {
-  background-color: rgb(60, 60, 60);
+  background-color: var(--layer-3);
   margin-top: 6px;
   padding: 5px;
   border-radius: 10px;
@@ -206,7 +247,7 @@ nav {
   }
 
   &:hover {
-    background-color: rgb(75, 75, 75);
+    background-color: var(--layer-4);
   }
 
 }
