@@ -7,6 +7,7 @@ export class SaveShapesModal implements Modal {
     closeModalButton: Element;
 
     applyButton: HTMLElement;
+    shownElements: HTMLElement[] = [];
 
     constructor() {
         const saveModal = document.getElementById("saveShapeModal");
@@ -23,11 +24,13 @@ export class SaveShapesModal implements Modal {
 
         this.closeModalButton.addEventListener("click", () => {
             this.modalElement.style.display = "none";
+            this.showHiddenElements();
         });
 
         window.addEventListener("click", (event) => {
             if (event.target === this.modalElement) {
                 this.modalElement.style.display = "none";
+                this.showHiddenElements();
             }
         });
     }
@@ -41,7 +44,17 @@ export class SaveShapesModal implements Modal {
         const nameForm = document.getElementById("savedName");
         (nameForm as HTMLInputElement).value = "Shape";
 
+        const offcanvasElements = document.querySelectorAll('.offcanvas');
+        this.shownElements = [];
+
         setTimeout(() => {
+            offcanvasElements.forEach((element) => {
+                if (element.classList.contains('show')) {
+                    console.log("hello")
+                    this.shownElements.push(element as HTMLElement)
+                    element.classList.remove('show');
+                }
+            });
             nameForm?.focus();
         }, 200) // delay slightly to ensure that modal is fully visible
 
@@ -70,6 +83,14 @@ export class SaveShapesModal implements Modal {
         if (name && !(name in names)) {
             SaverLoader.saveShape(shape, token, name);
         }
+
+        this.showHiddenElements();
         
+    }
+
+    private showHiddenElements() {
+        this.shownElements.forEach((element) => {
+            element.classList.add("show");
+        })
     }
 }

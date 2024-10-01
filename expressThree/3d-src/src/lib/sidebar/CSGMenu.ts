@@ -110,7 +110,6 @@ export default class CSGMenu {
 
   updateSelectButtonState() {
     const shape = this.scene.controller.getCustomShape();
-    console.log(shape?.id);
 
     if (shape && !this.selectedShapes.includes(shape) && shape.id !== "MonteBox") {
       this.selectBtn.classList.remove("disabled");

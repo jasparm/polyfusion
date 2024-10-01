@@ -69,6 +69,9 @@ export class ContextMenu {
   }
 
   handleSaveShape() {
+    if (this.selectedShape.id == "MonteBox") {
+      return;
+    }
     this.saveShape.openModal(this.selectedShape);
   }
 

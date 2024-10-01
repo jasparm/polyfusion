@@ -188,6 +188,9 @@ export class ButtonHandler {
 
         try {
             let shapes: string[] = await SaverLoader.loadShapes(token);
+            if (!shapes) {
+                return;
+            }
             // shapes = shapes.map(shape => shape.trim());
             // this gets all the shape data need from the backend
             const loadedShapes: shapeData[] = (await Promise.all(
