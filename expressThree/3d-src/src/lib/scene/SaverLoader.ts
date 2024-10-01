@@ -49,7 +49,7 @@ export class SaverLoader {
       name: id,
       image: image,
       data: data,
-      type: "3d",
+      type: "3D",
     }
 
 
@@ -71,13 +71,13 @@ export class SaverLoader {
 
   static async loadShapes(token: string) {
     try {
-      const url = "http://127.0.0.1:3000/shapes";
+      const url = "http://127.0.0.1:3000/shapes/3D";
       const headers = {
           "Content-Type": "application/json",
           authorization: `Bearer ${token}`,
       };
-
       const response = await axios.get(url, { headers });
+      console.log(response)
       return response.data;
     } catch (error) {
       console.error(error);
@@ -86,15 +86,14 @@ export class SaverLoader {
 
   static async getShapeData(token: string, name: string) {
     try {
-      const url = `http://127.0.0.1:3000/shape:${name}`;
+      const url = `http://127.0.0.1:3000/shape/3D/${name}`;
       const headers = {
           "Content-Type": "application/json",
           authorization: `Bearer ${token}`,
       };
-
       const response = await axios.get(url, { headers });
-
-      if(response.data.type === '3d') {
+      console.log(response)
+      if(response.data.type === '3D') {
         console.log(response.data)
         return response.data;
       }
