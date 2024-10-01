@@ -12,6 +12,7 @@
 }
 
 
+
 body, html {
   overflow-x: hidden;
   scrollbar-width: none;
@@ -178,8 +179,6 @@ nav {
     &:focus {
       outline: 4px solid rgb(0, 183, 255);
       background-color: var(--layer-1);
-
-
     }
   }
 }
@@ -393,7 +392,7 @@ i {
   cursor: pointer;
 }
 
-form {
+#settings-form {
   display: flex;
   flex-direction: column;
   gap: 0px;
@@ -429,6 +428,28 @@ input[type="range"] {
   width: 75%;
 }
 
+/* Text Input */
+#savedName {
+  width: 100%;
+  padding: 10px;
+  margin: 8px 0;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 16px;
+  box-sizing: border-box; /* Makes padding and border part of the width */
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+  background-color: rgb(36, 36, 36);
+  color: rgb(206, 206, 206);
+  
+}
+
+#savedName:focus {
+  border-color: #007bff; /* Change border color on focus */
+  box-shadow: 0 0 5px rgba(0,123,255,0.5); /* Light blue shadow on focus */
+  outline: none; /* Remove default outline */
+  background-color: rgb(36, 36, 36);
+}
+
 
 /* Button styling */
 button#applySettings {
@@ -461,25 +482,7 @@ button#applySave:hover {
   background-color: #5a5a5a;
 }
 
-/* Text Input */
-input[type="text"] {
-  width: 100%;
-  padding: 10px;
-  margin: 8px 0;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  font-size: 16px;
-  box-sizing: border-box; /* Makes padding and border part of the width */
-  transition: border-color 0.3s ease, box-shadow 0.3s ease;
-  background-color: rgb(36, 36, 36);
-  color: rgb(206, 206, 206);
-}
 
-input[type="text"]:focus {
-  border-color: #007bff; /* Change border color on focus */
-  box-shadow: 0 0 5px rgba(0,123,255,0.5); /* Light blue shadow on focus */
-  outline: none; /* Remove default outline */
-}
 
 /* Align opacity label and value */
 #opacityValue {

@@ -5,6 +5,8 @@ import { state } from "./setup.js";
 import { rayCast } from "./shapeUtils.js";
 import { Shape } from "./Shape.js";
 let addedPoints = new Set();
+
+const DEFAULT_SHAPE_COLOUR = "rgb(180, 180, 180)"
 // Responsible for our sutherland hodgman algorithm
 export function sutherlandHodgman(shape1, shape2) {
     // Resetting addedPoints.
@@ -12,7 +14,7 @@ export function sutherlandHodgman(shape1, shape2) {
     // Starting with one shape, let's see which lines intersect
     // Getting the intersections between both shapes
     [state.intersectLines, state.enclosedLines] = getIntersections(shape1, shape2);
-    let intersectionShape = new Shape(sortPoints(state.pointsOfIntersection));
+    let intersectionShape = new Shape(sortPoints(state.pointsOfIntersection, DEFAULT_SHAPE_COLOUR));
     // Checking to see if the intersection shape is the same as one of the shapes.
     if (`${intersectionShape.points}` === `${sortPoints(shape1.points)}`) {
         return

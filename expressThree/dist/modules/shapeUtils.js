@@ -198,6 +198,9 @@ export function completeShape() {
 
 // Converts RBG Colour to Hexadecimal for html purposes.
 export function rgbToHex(rgb) {
+    if (rgb === null) {
+        rgb = DEFAULT_SHAPE_COLOUR;
+    }
     const result = rgb.match(/\d+/g);
     if (result && result.length === 3) {
         const r = parseInt(result[0]).toString(16).padStart(2, '0');
