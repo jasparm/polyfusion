@@ -1,6 +1,6 @@
 import { MongoClient, ServerApiVersion, Db } from "mongodb";
 import bcrypt from "bcryptjs";
-import { Shape, Point } from "./types";
+import { Shape, Point, ShapeType, isShape } from "./types";
 
 require("dotenv").config();
 
@@ -81,6 +81,11 @@ export class DBApi {
         if (existingShape) {
             throw new Error("A shape with this name already exists");
         }
+
+        if (!isShape(shape)) {
+            throw new Error("Invalid shape provided")
+        }
+        
         try {
             const result = await this.db.collection(username).insertOne(shape);
             console.log(result);
