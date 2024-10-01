@@ -25,6 +25,7 @@ export function sutherlandHodgman(shape1, shape2) {
         state.shapes.push(intersectionShape);
         console.log(intersectionShape);
         console.log(areaOfPolygon(intersectionShape.points));
+        console.log(intersectionShape.area / (shape1.area + shape2.area))
     }
 }
 
