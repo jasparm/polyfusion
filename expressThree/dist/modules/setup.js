@@ -2,6 +2,7 @@ import { Shape } from "./Shape.js";
 import { monteCarlo } from "./monteCarlo.js";
 import { completeShape, rgbToHex, hexToRgb } from "./shapeUtils.js";
 import { sutherlandHodgman } from "./intersection.js";
+import { SaverLoader } from "./shapeController.js";
 
 const DEFAULT_SHAPE_COLOUR = "rgb(180, 180, 180)"
 
@@ -200,6 +201,30 @@ export let setup = () => {
             isSelected: false,
             name: shapeName
         };
+
+        //! Updating to Mongo
+        const token = localStorage.getItem("authToken");
+        if (token) {
+            // Fetching current shapes
+            const currNames = SaverLoader.getShapes(token);
+
+            // And saving the shape
+            if (newShape.name && !(newShape.name in currNames)) {
+                SaverLoader.saveShape(newShape, token);
+                updateSavedShapes();
+                // Resetting our select shape mode.
+                state.savingMode = false;
+                state.selectShapeMode = true;
+                resetSelectShape();
+                submitBtn.disabled = true
+                console.log("Saved Shape Successfully.");
+                saveShapeForm.elements['shape-name'].value = '';
+            }
+        } else {
+            window.alert("Please sign in to save shapes.")
+        }
+
+
         // Now we send it to the app
         fetch("/", {
             method: "POST",
@@ -327,43 +352,58 @@ function extractPoints(shape) {
 }
 ;
 // And a function to update our dropdown list of saved shapes
-function updateSavedShapes() {
-    fetch("/shapes")
-    .then(response => response.json())
-    .then(shapes => {
-        // Getting our shapes list container
-        const shapesList = document.querySelector(".shapes-list");
-        // Clearing the list
-        shapesList.innerHTML = '';
-        // Now adding a list item for each shape
-        shapes.forEach((shape, index) => {
-            const shapeBox = document.createElement('div');
-            shapeBox.className = 'btn shape-box d-flex flex-row align-items-center';
-            shapeBox.id = `shape-${index}`;
+async function updateSavedShapes() {
+    //! UPDATE THIS FOR DB
+    const token = localStorage.getItem("authToken");
 
-            const iconBox = document.createElement('div');
-            iconBox.className = 'icon-box';
-            const icon = document.createElement('i');
-            icon.className = 'fa-solid fa-cube fa-lg';
-            iconBox.appendChild(icon);
+    if (token === null) {
+        console.log("Not Logged In");
+        return;
+    }
 
-            const shapeName = document.createElement('p');
-            shapeName.textContent = shape.name;
-
-            shapeBox.appendChild(iconBox);
-            shapeBox.appendChild(shapeName);
-
-            // Adding click event listener to load the shape
-            shapeBox.addEventListener('click', () => {
-                handleShapeSelection(shape);
-            });
-
-            shapesList.appendChild(shapeBox);
-        });
-    }).catch(error => {
-        console.error('Error fetching shapes:', error);
-    });
+    try {
+        let shapes = await SaverLoader.getShapes(token, "2d");
+        console.log(shapes)
+    } catch (error) {
+        console.log(error);
+    }
 };
+
+    // fetch("/shapes")
+    // .then(response => response.json())
+    // .then(shapes => {
+    //     // Getting our shapes list container
+    //     const shapesList = document.querySelector(".shapes-list");
+    //     // Clearing the list
+    //     shapesList.innerHTML = '';
+    //     // Now adding a list item for each shape
+    //     shapes.forEach((shape, index) => {
+    //         const shapeBox = document.createElement('div');
+    //         shapeBox.className = 'btn shape-box d-flex flex-row align-items-center';
+    //         shapeBox.id = `shape-${index}`;
+
+    //         const iconBox = document.createElement('div');
+    //         iconBox.className = 'icon-box';
+    //         const icon = document.createElement('i');
+    //         icon.className = 'fa-solid fa-cube fa-lg';
+    //         iconBox.appendChild(icon);
+
+    //         const shapeName = document.createElement('p');
+    //         shapeName.textContent = shape.name;
+
+    //         shapeBox.appendChild(iconBox);
+    //         shapeBox.appendChild(shapeName);
+
+    //         // Adding click event listener to load the shape
+    //         shapeBox.addEventListener('click', () => {
+    //             handleShapeSelection(shape);
+    //         });
+
+    //         shapesList.appendChild(shapeBox);
+    //     });
+    // }).catch(error => {
+    //     console.error('Error fetching shapes:', error);
+    // });
 
 // Generating our default shapes.
 function generateDefaultShapes() {
@@ -443,5 +483,61 @@ function loadShapes() {
     updateSavedShapes();
     setupDefaultShapes();
 }
+
+
+const login = async (user, pass) => {
+    try {
+        const url = "http://127:0.0.0.1:3000/login";
+
+        const data = {
+            user: user,
+            pass: pass
+        }
+
+        const headers = {
+            "Content-Type": "application/json"
+        };
+
+        const response = await axios.post(url, data, { headers });
+
+        const token = response.data.token;
+        if (token) return token;
+    } catch (error) {
+        console.log(error)
+    }
+};
+
+const signup = async (user, pass) => {
+    try {
+        const url = "http://127:0.0.0.1:3000/signup";
+
+        const data = {
+            user: user,
+            pass: pass
+        }
+
+        const headers = {
+            "Content-Type": "application/json"
+        };
+
+        const response = await axios.post(url, data, { headers });
+
+        // const token = response.data.token;
+        // if (token) return token;
+    } catch (error) {
+        console.log(error)
+    }
+};
+
+async function signin() {
+    await signup("oskar", "password")
+    const token = await login("oskar", "password");
+    localStorage.setItem("authToken", token)
+}
+
+signin();
+
+
+
 // Initial load of shapes when the page loads
 document.addEventListener('DOMContentLoaded', loadShapes());
