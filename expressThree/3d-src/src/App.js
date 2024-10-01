@@ -1,6 +1,3 @@
-import './App.css';
-import './lib/context-menu/contextmenu.css'
-
 import SceneManager from "./lib/scene/SceneManager.ts";
 
 import { CustomTetrahedron } from "./lib/shapes/prefabs/Tetrahedron.ts";
@@ -71,6 +68,3 @@ test.add(tet);
 // MonteCarlo.radius = 0.25;
 
 test.animate();
-
-SaverLoader.saveScene(test);
-

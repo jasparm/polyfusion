@@ -49,6 +49,7 @@ export class SaverLoader {
       name: id,
       image: image,
       data: data,
+      type: "3d",
     }
 
 
@@ -92,7 +93,13 @@ export class SaverLoader {
       };
 
       const response = await axios.get(url, { headers });
-      return response.data;
+
+      if(response.data.type === '3d') {
+        console.log(response.data)
+        return response.data;
+      }
+
+      return null;
     } catch (error) {
       console.error(error);
     }
