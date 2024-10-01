@@ -11,6 +11,11 @@
   --line-color: rgb(180, 180, 180);
 }
 
+.custom-color {
+  background-color: var(--layer-4); /* Replace with your desired color */
+  border-color: var(--layer-4); /* Replace with your desired color */
+}
+
 
 body, html {
   overflow-x: hidden;

@@ -75,97 +75,34 @@ app.post("/", (req, res) => {
 });
 
 app.get("/3d", (req, res) => {
-    res.render("3d", { title: "Polyfusion", savedShapes: savedShapes })
+    res.render("3d", { title: "Polyfusion", savedShapes: savedShapes, path: req.path })
 })
 
 app.get("/2d", (req, res) => {
-    res.render("2d", { title: "Polyfusion", savedShapes: savedShapes });
+    res.render("2d", { title: "Polyfusion", savedShapes: savedShapes, path: req.path });
 })
 
 app.get("/landing", (req, res) => {
-    res.render("landing", { title: "Polyfusion", savedShapes: savedShapes });
+    res.render("landing", { title: "Polyfusion", savedShapes: savedShapes, path: req.path });
 })
 
 app.get("/log_in", (req, res) => {
-    res.render("log_in", { title: "Polyfusion", savedShapes: savedShapes });
+    res.render("log_in", { title: "Polyfusion", savedShapes: savedShapes, path: req.path });
 })
 
 app.get("/sign_up", (req, res) => {
-    res.render("sign_up", { title: "Polyfusion", savedShapes: savedShapes });
+    res.render("sign_up", { title: "Polyfusion", savedShapes: savedShapes, path: req.path });
 })
 
-const signup = async (user, pass) => {
-    try {
-        const url = "http://127.0.0.1:3000/signup";
-
-        const data = {
-            user: user,
-            pass: pass,
-        };
-
-        const headers = {
-            "Content-Type": "application/json",
-        };
-
-        const response = await axios.post(url, data, { headers });
-
-        console.log(response);
-    } catch (error) {
-        console.error("Error during POST request:", error);
-    }
-};
-
-const login = async (user , pass) => {
-    try {
-        const url = "http://127.0.0.1:3000/login";
-
-        const data = {
-            user: user,
-            pass: pass,
-        };
-
-        const headers = {
-            "Content-Type": "application/json",
-        };
-
-        const response = await axios.post(url, data, { headers });
-
-        const token = response.data.token;
-        if (token) return token;
-    } catch (error) {
-        console.error("Error during POST request:", error);
-    }
-};
+import { AuthController } from "./authcontroller.js"; 
 
 // Handle signup form submission
 app.post("/signup", async (req, res) => {
-    const { username, password, confirmPassword } = req.body;
-
-    if (password !== confirmPassword) {
-        return res.status(400).send("Passwords do not match");
-    }
-
-    try {
-        await signup(username, password);
-        res.redirect("/log_in");
-    } catch (error) {
-        res.status(400).send("Signup failed: " + error.message);
-    }
+    await AuthController.signup(req, res);
 });
 
 
 // Handle login form submission
 app.post("/login", async (req, res) => {
-    const { username, password } = req.body;
-    try {
-        const token = await login(username, password);
-        if (token) {
-            res.cookie("token", token, { httpOnly: true });
-            res.redirect("/landing");
-        } else {
-            res.status(401).send("Login failed: Incorrect user details");
-        }
-    } catch (error) {
-        res.status(401).send("Login failed: " + error.message);
-    }
+    await AuthController.login(req, res);
 });

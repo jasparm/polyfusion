@@ -20,6 +20,13 @@
               <h2>polyfusion</h2>
           </div>
       </a>
+      <% if (path === '/2d' || path === '/3d') { %>
+        <a href="/2d" class="btn btn-primary btn-sm me-2 custom-color">2D</a>
+        <a href="/3d" class="btn btn-primary btn-sm me-2 custom-color">3D</a>
+      <% } %>
+      
+  
+      
       <button id="user-btn" type="button" class="btn" onclick="location.href='/log_in'">
           <i class="fa-solid fa-circle-user fa-3x" id="user-icon"></i>
       </button>
