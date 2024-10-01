@@ -1,7 +1,8 @@
 import { Shape } from "./Shape.js";
 import { monteCarlo } from "./monteCarlo.js";
 import { completeShape, rgbToHex, hexToRgb } from "./shapeUtils.js";
-import { sutherlandHodgman } from "./intersection.js";
+import { sutherlandHodgman, sortPoints } from "./intersection.js";
+import { SaverLoader } from "./shapeController.js";
 
 const DEFAULT_SHAPE_COLOUR = "rgb(180, 180, 180)"
 
@@ -118,6 +119,14 @@ export let setup = () => {
         selectedShape.colour = hexToRgb(event.target.value);
     });
 
+    // And for updating the shape.
+    document.getElementById('update-shape').addEventListener("click", (event) => {
+        let selectedShape = state.selectedShapes[0];
+
+        selectedShape.name = document.getElementById('shape-name-input').value;
+        selectedShape.colour = document.getElementById('shape-colour-input').value;
+    })
+
     // Monte Carlo
     const monteCarloButton = select('#monte-btn');
     const monteCarloIcon = select('#monte-icon')
@@ -200,6 +209,30 @@ export let setup = () => {
             isSelected: false,
             name: shapeName
         };
+
+        //! Updating to Mongo
+        // const token = localStorage.getItem("authToken");
+        // if (token) {
+        //     // Fetching current shapes
+        //     const currNames = SaverLoader.getShapes(token);
+
+        //     // And saving the shape
+        //     if (newShape.name && !(newShape.name in currNames)) {
+        //         SaverLoader.saveShape(newShape, token);
+        //         updateSavedShapes();
+        //         // Resetting our select shape mode.
+        //         state.savingMode = false;
+        //         state.selectShapeMode = true;
+        //         resetSelectShape();
+        //         submitBtn.disabled = true
+        //         console.log("Saved Shape Successfully.");
+        //         saveShapeForm.elements['shape-name'].value = '';
+        //     }
+        // } else {
+        //     window.alert("Please sign in to save shapes.")
+        // }
+
+
         // Now we send it to the app
         fetch("/", {
             method: "POST",
@@ -327,7 +360,25 @@ function extractPoints(shape) {
 }
 ;
 // And a function to update our dropdown list of saved shapes
-function updateSavedShapes() {
+async function updateSavedShapes() {
+    // const token = localStorage.getItem("authToken");
+
+    // if (token === null) {
+    //     console.log("Not Logged In");
+    //     return;
+    // }
+
+    // try {
+    //     let shapes = await SaverLoader.getShapes(token, "2d");
+    //     console.log(shapes)
+    // } catch (error) {
+    //     console.log(error);
+    // }
+    // }).catch(error => {
+    //     console.error('Error fetching shapes:', error);
+    // });
+
+
     fetch("/shapes")
     .then(response => response.json())
     .then(shapes => {
@@ -360,9 +411,7 @@ function updateSavedShapes() {
 
             shapesList.appendChild(shapeBox);
         });
-    }).catch(error => {
-        console.error('Error fetching shapes:', error);
-    });
+    })
 };
 
 // Generating our default shapes.
@@ -436,6 +485,15 @@ function handleShapeSelection(shape) {
         newPoints.push(createVector(p[0], p[1]));
     };
     let selectedShape = new Shape(newPoints, shape.colour);
+
+    // for (let s in state.shapes) {
+    //     console.log(selectedShape.points);
+    //     console.log(s);
+    //     if (`${sortPoints(selectedShape.points)}` === `${sortPoints(s.points)}`) {
+    //         return;
+    //     }
+    // }
+
     state.shapes.push(selectedShape);
 };
 
@@ -443,5 +501,61 @@ function loadShapes() {
     updateSavedShapes();
     setupDefaultShapes();
 }
+
+
+// const login = async (user, pass) => {
+//     try {
+//         const url = "http://127:0.0.0.1:3000/login";
+
+//         const data = {
+//             user: user,
+//             pass: pass
+//         }
+
+//         const headers = {
+//             "Content-Type": "application/json"
+//         };
+
+//         const response = await axios.post(url, data, { headers });
+
+//         const token = response.data.token;
+//         if (token) return token;
+//     } catch (error) {
+//         console.log(error)
+//     }
+// };
+
+// const signup = async (user, pass) => {
+//     try {
+//         const url = "http://127:0.0.0.1:3000/signup";
+
+//         const data = {
+//             user: user,
+//             pass: pass
+//         }
+
+//         const headers = {
+//             "Content-Type": "application/json"
+//         };
+
+//         const response = await axios.post(url, data, { headers });
+
+//         // const token = response.data.token;
+//         // if (token) return token;
+//     } catch (error) {
+//         console.log(error)
+//     }
+// };
+
+// async function signin() {
+//     // await signup("oskar", "password")
+//     const token = await login("oskar", "password");
+//     localStorage.setItem("authToken", token)
+// }
+
+// signin();
+
+
+
 // Initial load of shapes when the page loads
 document.addEventListener('DOMContentLoaded', loadShapes());
