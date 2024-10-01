@@ -124,6 +124,7 @@ export class Controller {
     // we could add options here for changing controls depending on what is selected
     if (this.selectedGroup) {
       this.transformControls.attach(this.selectedGroup);
+      this.transformControls.enabled = true;
     }
 
     this.setMovementState(state);
@@ -137,6 +138,7 @@ export class Controller {
    */
   unselectShapes() {
     this.transformControls.detach();
+    this.transformControls.enabled = false;
     this.orbitControls.enabled = true;
     this.selectedGroup = undefined;
 
@@ -187,7 +189,16 @@ export class Controller {
     for (let i = 0; i < intersects.length; i++) {
       const intersect = intersects[i];
       if (!intersect) continue; // if there are no intersects, skip this iteration
-      const object: THREE.Object3D = intersect.object;
+      const object = intersect.object;
+
+      // this ensures that helper is prioritized over all other objects
+      if ((object as any).tag === "helper") {
+        if (this.transformControls.object) {
+          console.log(object)
+          return;
+        }
+        continue;
+      }
 
       parentGroup = object.parent;
       while (parentGroup && !(parentGroup instanceof THREE.Group)) {

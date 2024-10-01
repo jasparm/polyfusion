@@ -41,35 +41,51 @@ export class CSGManager {
     let resultShape = shapes[0];
 
     if (!resultShape || !objects[0]) {
-        throw Error("Error starting CSG calculation");
-        
+      throw Error("Error starting CSG calculation");
     }
 
     shapes.forEach((shape) => {
-        const intersection = resultShape?.intersect(shape);
+      const intersection = resultShape?.intersect(shape);
 
-        if (intersection) {
-            resultShape = intersection;
-        }
+      if (intersection) {
+        resultShape = intersection;
+      }
     });
 
-    const mat = new THREE.MeshBasicMaterial({color: 0xffffff})
-
     // convert the intersection back into a mesh
-    const mesh = CSG.toMesh(resultShape, objects[0].mesh.matrix, mat);
+    const mesh = CSG.toMesh(resultShape, objects[0].mesh.matrix);
+    const intersectionWorldPosition = mesh.getWorldPosition(new THREE.Vector3());
+
+    console.log(intersectionWorldPosition);
+    // Set the mesh position to the intersection world position
+
     const intersectionVolume = calculateVolume(mesh);
-    const customShape = this.createCustomShapeFromMesh(mesh);
+    const customShape = this.createCustomShapeFromMesh(mesh, objects[0].group.position);
 
+    // Add the custom shape to the scene
     this.scene.add(customShape);
+    const pos = objects[0].group.position
+    customShape.group.position.set(pos.x, pos.y, pos.z)
+   
 
-    return {intersectionVolume, customShape}
-  }
+    return { intersectionVolume, customShape };
+    }
 
-  createCustomShapeFromMesh(mesh: THREE.Mesh) {
-    const vertices = Array.from(mesh.geometry.getAttribute('position').array);
+    createCustomShapeFromMesh(mesh: THREE.Mesh, position: THREE.Vector3) {
+      const vertices = Array.from(mesh.geometry.getAttribute('position').array);
+      const negatedVertices = [];
 
-    return new CustomShape(vertices, false, false, new THREE.Color(0x000000))
-    
-  }
+      if (vertices) {
+        for (let i = 0; i < vertices.length; i += 3) {
+          negatedVertices.push(//@ts-ignore
+            vertices[i] - position.x,//@ts-ignore
+            vertices[i + 1] - position.y,//@ts-ignore
+            vertices[i + 2] - position.z
+          );
+        }
+      }
+
+      return new CustomShape(negatedVertices, false, false, new THREE.Color(0x000000));
+    }
 
 }

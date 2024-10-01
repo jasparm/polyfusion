@@ -2,8 +2,6 @@ import { Shape } from "./Shape.js";
 import { monteCarlo } from "./monteCarlo.js";
 import { completeShape, rgbToHex, hexToRgb } from "./shapeUtils.js";
 import { sutherlandHodgman, sortPoints } from "./intersection.js";
-import { SaverLoader } from "./shapeController.js";
-
 const DEFAULT_SHAPE_COLOUR = "rgb(180, 180, 180)"
 
 // Initialising tooltips for bootstrap
