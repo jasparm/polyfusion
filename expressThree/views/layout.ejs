@@ -25,9 +25,10 @@
       </button>
     </nav>
 
-    
-    <div class="container-fluid g-0 h-100">
-      <div class="row g-0 h-100">
+    <!-- Needed to remove the h-100 here as it did not allow me to actually change the height of the container dynamically -->
+     <!-- This breaks the 2d styling -->
+    <div class="container-fluid g-0">
+      <div class="row g-0">
         <div class="content col-12">
           <%- body %>
         </div>

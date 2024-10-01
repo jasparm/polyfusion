@@ -2,6 +2,7 @@ import axios from "axios";
 
 import { CustomShape } from "../shapes/CustomShape.ts";
 import SceneManager from "./SceneManager.js";
+import ShapeImageShaver from "./ShapeImageSaver.ts";
 
 
 export class SaverLoader {
@@ -38,12 +39,19 @@ export class SaverLoader {
   }
 
   static async saveShape(shape: CustomShape, token: string, customID?: string | null) {
-    const id = customID ? customID : shape.id;
+    const imageSaver = new ShapeImageShaver({width: 50, height: 50});
+    imageSaver.shape = shape;
+    const image = imageSaver.exportImage();
+
+    const id = customID ? customID.trim() : shape.id;
     const data = this.serializeShape(shape);
     const shapeData = {
       name: id,
+      image: image,
       data: data,
+      type: "3d",
     }
+
 
     try {
       const url = "http://127.0.0.1:3000/storeshape";
@@ -85,7 +93,13 @@ export class SaverLoader {
       };
 
       const response = await axios.get(url, { headers });
-      return response.data;
+
+      if(response.data.type === '3d') {
+        console.log(response.data)
+        return response.data;
+      }
+
+      return null;
     } catch (error) {
       console.error(error);
     }

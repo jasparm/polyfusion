@@ -64,7 +64,6 @@ export function computeNormal(
       volume += volumeOfTriangle(vA, vB, vC);
     }
     // Account for scaling of the shape
-    console.log(scale);
     const scaleFactor = scale.x * scale.y * scale.z
 
     return Math.abs(volume * scaleFactor);

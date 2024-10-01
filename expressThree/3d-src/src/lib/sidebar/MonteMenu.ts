@@ -200,7 +200,6 @@ export default class MonteMenu {
   startMonteCarlo() {
     const { xRange, yRange, zRange } = this.monteManager.getMonteBoxBounds();
 
-    console.log('Monte Carlo Sampling Ranges:', { xRange, yRange, zRange })
     this.monteManager.max_balls = this.maxMonteCarloBalls;
     const interval = 5000 / this.maxMonteCarloBalls
     this.monteManager.start(this.selectedShapes, interval, xRange, yRange, zRange);

@@ -7,6 +7,7 @@ export class SaveShapesModal implements Modal {
     closeModalButton: Element;
 
     applyButton: HTMLElement;
+    shownElements: HTMLElement[] = [];
 
     constructor() {
         const saveModal = document.getElementById("saveShapeModal");
@@ -23,11 +24,13 @@ export class SaveShapesModal implements Modal {
 
         this.closeModalButton.addEventListener("click", () => {
             this.modalElement.style.display = "none";
+            this.showHiddenElements();
         });
 
         window.addEventListener("click", (event) => {
             if (event.target === this.modalElement) {
                 this.modalElement.style.display = "none";
+                this.showHiddenElements();
             }
         });
     }
@@ -38,14 +41,30 @@ export class SaveShapesModal implements Modal {
         const newApplyButton = this.applyButton.cloneNode(true) as HTMLElement;
         this.applyButton.parentNode?.replaceChild(newApplyButton, this.applyButton);
         this.applyButton = newApplyButton;
+        const nameForm = document.getElementById("savedName");
+        (nameForm as HTMLInputElement).value = "Shape";
+
+        const offcanvasElements = document.querySelectorAll('.offcanvas');
+        this.shownElements = [];
+
+        setTimeout(() => {
+            offcanvasElements.forEach((element) => {
+                if (element.classList.contains('show')) {
+                    console.log("hello")
+                    this.shownElements.push(element as HTMLElement)
+                    element.classList.remove('show');
+                }
+            });
+            nameForm?.focus();
+        }, 200) // delay slightly to ensure that modal is fully visible
+
 
         // Event listener for the apply button
         const token = localStorage.getItem('authToken');
         if (token) {
             this.applyButton.addEventListener("click", (event) => {      
-                const name = document.getElementById("savedName");
-                const nameString = (name as HTMLInputElement).value;
-                const savedName = name ? nameString : null;
+                const nameString = (nameForm as HTMLInputElement).value;
+                const savedName = nameForm ? nameString : null;
 
                 this.saveShape(shape, savedName, token);
                 this.modalElement.style.display = "none";
@@ -64,6 +83,14 @@ export class SaveShapesModal implements Modal {
         if (name && !(name in names)) {
             SaverLoader.saveShape(shape, token, name);
         }
+
+        this.showHiddenElements();
         
+    }
+
+    private showHiddenElements() {
+        this.shownElements.forEach((element) => {
+            element.classList.add("show");
+        })
     }
 }
