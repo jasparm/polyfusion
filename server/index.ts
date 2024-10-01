@@ -2,6 +2,7 @@ import express from "express";
 import { MongoClient, ServerApiVersion } from "mongodb";
 import jwt from "jsonwebtoken";
 import { DBApi } from "./api";
+import { getShapeType, ShapeType } from "./types";
 
 require("dotenv").config();
 
@@ -151,7 +152,7 @@ app.get("/shapes", async (req, res) => {
     }
 });
 
-app.get("/shape:name", async (req, res) => {
+app.get("/shape/:dimension/:name", async (req, res) => {
     const authHeader = req.headers["authorization"];
     const token = authHeader && authHeader.split(" ")[1];
 
@@ -163,11 +164,20 @@ app.get("/shape:name", async (req, res) => {
         auth = username;
     });
 
-    const shapename = req.params.name.slice(1)
+    const shapename = req.params.name
+    let shapetype: ShapeType | undefined
+
+    try {
+        shapetype = getShapeType(req.params.dimension)
+    }
+    catch (undefined) {
+        res.status(400).send("Invalid shape type")
+    }
+    
     if (auth && typeof auth == "object" && "user" in auth) {
         const user = (auth as { user?: string }).user ?? "defaultUser";
         try {
-            const shape = await db_api.getShape(user, shapename);
+            const shape = await db_api.getShape(user, shapename, shapetype!);
             res.status(200).json(shape);
         } catch (error) {
             if (error instanceof Error) {

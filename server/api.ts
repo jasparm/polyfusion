@@ -1,6 +1,6 @@
 import { MongoClient, ServerApiVersion, Db } from "mongodb";
 import bcrypt from "bcryptjs";
-import { Shape, Point, ShapeType, isShape } from "./types";
+import { Shape, Point, ShapeType, isShape} from "./types";
 
 require("dotenv").config();
 
@@ -78,9 +78,9 @@ export class DBApi {
             .collection(username)
             .findOne({ name: shape.name });
 
-        if (existingShape) {
-            throw new Error("A shape with this name already exists");
-        }
+        // if (existingShape) {
+        //     throw new Error("A shape with this name already exists");
+        // }
 
         if (!isShape(shape)) {
             throw new Error("Invalid shape provided")
@@ -108,15 +108,14 @@ export class DBApi {
         }
     }
 
-    async getShape(this: DBApi, username: string, shapename: string) {
+    async getShape(this: DBApi, username: string, shapename: string, shapetype: ShapeType) {
         /*
         Returns a user's shape called shapename if it exists
         */
         try {
             const result = await this.db
                 .collection(username)
-
-                .findOne({ name: shapename });
+                .findOne({ name: shapename, type: shapetype.toString()});
 
             if (!result) {
                 throw new Error("Item not found");
@@ -145,7 +144,7 @@ export class DBApi {
             throw new Error("A shape with this name doesn't exist");
         }
         try {
-            const result = await this.db.collection(username).replaceOne({name: shapeName }, shape);
+            const result = await this.db.collection(username).replaceOne({name: shapeName, type: shape.type}, shape);
             console.log(result);
         } catch (error) {
             console.error(error);
