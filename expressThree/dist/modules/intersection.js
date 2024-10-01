@@ -251,7 +251,7 @@ function getPointOfIntersection(line1, line2) {
 }
 ;
 // Because we have a random order of intersection points, we just need to sort them
-function sortPoints(points) {
+export function sortPoints(points) {
     // Center points of our polygon
     let center = {
         x: 0,

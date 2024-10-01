@@ -35,6 +35,7 @@ app.use("/bootstrap/js", express.static(path.join(__dirname, "node_modules/boots
 app.use("/p5", express.static(path.join(__dirname, "node_modules/p5/lib")));
 app.use("/lz-string", express.static(path.join(__dirname, "node_modules/lz-string/libs")));
 app.use("/three", express.static(path.join(__dirname, "node_modules/three/build")));
+app.use("/axios", express.static(path.join(__dirname, "node_modules/axios/index")));
 
 // Listening
 app.listen(PORT_NUM, () => {
