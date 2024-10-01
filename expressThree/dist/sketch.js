@@ -33,7 +33,12 @@ window.draw = () => {
             stroke('white');
         }
         else {
-            stroke(shape.colour);
+            if (shape.colour === null) {
+                stroke(DEFAULT_SHAPE_COLOUR)
+            } else {
+                stroke(shape.colour);
+            }
+
         }
         drawShape(shape.points);
     };
