@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= title %></title>
+    <!-- Including Bootstrap -->
+    <link rel="stylesheet" href="/bootstrap/css/bootstrap.min.css">
+    <script src="/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <!-- Font Awesome -->
+    <script src="https://kit.fontawesome.com/c3fe118872.js" crossorigin="anonymous"></script>
+    <style>
+        html, body {
+            height: 100%;
+            margin: 0;
+        }
+        .wrapper {
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+        .content {
+            flex: 1;
+        }
+        .footer {
+            background: #000;
+            color: #fff;
+            padding: 1rem;
+        }
+    </style>
+</head>
+<body class="bg-gradient" style="background: linear-gradient(135deg, #f06, #4a90e2); color: #fff;">
+    <div class="wrapper">
+        <div class="content container text-center py-5">
+            <div class="hero">
+                <h1 class="display-3">Welcome to PolyFusion</h1>
+                <p class="lead">Create and explore 2D and 3D shapes with ease.</p>
+                <div class="cta mt-4">
+                    <a href="/2d" class="btn btn-primary btn-lg me-2">Visualise 2D</a>
+                    <a href="/3d" class="btn btn-primary btn-lg me-2">Visualise 3D</a>
+                </div>
+            </div>
+            <div class="features py-5">
+                <h2 class="display-5">Features</h2>
+                <p>Explore our powerful shape-building tools and detailed shape information.</p>
+            </div>
+            <div class="how-it-works py-5">
+                <h2 class="display-5">How It Works</h2>
+                <p>Follow these simple steps to get started with Shape Builder.</p>
+            </div>
+            <div class="testimonials py-5">
+                <h2 class="display-5">Testimonials</h2>
+                <p>See what our users are saying about Shape Builder.</p>
+            </div>
+        </div>
+        <div class="footer text-center">
+            <p>Made by:</p>
+            <p>Follow us on social media</p>
+        </div>
+    </div>
+</body>
+</html>

@@ -34,3 +34,39 @@ export function computeNormal(
   return normal;
 }
 
+  /**
+   * Calculates the exact volume of a custom shape.
+   * Based on the Divergence Theorem: https://en.wikipedia.org/wiki/Divergence_theorem
+   * For meshes, this basically just simplifies to calculating the signed volume of each triangle in the mesh.
+   * 
+   * @returns volume of the shape.
+   *
+   */
+  export function calculateVolume(shape: THREE.Mesh, scale: THREE.Vector3 = new THREE.Vector3(1, 1, 1)) {
+    // volume this calculates looks correct so it's good enough for me
+    let volume = 0;
+    const position = shape.geometry.attributes.position;
+
+    if (!position) {
+      return 0;
+    }
+    const faces = position.count / 3;
+
+    function volumeOfTriangle(vA: THREE.Vector3, vB: THREE.Vector3, vC: THREE.Vector3) {
+      return vA.dot(vB.cross(vC)) / 6;
+    }
+
+    for (let i = 0; i < faces; i ++) {
+      const vA = new THREE.Vector3().fromBufferAttribute(position, i * 3);
+      const vB = new THREE.Vector3().fromBufferAttribute(position, i * 3 + 1);
+      const vC = new THREE.Vector3().fromBufferAttribute(position, i * 3 + 2);
+
+      volume += volumeOfTriangle(vA, vB, vC);
+    }
+    // Account for scaling of the shape
+    console.log(scale);
+    const scaleFactor = scale.x * scale.y * scale.z
+
+    return Math.abs(volume * scaleFactor);
+  }
+

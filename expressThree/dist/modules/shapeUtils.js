@@ -1,5 +1,8 @@
 import { state, resetSelectShape } from "./setup.js";
 import { Shape } from "./Shape.js";
+
+const DEFAULT_SHAPE_COLOUR = "rgb(180, 180, 180)"
+
 export function deleteShape() {
     // Going through our shapes to see which aren't selected.
     // - we keep these ones
@@ -42,7 +45,7 @@ export function selectShape() {
         }
     }
     // If we didn't click on a shape, we reset and clear
-    if (!state.savingMode && mouseInCanvas() && !inShape) {
+    if (!state.savingMode && !state.editMode && mouseInCanvas() && !inShape) {
         console.log("resetting selected shapes")
         resetSelectShape();
         return;
@@ -69,6 +72,7 @@ export function selectShape() {
             document.getElementById("save-icon").classList.add("disabled");
             document.getElementById("edit-shape-btn").classList.add("disabled");
             document.getElementById("edit-shape-icon").classList.add("disabled");
+            document.getElementById("intersection-btn").classList.add("disabled");
         }
     }
     else {
@@ -184,12 +188,32 @@ export function completeShape() {
     // Adds the list of points to our shapes array
     if (state.points.length > 0) {
         // Creating a new shape class and adding to our shapes array
-        let newShape = new Shape(state.points);
+        let newShape = new Shape(state.points, DEFAULT_SHAPE_COLOUR);
         state.shapes.push(newShape);
         // And resetting our current shape
         state.points = [];
         state.undoPoints = [];
     }
-    ;
 }
-;
+
+// Converts RBG Colour to Hexadecimal for html purposes.
+export function rgbToHex(rgb) {
+    const result = rgb.match(/\d+/g);
+    if (result && result.length === 3) {
+        const r = parseInt(result[0]).toString(16).padStart(2, '0');
+        const g = parseInt(result[1]).toString(16).padStart(2, '0');
+        const b = parseInt(result[2]).toString(16).padStart(2, '0');
+        return `#${r}${g}${b}`;
+    }
+    // Default is black if something is incorrect.
+    return '#000000';
+}
+
+// And the opposite for when we are drawing the shapes after changing colour.
+export function hexToRgb(hex) {
+    const bigint = parseInt(hex.slice(1), 16);
+    const r = (bigint >> 16) & 255;
+    const g = (bigint >> 8) & 255;
+    const b = bigint & 255;
+    return `rgb(${r}, ${g}, ${b})`;
+}

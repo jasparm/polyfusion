@@ -9,6 +9,7 @@ export class CustomDodecahedron extends CustomShape {
         this.radius = radius;
         this.colour = colour;
         this.vertexManager.init(this.createVertices());
+        this.name = "Dodecahedron"
 
         this.init();
     }

@@ -10,6 +10,7 @@ export class CustomIcosahedron extends CustomShape {
         this.radius = radius;
         this.colour = colour;
         this.vertexManager.init(this.createVertices());
+        this.name = "Icosahedron";
 
         this.init();
     }

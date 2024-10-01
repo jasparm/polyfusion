@@ -2,6 +2,7 @@ import * as THREE from "three";
 import { ConvexGeometry } from "three/examples/jsm/geometries/ConvexGeometry.js";
 
 import { VertexManager } from "./VertexManager.ts";
+import { calculateVolume } from "./ShapeHelpers.ts";
 
 /**
  * This class handles all aspects of CustomShape creation.
@@ -16,6 +17,8 @@ export class CustomShape {
   wireframe: boolean; // If the shape should be drawn as a wire frame.
   drawBalls: boolean; // If shape should have spheres on each vertex.
 
+  layer: number = 0;
+
   colour: THREE.Color; // Colour of all faces in the custom shape.
   scale: number; // Scale of the shape
   lineColour: THREE.Color; // colour of the line
@@ -23,6 +26,7 @@ export class CustomShape {
   vertexSize: number = 0.05; // radius of sphere to be added on vertices
   id: string; // this is used to uniquely identify a given custom shape.
   opacity: number;
+  name: string = "";
 
   vertexManager: VertexManager;
 
@@ -32,7 +36,11 @@ export class CustomShape {
     drawBalls: boolean = true,
     colour: THREE.Color = new THREE.Color(0xff00ff),
     scale: number = 1,
-    lineColour: THREE.Color = new THREE.Color(getComputedStyle(document.documentElement).getPropertyValue('--line-colour').trim()) 
+    lineColour: THREE.Color = new THREE.Color(
+      getComputedStyle(document.documentElement)
+        .getPropertyValue("--line-colour")
+        .trim()
+    )
   ) {
     const time = `${Date.now()}`;
     this.group = new THREE.Group();
@@ -56,7 +64,6 @@ export class CustomShape {
    * Initialises the current shape.
    */
   init() {
-    console.log(this.opacity);
     const vertices = this.vertexManager.getVerticesInfo();
     const geometry = new ConvexGeometry(vertices); // This ensures a shape is always convex
     this.geometry = geometry;
@@ -91,10 +98,13 @@ export class CustomShape {
 
     this.addLinesToEdges();
 
-    this.mesh.layers.set(0);
+    this.mesh.layers.set(this.layer);
     this.group.children.forEach((child) => {
       if (child instanceof THREE.Line) {
-        child.layers.set(1);
+        if (this.layer === 0) {child.layers.set(1);}
+        else {
+          child.layers.set(this.layer);
+        }
       }
     });
 
@@ -177,7 +187,7 @@ export class CustomShape {
 
   /**
    * Updates the wireframe status and re-draws the shape.
-   * @param state 
+   * @param state
    */
   setWireFrame(state: boolean) {
     this.group.remove(...this.group.children);
@@ -192,5 +202,77 @@ export class CustomShape {
     this.group.remove(...this.group.children);
     this.group.matrixAutoUpdate = true; // no idea what this does but three.js docs says its a good thing.
     this.init();
+  }
+
+  /**
+   * Creates a clone of the current CustomShape.
+   * @returns A new CustomShape instance that is a copy of the current shape.
+   */
+  clone(): CustomShape {
+    const clonedVertices = this.vertexManager
+      .getVerticesInfo()
+      .map((vertex) => vertex.clone());
+    const clonedShape = new CustomShape(
+      clonedVertices.flatMap((vertex) => [vertex.x, vertex.y, vertex.z]),
+      this.wireframe,
+      this.drawBalls,
+      this.colour.clone(),
+      this.scale,
+      this.lineColour.clone()
+    );
+    clonedShape.vertexSize = this.vertexSize;
+    clonedShape.opacity = this.opacity;
+    clonedShape.name = this.name;
+
+    clonedShape.group.scale.copy(this.group.scale);
+    clonedShape.group.rotation.copy(this.group.rotation);
+
+    clonedShape.update();
+
+    return clonedShape;
+  }
+
+  static fromJSON(data: any): CustomShape {
+    // convert vertices into flat array
+    const vertices = data.vertices.flatMap((vertex: THREE.Vector3) => [
+      vertex.x,
+      vertex.y,
+      vertex.z,
+    ]);
+    
+    // create new CustomShape instance
+    const shape = new CustomShape(
+      vertices,
+      data.wireframe,
+      data.drawBalls,
+      new THREE.Color(data.colour),
+      data.scale,
+      new THREE.Color(data.lineColour)
+    );
+
+    shape.id = data.id;
+    shape.vertexSize = data.vertexSize;
+    
+    // Set shape's position
+    shape.group.position.set(data.position.x, data.position.y, data.position.z);
+    shape.group.rotation.set(data.rotation._x, data.rotation._y, data.rotation._z, data.rotation._order);
+    shape.group.scale.copy(data.scale);
+    
+
+    shape.opacity = data.opacity;
+
+    return shape;
+  }
+
+  /**
+   * Calculates the exact volume of a custom shape.
+   * Based on the Divergence Theorem: https://en.wikipedia.org/wiki/Divergence_theorem
+   * For meshes, this basically just simplifies to calculating the signed volume of each triangle in the mesh.
+   * 
+   * @returns volume of the shape.
+   *
+   */
+  calculateVolume() {
+    return calculateVolume(this.mesh, this.group.scale);
   }
 }
