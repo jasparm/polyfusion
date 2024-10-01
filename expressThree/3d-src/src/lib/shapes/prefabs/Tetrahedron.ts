@@ -13,6 +13,7 @@ export class CustomTetrahedron extends CustomShape {
     this.size = size;
     this.colour = colour;
     this.vertexManager.init(this.createVertices());
+    this.name = "Tetrahedron"
 
     this.init();
   }

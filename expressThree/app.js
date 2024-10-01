@@ -4,6 +4,7 @@ import expressLayouts from "express-ejs-layouts";
 import { fileURLToPath } from 'url';
 import { dirname } from 'path';
 import ejs from "ejs";
+import axios from "axios";
 
 // Port number
 const PORT_NUM = 8000;
@@ -55,7 +56,7 @@ app.get('/shapes', (req, res) => {
 
 // Only serving home page for now.
 app.get("/", (req, res) => {
-    res.render("index", { title: "Polyfusion", savedShapes: savedShapes });
+    res.redirect("/landing");
 });
 
 // Using a post request to save shapes for now
@@ -81,3 +82,85 @@ app.get("/3d", (req, res) => {
 app.get("/2d", (req, res) => {
     res.render("2d", { title: "Polyfusion", savedShapes: savedShapes });
 })
+
+app.get("/landing", (req, res) => {
+    res.render("landing", { title: "Polyfusion", savedShapes: savedShapes });
+})
+
+app.get("/log_in", (req, res) => {
+    res.render("log_in", { title: "Polyfusion", savedShapes: savedShapes });
+})
+
+app.get("/sign_up", (req, res) => {
+    res.render("sign_up", { title: "Polyfusion", savedShapes: savedShapes });
+})
+
+const signup = async (user, pass) => {
+    try {
+        const url = "http://127.0.0.1:3001/signup";
+
+        const data = {
+            user: user,
+            pass: pass,
+        };
+
+        const headers = {
+            "Content-Type": "application/json",
+        };
+
+        const response = await axios.post(url, data, { headers });
+
+        console.log(response);
+    } catch (error) {
+        console.error("Error during POST request:", error);
+    }
+};
+
+const login = async (user , pass) => {
+    try {
+        const url = "http://127.0.0.1:3001/login";
+
+        const data = {
+            user: user,
+            pass: pass,
+        };
+
+        const headers = {
+            "Content-Type": "application/json",
+        };
+
+        const response = await axios.post(url, data, { headers });
+
+        const token = response.data.token;
+        if (token) return token;
+    } catch (error) {
+        console.error("Error during POST request:", error);
+    }
+};
+
+// Handle signup form submission
+app.post("/signup", async (req, res) => {
+    const { user, pass } = req.body;
+    try {
+        await signup(user, pass);
+        res.redirect("/log_in");
+    } catch (error) {
+        res.status(400).send("Signup failed: " + error.message);
+    }
+});
+
+// Handle login form submission
+app.post("/login", async (req, res) => {
+    const { user, pass } = req.body;
+    try {
+        const token = await login(user, pass);
+        if (token) {
+            res.cookie("token", token, { httpOnly: true });
+            res.redirect("/landing");
+        } else {
+            res.status(401).send("Login failed: Incorrect user details");
+        }
+    } catch (error) {
+        res.status(401).send("Login failed: " + error.message);
+    }
+});

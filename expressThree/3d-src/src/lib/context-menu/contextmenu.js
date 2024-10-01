@@ -1,3 +1,4 @@
+import { SaveShapesModal } from "../modals/SaveShapesModal.ts";
 import { ShapeInfoModal } from "../modals/ShapeInfoModal.ts";
 import { ShapeSettingsModal } from "../modals/ShapeSettingsModal.ts";
 
@@ -11,6 +12,7 @@ export class ContextMenu {
 
     this.shapeInfo = new ShapeInfoModal(this.selectedShape);
     this.shapeSettings = new ShapeSettingsModal(this.selectedShape);
+    this.saveShape = new SaveShapesModal();
 
     document.addEventListener("click", () => {
       this.hideMenu();
@@ -22,6 +24,7 @@ export class ContextMenu {
   addMenuEventListeners() {
     const shapeSettings = document.getElementById("shapeSettings");
     const shapeProperties = document.getElementById("shapeProperties");
+    const saveShape = document.getElementById("saveShape");
 
     // Event listener for Shape Settings
     shapeSettings.addEventListener("click", (event) => {
@@ -32,6 +35,10 @@ export class ContextMenu {
     shapeProperties.addEventListener("click", (event) => {
       this.handleShapeInfo();
     });
+
+    saveShape.addEventListener("click", () => {
+      this.handleSaveShape();
+    })
   }
 
   updateMenuPosition = (x, y) => {
@@ -59,6 +66,13 @@ export class ContextMenu {
   // Method to handle Shape Info click
   handleShapeInfo() {
     this.shapeInfo.openModal(this.selectedShape);
+  }
+
+  handleSaveShape() {
+    if (this.selectedShape.id == "MonteBox") {
+      return;
+    }
+    this.saveShape.openModal(this.selectedShape);
   }
 
   hideMenu() {

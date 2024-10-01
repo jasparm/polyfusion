@@ -1,8 +1,10 @@
 import { MongoClient, ServerApiVersion, Db } from "mongodb";
 import bcrypt from "bcryptjs";
-import { Shape, Point } from "./types";
+import { Shape, Point, ShapeType, isShape } from "./types";
 
 require("dotenv").config();
+
+
 
 export class DBApi {
     db: Db;
@@ -79,6 +81,11 @@ export class DBApi {
         if (existingShape) {
             throw new Error("A shape with this name already exists");
         }
+
+        if (!isShape(shape)) {
+            throw new Error("Invalid shape provided")
+        }
+        
         try {
             const result = await this.db.collection(username).insertOne(shape);
             console.log(result);
@@ -94,8 +101,7 @@ export class DBApi {
         */
         try {
             const result = await this.db.collection(username).find().toArray();
-            //console.log(result);
-            return result;
+            return result.map((shape) => {return shape.name});
         } catch (error) {
             console.error(error);
             throw error;
@@ -118,6 +124,50 @@ export class DBApi {
                 //console.log(result);
                 return result;
             }
+        } catch (error) {
+            console.error(error);
+            throw error;
+        }
+    }
+
+    async updateShape(this: DBApi, shapeName: string, username: string, shape: Shape) {
+        /*
+        Updates a shape associated with a user based on shape name
+        */
+       if (shapeName != shape.name) {
+        throw new Error("Invalid shape name provided")
+       }
+        const existingShape = await this.db
+            .collection(username)
+            .findOne({ name: shape.name });
+
+        if (!existingShape) {
+            throw new Error("A shape with this name doesn't exist");
+        }
+        try {
+            const result = await this.db.collection(username).replaceOne({name: shapeName }, shape);
+            console.log(result);
+        } catch (error) {
+            console.error(error);
+            throw error;
+        }
+    }
+
+    async deleteShape(this: DBApi, shapeName: string, username: string) {
+        /*
+        Deletes a shape based on shape name
+        */
+       
+        const existingShape = await this.db
+            .collection(username)
+            .findOne({ name: shapeName });
+
+        if (!existingShape) {
+            throw new Error("A shape with this name doesn't exist");
+        }
+        try {
+            const result = await this.db.collection(username).deleteOne({ name: shapeName});
+            console.log(result);
         } catch (error) {
             console.error(error);
             throw error;
