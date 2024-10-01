@@ -125,7 +125,7 @@ app.post("/storeshape", async (req, res) => {
     }
 });
 
-app.get("/shapes", async (req, res) => {
+app.get("/shapes/:dimension", async (req, res) => {
     const authHeader = req.headers["authorization"];
     const token = authHeader && authHeader.split(" ")[1];
 
@@ -137,10 +137,19 @@ app.get("/shapes", async (req, res) => {
         auth = username;
     });
 
+    let shapetype: ShapeType | undefined
+
+    try {
+        shapetype = getShapeType(req.params.dimension)
+    }
+    catch (undefined) {
+        res.status(400).send("Invalid shape type")
+    }
+
     if (auth && typeof auth == "object" && "user" in auth) {
         const user = (auth as { user?: string }).user ?? "defaultUser";
         try {
-            const shapes = await db_api.getShapes(user);
+            const shapes = await db_api.getShapes(user, shapetype!);
             res.status(200).json(shapes);
         } catch (error) {
             if (error instanceof Error) {

@@ -29,11 +29,15 @@ function isData(data: any): data is JSON {
     return data ? true : false
 }
 
+function isImage(image: any): image is string {
+    return true
+}
+
 export function isShape(shape: any): shape is Shape {
     return (
-        shape.name && shape.image &&
+        shape.name && 
         typeof shape.name === "string" &&
-        typeof shape.image === "string" &&
+        isImage(shape.image) &&
         isShapeType(shape.type) &&
         isData(shape.data)
         
