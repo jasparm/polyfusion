@@ -66,7 +66,7 @@ export class DBApi {
 
          // Verifies hash of input password and stored hash for user match
         const match = await bcrypt.compare(password, userAccount.pass);
-
+        console.log("login req")
         return match;
     }
 

@@ -97,7 +97,7 @@ app.get("/sign_up", (req, res) => {
 
 const signup = async (user, pass) => {
     try {
-        const url = "http://127.0.0.1:3001/signup";
+        const url = "http://127.0.0.1:3000/signup";
 
         const data = {
             user: user,
@@ -118,7 +118,7 @@ const signup = async (user, pass) => {
 
 const login = async (user , pass) => {
     try {
-        const url = "http://127.0.0.1:3001/login";
+        const url = "http://127.0.0.1:3000/login";
 
         const data = {
             user: user,
@@ -140,9 +140,11 @@ const login = async (user , pass) => {
 
 // Handle signup form submission
 app.post("/signup", async (req, res) => {
-    const { user, pass } = req.body;
+    const username = req.body.username;
+    const password = req.body.password;
+
     try {
-        await signup(user, pass);
+        await signup(username, password);
         res.redirect("/log_in");
     } catch (error) {
         res.status(400).send("Signup failed: " + error.message);
@@ -151,9 +153,12 @@ app.post("/signup", async (req, res) => {
 
 // Handle login form submission
 app.post("/login", async (req, res) => {
-    const { user, pass } = req.body;
+    // const { user, pass } = req.body;
+    const username = req.body.username;
+    const password = req.body.password;
     try {
-        const token = await login(user, pass);
+        const token = await login(username, password);
+        console.log("hi")
         if (token) {
             res.cookie("token", token, { httpOnly: true });
             res.redirect("/landing");

@@ -73,7 +73,8 @@ app.post("/login", async (req, res) => {
     if (info.user && info.pass) {
         try {
             const match = await db_api.login(info.user, info.pass);
-
+            
+            console.log("login request recieved")
             if (match) {
                 const token = jwt.sign({ user: info.user }, secret_key, {
                     expiresIn: "1h",
