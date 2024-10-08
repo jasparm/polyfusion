@@ -6,6 +6,11 @@
 # User Guide
 
 - [Installation](./user_guides/installation.md)
+- [3D](./user_guides/3d/intro.md)
+  - [Moving around a scene](./user_guides/3d/movement.md)
+  - [Interacting with a shape](./user_guides/3d/shape_selection.md)
+    - [Transform controls on a shape](./user_guides/3d/shape_movement.md)
+    - [Adding a vertex to the shape](./user_guides/3d/insert_vertices.md)
 
 # Code Reference Guide
 
