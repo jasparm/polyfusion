@@ -11,6 +11,11 @@
   - [Interacting with a shape](./user_guides/3d/shape_selection.md)
     - [Transform controls on a shape](./user_guides/3d/shape_movement.md)
     - [Adding a vertex to the shape](./user_guides/3d/insert_vertices.md)
+    - [Modifying shape settings](./user_guides/3d/shape_settings.md)
+    - [Shape information](./user_guides/3d/shape_info.md)
+  - [The sidebar](./user_guides/3d/sidebar.md)
+    - [Inserting Shapes](./insert_shape_menu.md)
+    - [Algorithms Menu](./algorithms_menu.md)
 
 # Code Reference Guide
 
