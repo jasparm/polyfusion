@@ -9,7 +9,7 @@ Selection can also be made from one shape to another.
 
 <video width="550" autoplay loop src="./videos/20241008-1032-44.0561743.mp4" title="Multiple shape selection."></video>
 
-Shapes can also be deselected by clicking off them into a blank space (or temporarily by holding shift).
+Shapes can also be deselected by clicking off them into a blank space (or temporarily by holding shift). Shapes can be completely deselected by hitting the <kbd>Esc</kbd> key.
 
 ## Shape Settings
 Right clicking a shape brings up a menu to display information about the shape, save the shape, and modify the shape.
