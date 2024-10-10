@@ -32,6 +32,7 @@
   - [Loading Shapes](./end_user_guides/2d_guidelines/loading_shapes/loading_shapes.md)
   - [Monte Carlo IoU Estimation](./end_user_guides/2d_guidelines/algorithms/monte_carlo.md)
   - [Exact IoU Calculation](./end_user_guides/2d_guidelines/algorithms/sutherland-hodgman.md)
+  
 - [Server](./documentation/server/server.md)
   - [Endpoints](./documentation/server/endpoints.md)
 - [Testing](./documentation/testing/testing.md)
