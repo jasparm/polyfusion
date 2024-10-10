@@ -1,4 +1,4 @@
-# Enter Your Credentials:
+# Enter Your Credentials
 
 On the Log-In page, enter your Username and Password.
 Click the Log-In button.

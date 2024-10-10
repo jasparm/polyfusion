@@ -1,4 +1,4 @@
-# Fill in Your Details:
+# Fill in Your Details
 
 You will be directed to the Sign-Up page.
 Enter your Username.
