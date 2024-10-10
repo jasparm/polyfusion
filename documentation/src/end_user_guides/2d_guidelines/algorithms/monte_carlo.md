@@ -12,4 +12,4 @@ Blue circles represent those in the intersection area, with red being those in t
 
 You can hit pause to pause the simulation and clear the canvas to end the simulation.
 
-[Monte Carlo](<Screen Recording 2024-10-10 at 5.47.18 pm.mov>)
+<video src="Screen Recording 2024-10-10 at 5.47.18 pm.mov" controls></video>
