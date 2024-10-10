@@ -1,6 +1,6 @@
 import { MongoClient, ServerApiVersion, Db } from "mongodb";
 import bcrypt from "bcryptjs";
-import { Shape, Point, ShapeType, isShape } from "./types";
+import { Shape, Point, ShapeType, isShape, getShapeType} from "./types";
 
 require("dotenv").config();
 
@@ -66,7 +66,7 @@ export class DBApi {
 
          // Verifies hash of input password and stored hash for user match
         const match = await bcrypt.compare(password, userAccount.pass);
-
+        console.log("login req")
         return match;
     }
 
@@ -76,7 +76,7 @@ export class DBApi {
         */
         const existingShape = await this.db
             .collection(username)
-            .findOne({ name: shape.name });
+            .findOne({ name: shape.name, type: shape.type});
 
         if (existingShape) {
             throw new Error("A shape with this name already exists");
@@ -95,12 +95,12 @@ export class DBApi {
         }
     }
 
-    async getShapes(this: DBApi, username: string) {
+    async getShapes(this: DBApi, username: string, shapetype: ShapeType) {
         /*
         Returns all shapes associated with a username
         */
         try {
-            const result = await this.db.collection(username).find().toArray();
+            const result = await this.db.collection(username).find({ type: getShapeType(shapetype) }).toArray();
             return result.map((shape) => {return shape.name});
         } catch (error) {
             console.error(error);
@@ -108,15 +108,14 @@ export class DBApi {
         }
     }
 
-    async getShape(this: DBApi, username: string, shapename: string) {
+    async getShape(this: DBApi, username: string, shapename: string, shapetype: ShapeType) {
         /*
         Returns a user's shape called shapename if it exists
         */
         try {
             const result = await this.db
                 .collection(username)
-
-                .findOne({ name: shapename });
+                .findOne({ name: shapename, type: shapetype.toString()});
 
             if (!result) {
                 throw new Error("Item not found");
@@ -145,7 +144,7 @@ export class DBApi {
             throw new Error("A shape with this name doesn't exist");
         }
         try {
-            const result = await this.db.collection(username).replaceOne({name: shapeName }, shape);
+            const result = await this.db.collection(username).replaceOne({name: shapeName, type: shape.type}, shape);
             console.log(result);
         } catch (error) {
             console.error(error);
