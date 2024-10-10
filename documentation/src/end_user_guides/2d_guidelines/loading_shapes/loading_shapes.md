@@ -10,4 +10,4 @@ Custom shapes are shapes that have been saved by the user.
 
 To then load the shape, select it from the list and it will appear on the canvas where it was saved.
 
-[Loading Shapes](<Screen Recording 2024-10-10 at 5.43.42 pm.mov>)
+<video src="Screen Recording 2024-10-10 at 5.43.42 pm.mov" controls></video>

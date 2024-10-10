@@ -12,4 +12,4 @@ You can de-select a shape by clicking on it if it is selected and de-select all 
 
 Selected shapes can be deleted by pressing the delete key.
 
-[Selecting Shapes](<Screen Recording 2024-10-10 at 5.33.05 pm.mov>)
+<video src="Screen Recording 2024-10-10 at 5.33.05 pm.mov" controls></video>
