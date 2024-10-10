@@ -3,6 +3,7 @@ import { monteCarlo } from "./monteCarlo.js";
 import { completeShape, rgbToHex, hexToRgb } from "./shapeUtils.js";
 import { sutherlandHodgman, sortPoints } from "./intersection.js";
 import { SaverLoader } from "./shapeController.js";
+import { runTests } from "./testing.js";
 
 const DEFAULT_SHAPE_COLOUR = "rgb(180, 180, 180)"
 
@@ -303,6 +304,9 @@ export let setup = () => {
             state.points.push(state.undoPoints.pop());
         }
     });
+
+    // runTests();
+
 };
 
 // Making a function to handle resetting our selected shape mode
