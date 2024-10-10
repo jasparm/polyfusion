@@ -6,6 +6,9 @@
 # User Guide
 
 - [Installation](./technical_user_guides/installation.md)
+- [Sign-up/Log-in](./user_auth/intro.md)
+  - [Signing Up](./user_auth/sign_up.md)
+  - [Logging In](./user_auth/log_in.md)
 - [3D](./user_guides/3d/intro.md)
   - [Moving around a scene](./user_guides/3d/movement.md)
   - [Interacting with a shape](./user_guides/3d/shape_selection.md)
