@@ -301,6 +301,9 @@ export let setup = () => {
             state.points.push(state.undoPoints.pop());
         }
     });
+
+    // runTests();
+
 };
 
 // Making a function to handle resetting our selected shape mode
