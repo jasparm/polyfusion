@@ -24,4 +24,4 @@ The final button clears the scene of all shapes present in the scene and resets 
 
 <video width="750" autoplay loop src="./videos/20241008-1250-34.4977665.mp4" title="Clearing scene example"></video>
 
-This action cannot be undone so make sure you really want to clear the scene before doing it.
+This action cannot be undone so make sure you really want to clear the scene before doing it. For deleting a single shape see [deleting shape](./shape_selection.md#deleting-a-shape).

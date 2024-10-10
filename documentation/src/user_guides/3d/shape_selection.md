@@ -11,6 +11,9 @@ Selection can also be made from one shape to another.
 
 Shapes can also be deselected by clicking off them into a blank space (or temporarily by holding shift). Shapes can be completely deselected by hitting the <kbd>Esc</kbd> key.
 
+### Deleting a shape
+Shapes can also be removed from the scene by pressing the <kbd>Del</kbd> key. This action is undoable so be careful before choosing to delete.
+
 ## Shape Settings
 Right clicking a shape brings up a menu to display information about the shape, save the shape, and modify the shape.
 
