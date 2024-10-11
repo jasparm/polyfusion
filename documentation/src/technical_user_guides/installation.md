@@ -1,7 +1,5 @@
 # Installation Guide
 This section will walk through how to access the application and how to run it locally.
-
-This is entirely optional and Polyfusion can be accessed online via (URL to hosted link maybe?)
 ## Requirements
 ### Software Requirements
 - Node.JS (version 16.x or later)
@@ -13,6 +11,7 @@ This is entirely optional and Polyfusion can be accessed online via (URL to host
     - Safari: Version 11 or later.
     - Any other web browser with support for WebGL and ES6+
 - git *(optional - only needed to run locally)*
+- vite
 
 ### Hardware Requirements
 Minimum System Requirements:
@@ -32,20 +31,23 @@ Please note that these requirements have not been fully tested as long as there 
 Once the repository has been cloned we need to setup the node environment.
 ```shell
 cd polyfusion
-npm run install-all-deps
 ```
-A local instance can now be run.
+Two instances must now be run: the front-end and the back-end.
+
+### Front-end
+To start the front-end:
 ```shell
-npm run dev
-```  
-Alternatively, back-end and front-end instances can be run by themselves. To do this you must install packages for the service you are requiring.
-#### Front-End only example:
-```shell
-cd polyfusion/client
-npm install
+cd expressThree
+npm i
+npm run start
 ```
-This will install all packages needed for the front-end.
+This will begin a front-end instance.
+
+### Backend
+To start the backend:
 ```shell
-npm start
+cd server
+npm i
+npx ts-node index.ts
 ```
-This will now start just a front-end instance.
+This will start the back-end instance.

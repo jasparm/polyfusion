@@ -26,13 +26,11 @@
   - [Monte Carlo IoU Estimation](./end_user_guides/2d_guidelines/algorithms/monte_carlo.md)
   - [Exact IoU Calculation](./end_user_guides/2d_guidelines/algorithms/sutherland-hodgman.md)
 
-# Code Reference Guide
+# Technical/Code Reference Guide
 
 - [3D](./documentation/3d/3d.md)
   - [3D Canvas](./documentation/3d/canvas.md)
   - [Scene Manager](./documentation/3d/scene_manager.md)
-  - [Shape Manager](./documentation/3d/shape_manager.md)
-  - [Custom Shape](./documentation/3d/custom_shape.md)
   
 - [Server](./documentation/server/server.md)
   - [Endpoints](./documentation/server/endpoints.md)
